@@ -6,17 +6,23 @@ VERSION := $(shell cat VERSION)
 
 SOURCES :=
 
-TARGETS := bin/dry
+TARGETS := bin/describe bin/export
 
 %.html: %.rst
 	$(PANDOC) -o $@ -t html5 -s $<
 
 all: build
 
-_build/default/bin/dry.exe:
-	$(DUNE) build bin/dry.exe
+_build/default/bin/describe.exe:
+	$(DUNE) build bin/describe.exe
 
-bin/dry: _build/default/bin/dry.exe
+_build/default/bin/export.exe:
+	$(DUNE) build bin/export.exe
+
+bin/describe: _build/default/bin/describe.exe
+	ln $< $@
+
+bin/export: _build/default/bin/export.exe
 	ln $< $@
 
 build: $(TARGETS)

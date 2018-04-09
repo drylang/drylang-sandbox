@@ -2,7 +2,7 @@
 
 (executable
  ((name test)
-  (libraries (version))))
+  (libraries (cli dry))))
 
 (alias
  ((name runtest)

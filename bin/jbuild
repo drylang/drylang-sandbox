@@ -1,5 +1,6 @@
 (jbuild_version 1)
 
-(executable
- ((name dry)
-  (libraries (version cmdliner))))
+(executables
+ ((names (describe export))
+  ;(public_names (dry-describe dry-export))
+  (libraries (cli dry cmdliner))))

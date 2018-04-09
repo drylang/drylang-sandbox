@@ -10,3 +10,6 @@
 # Dune artifacts
 .merlin
 _build/
+
+# DRYlib for OCaml
+lib

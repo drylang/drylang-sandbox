@@ -1,5 +1,5 @@
 (jbuild_version 1)
 
 (library
- ((name version)
-  (synopsis "Version metadata")))
+ ((name cli)
+  (synopsis "Command-line interface (CLI)")))
