@@ -1,5 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-(** Version metadata. **)
-
-val string : string
+type t =
+  | EOF
+  | FLOAT of float
+  | INTEGER of int
+  | SYMBOL of string

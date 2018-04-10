@@ -1,5 +1,7 @@
 (jbuild_version 1)
 
+(ocamllex (lexer))
+
 (library
  ((name cli)
   (synopsis "Command-line interface (CLI)")))
