@@ -9,3 +9,4 @@ end
 exception Error of Exception.t * string
 
 val lex : Lexing.lexbuf -> Token.t
+val lex_from_string : string -> Token.t

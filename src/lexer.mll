@@ -44,3 +44,8 @@ rule lex = parse
 
   | _
   { lexical_error (Printf.sprintf "unexpected character at offset %d" (Lexing.lexeme_start lexbuf)) }
+
+{
+let lex_from_string input =
+  Lexing.from_string input |> lex
+}
