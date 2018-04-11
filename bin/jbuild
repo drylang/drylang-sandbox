@@ -3,6 +3,6 @@
 (jbuild_version 1)
 
 (executables
- ((names (describe export))
-  ;(public_names (dry-describe dry-export))
+ ((names (describe export shell))
+  ;(public_names (dry-describe dry-export dry-shell))
   (libraries (cli dry cmdliner))))
