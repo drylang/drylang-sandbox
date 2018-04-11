@@ -1,3 +1,3 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-(** The parser. **)
+module Expression = Dry.Code.DRY.Expression

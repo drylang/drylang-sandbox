@@ -1,7 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
 let parse_from_lexbuf input =
-  Lexer.lex input
+  Parser.parse Lexer.lex input
 
 let parse_from_channel input =
   Lexing.from_channel input |> parse_from_lexbuf
@@ -11,7 +11,7 @@ let parse_from_string input =
 
 let is_valid string =
   try (parse_from_string string |> ignore; true) with
-  | Lexer.Error _ -> false
+  | Lexer.Error _ | Parser.Error -> false
 
 let tokenize input =
   let lexbuf_to_list lexbuf =

@@ -7,3 +7,5 @@ type t =
   | FLOAT of float
   | INTEGER of int
   | SYMBOL of string
+
+type token = t

@@ -1,7 +1,14 @@
+;; This is free and unencumbered software released into the public domain.
+
 (jbuild_version 1)
 
 (ocamllex (lexer))
 
+(menhir
+ ((flags (--external-tokens Token))
+  (modules (parser))))
+
 (library
  ((name cli)
-  (synopsis "Command-line interface (CLI)")))
+  (synopsis "Command-line interface (CLI)")
+  (libraries (dry))))
