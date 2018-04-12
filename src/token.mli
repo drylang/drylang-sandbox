@@ -9,3 +9,5 @@ type t =
   | SYMBOL of string
 
 type token = t
+
+exception EOF

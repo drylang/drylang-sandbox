@@ -3,12 +3,33 @@
 open Dry.Core
 open Cli
 
-let () =
-  let print_prompt () = print_string "> "; flush stdout in
+let print_prompt () =
+  print_string "> "; flush stdout
+
+let read_input () =
+  try (Some (read_line ())) with End_of_file -> None
+
+let main () =
   while true do
     print_prompt ();
-    let input = read_line () in
-    match Syntax.parse_from_string input with
-      | Atom datum -> print_endline (Datum.to_string datum)
-      | _ -> print_newline() (* TODO *)
+    match read_input () with
+    | None -> print_newline(); exit 0
+    | Some input -> begin
+        try
+          match Parser.parse_from_string input with
+          | None -> assert false (* EOF already handled *)
+          | Some (Atom datum) ->
+            Printf.printf "%s\n%!" (Datum.to_string datum)
+          | Some _ ->
+            Printf.printf "\n%!" (* TODO: lists *)
+        with
+        | Syntax.Error (Lexical, message) ->
+          Printf.eprintf "lexical error: %s\n%!" message
+        | Syntax.Error (Syntactic, message) ->
+          Printf.eprintf "syntax error: %s\n%!" message
+        | Syntax.Error (Semantic, message) ->
+          Printf.eprintf "semantic error: %s\n%!" message
+      end
   done
+
+let () = main ()

@@ -7,3 +7,5 @@ type t =
   | SYMBOL of string
 
 type token = t
+
+exception EOF = End_of_file

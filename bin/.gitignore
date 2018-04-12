@@ -1,4 +1,5 @@
 # Program binaries
 describe
 export
+parse
 shell

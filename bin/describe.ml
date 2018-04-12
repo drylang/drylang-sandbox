@@ -3,5 +3,7 @@
 open Dry.Core
 open Cli
 
-let () =
+let main () =
   print_endline (String.concat " " ["dry-describe"; "release"; Cli.Version.string])
+
+let () = main ()

@@ -17,6 +17,7 @@ let syntactic_error = Syntax.syntactic_error
 %%
 
 parse:
+  | EOF { raise Token.EOF }
   | atom EOF { $1 }
 
 atom:

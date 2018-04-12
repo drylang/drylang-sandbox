@@ -3,6 +3,6 @@
 (** The parser. *)
 
 val is_valid : string -> bool
-val parse_from_lexbuf : Lexing.lexbuf -> Syntax.Expression.t
-val parse_from_channel : in_channel -> Syntax.Expression.t
-val parse_from_string : string -> Syntax.Expression.t
+val parse_from_lexbuf : Lexing.lexbuf -> Syntax.Expression.t option
+val parse_from_channel : in_channel -> Syntax.Expression.t option
+val parse_from_string : string -> Syntax.Expression.t option
