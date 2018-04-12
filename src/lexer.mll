@@ -1,20 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
 {
-module Exception = struct
-  type t = Lexical | Syntactic | Semantic
-end
-
-exception Error of Exception.t * string
-
-let lexical_error message =
-  raise (Error (Lexical, message))
-
-let syntactic_error message =
-  raise (Error (Syntactic, message))
-
-let semantic_error message =
-  raise (Error (Semantic, message))
+let lexical_error = Syntax.lexical_error
 }
 
 let digit = ['0'-'9']
@@ -48,4 +35,14 @@ rule lex = parse
 {
 let lex_from_string input =
   Lexing.from_string input |> lex
+
+let tokenize input =
+  let lexbuf_to_list lexbuf =
+    let rec consume input output =
+      match lex input with
+      | Token.EOF -> output
+      | token -> consume input (token :: output)
+    in List.rev (consume lexbuf [])
+  in
+  Lexing.from_string input |> lexbuf_to_list
 }

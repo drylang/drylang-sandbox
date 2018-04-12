@@ -7,10 +7,12 @@
 
 %{
 open Dry.Core
-open Code.Expression
+open Syntax.Expression
+
+let syntactic_error = Syntax.syntactic_error
 %}
 
-%start <Code.Expression.t> parse
+%start <Syntax.Expression.t> parse
 
 %%
 

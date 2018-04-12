@@ -6,7 +6,7 @@
 
 (menhir
  ((flags (--external-tokens Token))
-  (modules (parser))))
+  (modules (grammar))))
 
 (library
  ((name cli)
