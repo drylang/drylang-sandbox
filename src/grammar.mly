@@ -2,6 +2,7 @@
 
 %token <float> FLOAT
 %token <int> INTEGER
+%token <string> STRING
 %token <string> SYMBOL
 %token EOF
 
@@ -21,12 +22,16 @@ parse:
   | atom EOF { $1 }
 
 atom:
+  | string { Atom $1 }
   | symbol { Atom $1 }
   | number { Atom $1 }
-
-symbol:
-  | string=SYMBOL   { Datum.Symbol string }
 
 number:
   | float=FLOAT     { Datum.of_float float }
   | integer=INTEGER { Datum.of_int integer }
+
+string:
+  | string=STRING   { Datum.Symbol string } (* FIXME *)
+
+symbol:
+  | string=SYMBOL   { Datum.Symbol string }

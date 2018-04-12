@@ -6,6 +6,7 @@ type t =
   | EOF
   | FLOAT of float
   | INTEGER of int
+  | STRING of string
   | SYMBOL of string
 
 type token = t
