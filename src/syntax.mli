@@ -2,7 +2,19 @@
 
 (** The syntax. *)
 
+module Source : sig
+  type t = { line: int; column: int }
+
+  val unknown : t
+end
+
 module Expression = Dry.Code.DRY.Expression
+
+module Node : sig
+  type t = { expr: Expression.t; source: Source.t }
+
+  val create : Expression.t -> t
+end
 
 module Error : sig
   type t = Lexical | Syntactic | Semantic

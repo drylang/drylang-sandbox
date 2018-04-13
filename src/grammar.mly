@@ -13,13 +13,13 @@ open Syntax.Expression
 let syntactic_error = Syntax.syntactic_error
 %}
 
-%start <Syntax.Expression.t> parse
+%start <Syntax.Node.t> parse
 
 %%
 
 parse:
   | EOF { raise Token.EOF }
-  | atom EOF { $1 }
+  | atom EOF { Syntax.Node.create($1) }
 
 atom:
   | string { Atom $1 }

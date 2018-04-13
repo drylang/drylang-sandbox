@@ -55,10 +55,10 @@ module Parser = Cli.Parser
 
 let () = assert ((Parser.parse_from_string "") = None)
 
-let () = assert ((Parser.parse_from_string "foo") = Some (Expr.Atom (Datum.Symbol "foo")))
+let () = assert ((Parser.parse_from_string "foo") = Some (Syntax.Node.create (Expr.Atom (Datum.Symbol "foo"))))
 
-let () = assert ((Parser.parse_from_string "42") = Some (Expr.Atom (Datum.of_int 42)))
+let () = assert ((Parser.parse_from_string "42") = Some (Syntax.Node.create (Expr.Atom (Datum.of_int 42))))
 
-let () = assert ((Parser.parse_from_string "1.23") = Some (Expr.Atom (Datum.of_float 1.23)))
+let () = assert ((Parser.parse_from_string "1.23") = Some (Syntax.Node.create (Expr.Atom (Datum.of_float 1.23))))
 
 (* Cli.Syntax *)
