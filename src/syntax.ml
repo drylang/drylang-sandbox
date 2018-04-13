@@ -13,7 +13,19 @@ module Expression = Dry.Code.DRY.Expression
 module Node = struct
   type t = { expr: Expression.t; source: Source.t }
 
-  let create expr = { expr = expr; source = Source.unknown }
+  let create_with_source expr source =
+    { expr = expr; source = source }
+
+  let create expr =
+    create_with_source expr Source.unknown
+
+  let create_with_pos expr line column =
+    create_with_source expr { line = line; column = column }
+
+  let create_with_lexpos expr (lexpos : Lexing.position) =
+    let lnum = lexpos.pos_lnum in
+    let cnum = (lexpos.pos_cnum - lexpos.pos_bol) + 1 in
+    create_with_source expr { line = lnum; column = cnum }
 end
 
 module Error = struct

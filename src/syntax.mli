@@ -14,6 +14,10 @@ module Node : sig
   type t = { expr: Expression.t; source: Source.t }
 
   val create : Expression.t -> t
+
+  val create_with_pos : Expression.t -> int -> int -> t
+
+  val create_with_lexpos : Expression.t -> Lexing.position -> t
 end
 
 module Error : sig

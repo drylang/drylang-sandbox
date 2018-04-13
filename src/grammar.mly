@@ -18,8 +18,8 @@ let syntactic_error = Syntax.syntactic_error
 %%
 
 parse:
-  | EOF { raise Token.EOF }
-  | atom EOF { Syntax.Node.create($1) }
+  | EOF      { raise Token.EOF }
+  | atom EOF { Syntax.Node.create_with_lexpos $1 $symbolstartpos }
 
 atom:
   | string { Atom $1 }
