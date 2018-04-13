@@ -7,7 +7,7 @@ let print_prompt () =
   print_string "> "; flush stdout
 
 let read_input () =
-  try (Some (read_line ())) with End_of_file -> None
+  try Some (read_line ()) with End_of_file -> None
 
 let main () =
   while true do

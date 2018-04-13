@@ -12,6 +12,6 @@ let parse_from_string input =
   Lexing.from_string input |> parse_from_lexbuf
 
 let is_valid string =
-  try
-    match parse_from_string string with None -> false | Some _ -> true
-  with Syntax.Error _ -> false
+  match parse_from_string string with
+  | Some _ -> true | None -> false
+  | exception Syntax.Error _ -> false
