@@ -1,5 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
+open Dry.Core
+
 let parse_from_lexbuf input =
   try (Some (Grammar.parse Lexer.lex input)) with
   | Token.EOF -> None

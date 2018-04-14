@@ -1,6 +1,8 @@
 (* This is free and unencumbered software released into the public domain. *)
 
 {
+open Dry.Core
+
 let lexical_error = Syntax.lexical_error
 
 let format_lexbuf_pos lexbuf =

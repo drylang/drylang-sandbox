@@ -9,8 +9,9 @@ let main () =
     try
       match Parser.parse_from_lexbuf lexbuf with
       | None -> exit 0
-      | Some node -> begin
-          Printf.printf "%s\n%!" (Syntax.Node.to_string node)
+      | Some syntax -> begin
+          let semantic = Semantic.analyze syntax in
+          Printf.printf "%s\n%!" (Semantic.Node.to_string semantic)
         end
     with
     | Syntax.Error (Lexical, message) ->

@@ -61,14 +61,18 @@ let () = assert (Lexer.tokenize "(42)" = [Token.LPAREN; Token.INTEGER 42; Token.
 
 module Grammar = Cli.Grammar
 
-(* Cli.Parser *)
-
-module Parser = Cli.Parser
+(* Cli.Syntax *)
 
 let one       = Syntax.Node.of_int 1
 let two       = Syntax.Node.of_int 2
 let three     = Syntax.Node.of_int 3
 let forty_two = Syntax.Node.of_int 42
+
+let pi        = Syntax.Node.of_float 3.1415
+
+(* Cli.Parser *)
+
+module Parser = Cli.Parser
 
 let () = assert (Parser.parse_from_string "" = None)
 
@@ -88,4 +92,17 @@ let () = assert (Parser.parse_from_string "(1 2 3)" = Some (Syntax.Node.List [on
 
 let () = assert (Parser.parse_from_string "(1 (2) 3)" = Some (Syntax.Node.List [one; (Syntax.Node.List [two]); three]))
 
-(* Cli.Syntax *)
+(* Cli.Semantic *)
+
+module Semantic = Cli.Semantic
+
+let analyze input =
+  match Parser.parse_from_string input with
+  | None -> failwith "syntax error"
+  | Some syntax -> Semantic.analyze syntax
+
+let () = assert (Semantic.analyze forty_two = Semantic.Node.Const (Datum.of_int 42))
+
+let () = assert (analyze "42" = Semantic.Node.Const (Datum.of_int 42))
+
+let () = assert (analyze "(inc 42)" = (Semantic.Node.Call (Semantic.Node.Const (Datum.Symbol "inc"), [Semantic.Node.Const (Datum.of_int 42)])))

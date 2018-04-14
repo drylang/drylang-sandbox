@@ -1,5 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
+open Dry.Core
+
 module Location   = Dry.Code.DRY.Location
 module Expression = Dry.Code.DRY.Expression
 
