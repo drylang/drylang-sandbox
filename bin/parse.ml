@@ -9,7 +9,7 @@ let main () =
     try
       match Parser.parse_from_lexbuf lexbuf with
       | None -> exit 0
-      | Some (Atom datum) ->
+      | Some { expr = (Atom datum) } ->
         print_endline (Datum.to_string datum)
       | Some _ ->
         print_newline () (* TODO *)

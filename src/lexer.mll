@@ -38,6 +38,8 @@ rule lex = parse
   | whitespace { lex lexbuf }
   | newline    { Lexing.new_line lexbuf; lex lexbuf }
   | ';'        { lex_comment lexbuf; lex lexbuf }
+  | '('        { Token.LPAREN }
+  | ')'        { Token.RPAREN }
   | "\n\"\"\"" { Lexing.new_line lexbuf; lex_doc_begin (Buffer.create 16) lexbuf }
   | '"'        { lex_string (Buffer.create 16) lexbuf }
   | int as n   { Token.INTEGER (int_of_string n) }

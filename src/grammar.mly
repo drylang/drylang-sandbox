@@ -4,7 +4,7 @@
 %token <int> INTEGER
 %token <string> STRING
 %token <string> SYMBOL
-%token EOF
+%token EOF LPAREN RPAREN
 
 %{
 open Dry.Core
@@ -19,6 +19,7 @@ let syntactic_error = Syntax.syntactic_error
 
 parse:
   | EOF      { raise Token.EOF }
+  | LPAREN RPAREN { Syntax.Node.create_with_lexpos (List []) $symbolstartpos }
   | atom EOF { Syntax.Node.create_with_lexpos $1 $symbolstartpos }
 
 atom:

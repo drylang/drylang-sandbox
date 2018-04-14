@@ -18,7 +18,7 @@ let main () =
         try
           match Parser.parse_from_string input with
           | None -> assert false (* EOF already handled *)
-          | Some (Atom datum) ->
+          | Some { expr = (Atom datum) } ->
             Printf.printf "%s\n%!" (Datum.to_string datum)
           | Some _ ->
             Printf.printf "\n%!" (* TODO: lists *)

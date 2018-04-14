@@ -8,6 +8,8 @@ type t =
   | INTEGER of int
   | STRING of string
   | SYMBOL of string
+  | LPAREN
+  | RPAREN
 
 type token = t
 
