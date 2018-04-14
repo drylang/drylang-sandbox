@@ -2,87 +2,91 @@
 
 open Dry.Core
 
+module type Language = sig
+  val compile : Semantic.Node.t -> Buffer.t -> unit
+end
+
 (** C *)
-module C = struct
-  (* TODO *)
+module C : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** C++ *)
-module Cpp = struct
-  (* TODO *)
+module Cpp : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** D *)
-module D = struct
-  (* TODO *)
+module D : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Dart *)
-module Dart = struct
-  (* TODO *)
+module Dart : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Elixir *)
-module Elixir = struct
-  (* TODO *)
+module Elixir : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Go *)
-module Go = struct
-  (* TODO *)
+module Go : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Java *)
-module Java = struct
-  (* TODO *)
+module Java : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Julia *)
-module Julia = struct
-  (* TODO *)
+module Julia : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** JS *)
-module JS = struct
-  (* TODO *)
+module JS : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Kotlin *)
-module Kotlin = struct
-  (* TODO *)
+module Kotlin : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Common Lisp *)
-module Lisp = struct
-  (* TODO *)
+module Lisp : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Lua *)
-module Lua = struct
-  (* TODO *)
+module Lua : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** OCaml *)
-module OCaml = struct
-  (* TODO *)
+module OCaml : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** PHP *)
-module PHP = struct
-  (* TODO *)
+module PHP : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Python *)
-module Python = struct
-  (* TODO *)
+module Python : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Ruby *)
-module Ruby = struct
-  (* TODO *)
+module Ruby : Language = struct
+  let compile code buffer = () (* TODO *)
 end
 
 (** Rust *)
-module Rust = struct
-  (* TODO *)
+module Rust : Language = struct
+  let compile code buffer = () (* TODO *)
 end

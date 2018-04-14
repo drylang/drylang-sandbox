@@ -1,69 +1,56 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-(** C *)
-module C : sig
+module type Language = sig
+  val compile : Semantic.Node.t -> Buffer.t -> unit
 end
+
+(** C *)
+module C : Language
 
 (** C++ *)
-module Cpp : sig
-end
+module Cpp : Language
 
 (** D *)
-module D : sig
-end
+module D : Language
 
 (** Dart *)
-module Dart : sig
-end
+module Dart : Language
 
 (** Elixir *)
-module Elixir : sig
-end
+module Elixir : Language
 
 (** Go *)
-module Go : sig
-end
+module Go : Language
 
 (** Java *)
-module Java : sig
-end
+module Java : Language
 
 (** Julia *)
-module Julia : sig
-end
+module Julia : Language
 
 (** JS *)
-module JS : sig
-end
+module JS : Language
 
 (** Kotlin *)
-module Kotlin : sig
-end
+module Kotlin : Language
 
 (** Common Lisp *)
-module Lisp : sig
-end
+module Lisp : Language
 
 (** Lua *)
-module Lua : sig
-end
+module Lua : Language
 
 (** OCaml *)
-module OCaml : sig
-end
+module OCaml : Language
 
 (** PHP *)
-module PHP : sig
-end
+module PHP : Language
 
 (** Python *)
-module Python : sig
-end
+module Python : Language
 
 (** Ruby *)
-module Ruby : sig
-end
+module Ruby : Language
 
 (** Rust *)
-module Rust : sig
-end
+module Rust : Language
