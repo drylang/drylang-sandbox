@@ -18,10 +18,7 @@ let main () =
         try
           match Parser.parse_from_string input with
           | None -> assert false (* EOF already handled *)
-          | Some { expr = (Atom datum) } ->
-            Printf.printf "%s\n%!" (Datum.to_string datum)
-          | Some _ ->
-            Printf.printf "\n%!" (* TODO: lists *)
+          | Some node -> Printf.printf "%s\n%!" (Syntax.Node.to_string node)
         with
         | Syntax.Error (Lexical, message) ->
           Printf.eprintf "lexical error: %s\n%!" message

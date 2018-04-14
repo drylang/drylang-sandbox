@@ -2,22 +2,19 @@
 
 (** The syntax. *)
 
-module Source : sig
-  type t = { line: int; column: int }
-
-  val unknown : t
-end
-
+module Location   = Dry.Code.DRY.Location
 module Expression = Dry.Code.DRY.Expression
 
-module Node : sig
-  type t = { expr: Expression.t; source: Source.t }
+module Node = Expression
 
-  val create : Expression.t -> t
+module LocatedNode : sig
+  type t = { expr: Node.t; source: Location.t }
 
-  val create_with_pos : Expression.t -> int -> int -> t
+  val create : Node.t -> t
 
-  val create_with_lexpos : Expression.t -> Lexing.position -> t
+  val create_with_pos : Node.t -> int -> int -> t
+
+  val create_with_lexpos : Node.t -> Lexing.position -> t
 end
 
 module Error : sig

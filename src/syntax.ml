@@ -1,23 +1,18 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-module Source = struct
-  type t = { line: int; column: int }
-
-  let record line column = { line = line; column = column }
-
-  let unknown = { line = 0; column = 0 }
-end
-
+module Location   = Dry.Code.DRY.Location
 module Expression = Dry.Code.DRY.Expression
 
-module Node = struct
-  type t = { expr: Expression.t; source: Source.t }
+module Node = Expression
+
+module LocatedNode = struct
+  type t = { expr: Node.t; source: Location.t }
 
   let create_with_source expr source =
     { expr = expr; source = source }
 
   let create expr =
-    create_with_source expr Source.unknown
+    create_with_source expr { line = 0; column = 0 }
 
   let create_with_pos expr line column =
     create_with_source expr { line = line; column = column }

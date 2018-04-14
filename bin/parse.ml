@@ -9,10 +9,7 @@ let main () =
     try
       match Parser.parse_from_lexbuf lexbuf with
       | None -> exit 0
-      | Some { expr = (Atom datum) } ->
-        print_endline (Datum.to_string datum)
-      | Some _ ->
-        print_newline () (* TODO *)
+      | Some node -> Printf.printf "%s\n%!" (Syntax.Node.to_string node)
     with
     | Syntax.Error (Lexical, message) ->
       Printf.eprintf "lexical error: %s\n%!" message;

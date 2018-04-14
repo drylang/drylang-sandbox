@@ -18,21 +18,28 @@ let syntactic_error = Syntax.syntactic_error
 %%
 
 parse:
-  | EOF      { raise Token.EOF }
-  | LPAREN RPAREN { Syntax.Node.create_with_lexpos (List []) $symbolstartpos }
-  | atom EOF { Syntax.Node.create_with_lexpos $1 $symbolstartpos }
+  | EOF                 { raise Token.EOF }
+  | expr EOF            { $1 }
+
+expr:
+  | LPAREN exprs RPAREN { List $2 }
+  | atom                { $1 }
+
+exprs:
+  |                     { [] }
+  | expr exprs          { $1 :: $2 }
 
 atom:
-  | string { Atom $1 }
-  | symbol { Atom $1 }
-  | number { Atom $1 }
+  | string              { Atom $1 }
+  | symbol              { Atom $1 }
+  | number              { Atom $1 }
 
 number:
-  | float=FLOAT     { Datum.of_float float }
-  | integer=INTEGER { Datum.of_int integer }
+  | FLOAT               { Datum.of_float $1 }
+  | INTEGER             { Datum.of_int $1 }
 
 string:
-  | string=STRING   { Datum.Symbol string } (* FIXME *)
+  | STRING              { Datum.Symbol $1 } (* FIXME *)
 
 symbol:
-  | string=SYMBOL   { Datum.Symbol string }
+  | SYMBOL              { Datum.Symbol $1 }
