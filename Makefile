@@ -6,12 +6,15 @@ VERSION := $(shell cat VERSION)
 
 SOURCES :=
 
-TARGETS := bin/describe bin/export bin/parse bin/shell
+TARGETS := bin/analyze bin/describe bin/export bin/parse bin/shell
 
 %.html: %.rst
 	$(PANDOC) -o $@ -t html5 -s $<
 
 all: build
+
+_build/default/bin/analyze.exe: bin/analyze.ml
+	$(DUNE) build bin/analyze.exe
 
 _build/default/bin/describe.exe: bin/describe.ml
 	$(DUNE) build bin/describe.exe
@@ -24,6 +27,9 @@ _build/default/bin/parse.exe: bin/parse.ml
 
 _build/default/bin/shell.exe: bin/shell.ml
 	$(DUNE) build bin/shell.exe
+
+bin/analyze: _build/default/bin/analyze.exe
+	ln -f $< $@
 
 bin/describe: _build/default/bin/describe.exe
 	ln -f $< $@
