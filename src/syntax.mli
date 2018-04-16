@@ -2,8 +2,8 @@
 
 (** The syntax. *)
 
-module Location   = Dry.Code.DRY.Location
-module Expression = Dry.Code.DRY.Expression
+module Location   = DRY.Code.DRY.Location
+module Expression = DRY.Code.DRY.Expression
 
 module Node = Expression
 

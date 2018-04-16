@@ -7,7 +7,7 @@
 %token EOF LPAREN RPAREN
 
 %{
-open Dry.Core
+open DRY.Core
 open Syntax.Expression
 
 let syntactic_error = Syntax.syntactic_error

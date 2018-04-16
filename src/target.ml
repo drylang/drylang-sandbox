@@ -1,6 +1,6 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-open Dry.Core
+open DRY.Core
 
 module type Language = sig
   val compile : Semantic.Node.t -> Buffer.t -> unit

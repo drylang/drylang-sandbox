@@ -2,8 +2,8 @@
 
 (** Semantic analysis. *)
 
-module Datum  = Dry.Core.Datum
-module Symbol = Dry.Core.Symbol
+module Datum  = DRY.Core.Datum
+module Symbol = DRY.Core.Symbol
 
 module Node : sig
   type t =

@@ -11,4 +11,4 @@
 (library
  ((name cli)
   (synopsis "Command-line interface (CLI)")
-  (libraries (dry))))
+  (libraries (DRY))))

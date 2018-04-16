@@ -1,9 +1,9 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-open Dry.Core
+open DRY.Core
 
-module Datum  = Dry.Core.Datum
-module Symbol = Dry.Core.Symbol
+module Datum  = DRY.Core.Datum
+module Symbol = DRY.Core.Symbol
 
 module Node = struct
   type t =
