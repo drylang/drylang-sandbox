@@ -39,7 +39,7 @@ let datum = function
 
 let compile_expr code =
   match code with
-  | Source.Const x -> Target.to_string (datum x)
+  | Source.Const x -> Target.to_code (datum x)
   | _ -> not_implemented ()
 
 let compile code buffer = not_implemented ()

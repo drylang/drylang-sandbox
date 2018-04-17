@@ -7,6 +7,7 @@ module Expression = DRY.Code.DRY.Expression
 
 module Node = Expression
 
+(*
 module LocatedNode = struct
   type t = { expr: Node.t; source: Location.t }
 
@@ -24,6 +25,7 @@ module LocatedNode = struct
     let cnum = (lexpos.pos_cnum - lexpos.pos_bol) + 1 in
     create_with_source expr { line = lnum; column = cnum }
 end
+*)
 
 module Error = struct
   type t = Lexical | Syntactic | Semantic

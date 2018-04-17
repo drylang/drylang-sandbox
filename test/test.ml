@@ -2,9 +2,6 @@
 
 open DRY.Core
 
-module Syntax = Drylang.Syntax
-module Expr = Drylang.Syntax.Expression
-
 (* Drylang.Version *)
 
 module Version = Drylang.Version
@@ -75,6 +72,8 @@ module Grammar = Drylang.Grammar
 
 (* Drylang.Syntax *)
 
+module Syntax = Drylang.Syntax
+
 let one       = Syntax.Node.of_int 1
 let two       = Syntax.Node.of_int 2
 let three     = Syntax.Node.of_int 3
@@ -110,15 +109,17 @@ let () = assert (Parser.parse_from_string "(1 (2) 3)" = Some (Syntax.Node.List [
 module Semantic = Drylang.Semantic
 
 let dry input =
-  match Parser.parse_from_string input with
-  | None -> failwith "syntax error"
-  | Some syntax -> Semantic.analyze syntax
+  match Drylang.Parser.parse_from_string input with
+  | None -> assert false
+  | Some syntax -> Drylang.Semantic.analyze syntax
 
 let () = assert (Semantic.analyze forty_two = Semantic.Node.Const (Datum.of_int 42))
 
+let () = assert (dry "true" = Semantic.Node.Const (Datum.of_bool true))
+
 let () = assert (dry "false" = Semantic.Node.Const (Datum.of_bool false))
 
-let () = assert (dry "true" = Semantic.Node.Const (Datum.of_bool true))
+let () = assert (dry "1.23" = Semantic.Node.Const (Datum.of_float 1.23))
 
 let () = assert (dry "42" = Semantic.Node.Const (Datum.of_int 42))
 
@@ -127,33 +128,3 @@ let () = assert (dry "(inc 42)" = (Semantic.Node.Apply (Semantic.Node.Const (Dat
 *)
 
 (* Drylang.Target *)
-
-(* Drylang.Target.Java *)
-
-module Java = Drylang.Target.Java
-
-(*
-let () = assert (Java.compile_expr (Java.boolean false) = "false")
-
-let () = assert (Java.compile_expr (Java.boolean true) = "true")
-*)
-
-let () = assert (Java.compile_expr (dry "false") = "false")
-
-let () = assert (Java.compile_expr (dry "true") = "true")
-
-let () = assert (Java.compile_expr (dry "1.23") = "1.23")
-
-let () = assert (Java.compile_expr (dry "42") = "42")
-
-(* Drylang.Target.Lua *)
-
-module Lua = Drylang.Target.Lua
-
-let () = assert (Lua.compile_expr (dry "false") = "false")
-
-let () = assert (Lua.compile_expr (dry "true") = "true")
-
-let () = assert (Lua.compile_expr (dry "1.23") = "1.23")
-
-let () = assert (Lua.compile_expr (dry "42") = "42")

@@ -7,6 +7,7 @@ module Expression = DRY.Code.DRY.Expression
 
 module Node = Expression
 
+(*
 module LocatedNode : sig
   type t = { expr: Node.t; source: Location.t }
 
@@ -16,6 +17,7 @@ module LocatedNode : sig
 
   val create_with_lexpos : Node.t -> Lexing.position -> t
 end
+*)
 
 module Error : sig
   type t = Lexical | Syntactic | Semantic
