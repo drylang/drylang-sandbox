@@ -91,3 +91,43 @@ end
 module Rust : Language = struct
   #include "target/Rust.ml"
 end
+
+let by_name = function
+  | "c" -> Some (module C : Language)
+  | "cpp" | "c++" -> Some (module Cpp : Language)
+  | "d" -> Some (module D : Language)
+  | "dart" -> Some (module Dart : Language)
+  | "elixir" -> Some (module Elixir : Language)
+  | "go" -> Some (module Go : Language)
+  | "java" -> Some (module Java : Language)
+  | "julia" -> Some (module Julia : Language)
+  | "js" -> Some (module JS : Language)
+  | "kotlin" -> Some (module Kotlin : Language)
+  | "lisp" -> Some (module Lisp : Language)
+  | "lua" -> Some (module Lua : Language)
+  | "ocaml" -> Some (module OCaml : Language)
+  | "php" -> Some (module PHP : Language)
+  | "python" -> Some (module Python : Language)
+  | "ruby" -> Some (module Ruby : Language)
+  | "rust" -> Some (module Rust : Language)
+  | _ -> None
+
+let by_extension = function
+  | "c" -> Some (module C : Language)
+  | "cpp" | "cc" -> Some (module Cpp : Language)
+  | "d" -> Some (module D : Language)
+  | "dart" -> Some (module Dart : Language)
+  | "ex" -> Some (module Elixir : Language)
+  | "go" -> Some (module Go : Language)
+  | "java" -> Some (module Java : Language)
+  | "jl" -> Some (module Julia : Language)
+  | "js" -> Some (module JS : Language)
+  | "kt" -> Some (module Kotlin : Language)
+  | "lisp" -> Some (module Lisp : Language)
+  | "lua" -> Some (module Lua : Language)
+  | "ml" -> Some (module OCaml : Language)
+  | "php" -> Some (module PHP : Language)
+  | "py" -> Some (module Python : Language)
+  | "rb" -> Some (module Ruby : Language)
+  | "rs" -> Some (module Rust : Language)
+  | _ -> None

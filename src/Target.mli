@@ -55,3 +55,7 @@ module Ruby : Language
 
 (** Rust *)
 module Rust : Language
+
+val by_name : string -> (module Language) option
+
+val by_extension : string -> (module Language) option
