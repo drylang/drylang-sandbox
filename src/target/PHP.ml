@@ -1,7 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
 module Source = Semantic.Node
-module Target = DRY.Code.Lua (* TODO *)
+module Target = DRY.Code.PHP
 
 let not_implemented () = failwith "not implemented yet"
 
@@ -12,12 +12,14 @@ let word = function
   | Word.Word64 _ -> not_implemented ()
 
 let number = function
-  | Number.Float _ -> not_implemented ()
-  | Number.Int _ -> not_implemented ()
+  | Number.Float (Float32 r) -> Target.float r
+  | Number.Float (Float64 r) -> Target.float r
+  | Number.Int (Int128 _) -> not_implemented ()
+  | Number.Int z -> Target.integer (Int.as_int64 z)
   | _ -> not_implemented ()
 
 let scalar = function
-  | Scalar.Bool _ -> not_implemented ()
+  | Scalar.Bool b -> Target.boolean b
   | Scalar.Char _ -> not_implemented ()
   | Scalar.Number n -> number n
   | Scalar.Word w -> word w
@@ -34,7 +36,7 @@ let datum = function
 
 let compile_expr code =
   match code with
-  | Source.Const datum -> not_implemented ()
+  | Source.Const x -> Target.to_code (datum x)
   | _ -> not_implemented ()
 
 let compile code buffer = not_implemented ()
