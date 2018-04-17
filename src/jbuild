@@ -2,11 +2,11 @@
 
 (jbuild_version 1)
 
-(ocamllex (lexer))
+(ocamllex (Lexer))
 
 (menhir
  ((flags (--external-tokens Token))
-  (modules (grammar))))
+  (modules (Grammar))))
 
 (library
  ((name Drylang)
