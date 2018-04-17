@@ -8,102 +8,85 @@ end
 
 (** C *)
 module C : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/C.ml"
 end
 
 (** C++ *)
 module Cpp : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Cpp.ml"
 end
 
 (** D *)
 module D : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/D.ml"
 end
 
 (** Dart *)
 module Dart : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Dart.ml"
 end
 
 (** Elixir *)
 module Elixir : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Elixir.ml"
 end
 
 (** Go *)
 module Go : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Go.ml"
 end
 
 (** Java *)
 module Java : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Java.ml"
 end
 
 (** Julia *)
 module Julia : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Julia.ml"
 end
 
 (** JS *)
 module JS : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/JS.ml"
 end
 
 (** Kotlin *)
 module Kotlin : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Kotlin.ml"
 end
 
 (** Common Lisp *)
 module Lisp : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Lisp.ml"
 end
 
 (** Lua *)
 module Lua : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Lua.ml"
 end
 
 (** OCaml *)
 module OCaml : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/OCaml.ml"
 end
 
 (** PHP *)
 module PHP : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/PHP.ml"
 end
 
 (** Python *)
 module Python : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Python.ml"
 end
 
 (** Ruby *)
 module Ruby : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Ruby.ml"
 end
 
 (** Rust *)
 module Rust : Language = struct
-  let compile code buffer =
-    failwith "not implemented yet" (* TODO *)
+  #include "target/Rust.ml"
 end

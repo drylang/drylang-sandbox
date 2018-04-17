@@ -11,4 +11,6 @@
 (library
  ((name Drylang)
   (synopsis "Drylang implementation")
-  (libraries (DRY))))
+  (libraries (DRY))
+  (preprocess (action (run ${bin:cppo} -V OCAML:${ocaml_version} ${<})))
+  (preprocessor_deps ((glob_files target/*.ml)))))
