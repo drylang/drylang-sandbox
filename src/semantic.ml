@@ -10,49 +10,63 @@ module Node = struct
     | Const of Datum.t
     | Var of Symbol.t
     | Apply of t * t list
+    | Not of t
     | And of t * t
     | Or of t * t
     | If of t * t * t
+    | Add of t * t
+    | Sub of t * t
+    | Mul of t * t
+    | Div of t * t
 
   let rec to_string = function
-    | Const datum ->
-      Printf.sprintf "(#const %s)"
-        (Datum.to_string datum)
+    | Const d ->
+      Printf.sprintf "(%s %s)" "#const" (Datum.to_string d)
 
-    | Var symbol ->
-      Printf.sprintf "(#var %s)"
-        (Symbol.to_string symbol)
+    | Var s ->
+      Printf.sprintf "(%s %s)" "#var" (Symbol.to_string s)
 
-    | Apply (function_, arguments) ->
-      Printf.sprintf "(#apply %s %s)"
-        (to_string function_)
-        (String.concat " " (List.map to_string arguments))
+    | Apply (f, args) ->
+      Printf.sprintf "(%s %s %s)" "#apply" (to_string f)
+        (String.concat " " (List.map to_string args))
 
-    | And (expression1, expression2) ->
-      Printf.sprintf "(#and %s %s)"
-        (to_string expression1)
-        (to_string expression2)
+    | Not a ->
+      Printf.sprintf "(%s %s)" "#not" (to_string a)
 
-    | Or (expression1, expression2) ->
-      Printf.sprintf "(#or %s %s)"
-        (to_string expression1)
-        (to_string expression2)
+    | And (a, b) ->
+      Printf.sprintf "(%s %s %s)" "#and" (to_string a) (to_string b)
 
-    | If (predicate, consequent, alternative) ->
-      Printf.sprintf "(#if %s %s %s)"
-        (to_string predicate)
-        (to_string consequent)
-        (to_string alternative)
+    | Or (a, b) ->
+      Printf.sprintf "(%s %s %s)" "#or" (to_string a) (to_string b)
+
+    | If (p, c, a) ->
+      Printf.sprintf "(%s %s %s %s)" "#if" (to_string p) (to_string c) (to_string a)
+
+    | Add (a, b) ->
+      Printf.sprintf "(%s %s %s)" "#add" (to_string a) (to_string b)
+
+    | Sub (a, b) ->
+      Printf.sprintf "(%s %s %s)" "#sub" (to_string a) (to_string b)
+
+    | Mul (a, b) ->
+      Printf.sprintf "(%s %s %s)" "#mul" (to_string a) (to_string b)
+
+    | Div (a, b) ->
+      Printf.sprintf "(%s %s %s)" "#div" (to_string a) (to_string b)
 end
 
 let analyze_operation operator operands =
   match operator with
   | Node.Var symbol -> begin
-      match (symbol, operands) with
-      | "and", lhs :: rhs :: [] -> Node.And (lhs, rhs)
-      | "or", lhs :: rhs :: [] -> Node.Or (lhs, rhs)
-      | "if", predicate :: consequent :: alternative :: [] ->
-        Node.If (predicate, consequent, alternative)
+      match (Symbol.to_string symbol, operands) with
+      | "not", a :: [] -> Node.Not a
+      | "and", a :: b :: [] -> Node.And (a, b)
+      | "or", a :: b :: [] -> Node.Or (a, b)
+      | "if", a :: b :: c :: [] -> Node.If (a, b, c)
+      | "+", a :: b :: [] -> Node.Add (a, b)
+      | "-", a :: b :: [] -> Node.Sub (a, b)
+      | "*", a :: b :: [] -> Node.Mul (a, b)
+      | "/", a :: b :: [] -> Node.Div (a, b)
       | _, _ -> Node.Apply (operator, operands)
     end
   | _ -> Syntax.semantic_error "invalid operation"
