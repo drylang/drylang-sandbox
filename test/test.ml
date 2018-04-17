@@ -2,18 +2,18 @@
 
 open DRY.Core
 
-module Syntax = Cli.Syntax
-module Expr = Cli.Syntax.Expression
+module Syntax = Drylang.Syntax
+module Expr = Drylang.Syntax.Expression
 
-(* Cli.Version *)
+(* Drylang.Version *)
 
-module Version = Cli.Version
+module Version = Drylang.Version
 
 let () = assert (String.length Version.string > 0)
 
-(* Cli.Token *)
+(* Drylang.Token *)
 
-module Token = Cli.Token
+module Token = Drylang.Token
 
 let () = assert (Token.EOF = Token.EOF)
 
@@ -27,9 +27,9 @@ let () = assert (Token.LPAREN = Token.LPAREN)
 
 let () = assert (Token.RPAREN = Token.RPAREN)
 
-(* Cli.Lexer *)
+(* Drylang.Lexer *)
 
-module Lexer = Cli.Lexer
+module Lexer = Drylang.Lexer
 
 let () = assert (Lexer.lex_from_string "" = Token.EOF)
 
@@ -65,11 +65,11 @@ let () = assert (Lexer.tokenize "()" = [Token.LPAREN; Token.RPAREN])
 
 let () = assert (Lexer.tokenize "(42)" = [Token.LPAREN; Token.INTEGER 42; Token.RPAREN])
 
-(* Cli.Grammar *)
+(* Drylang.Grammar *)
 
-module Grammar = Cli.Grammar
+module Grammar = Drylang.Grammar
 
-(* Cli.Syntax *)
+(* Drylang.Syntax *)
 
 let one       = Syntax.Node.of_int 1
 let two       = Syntax.Node.of_int 2
@@ -78,9 +78,9 @@ let forty_two = Syntax.Node.of_int 42
 
 let pi        = Syntax.Node.of_float 3.1415
 
-(* Cli.Parser *)
+(* Drylang.Parser *)
 
-module Parser = Cli.Parser
+module Parser = Drylang.Parser
 
 let () = assert (Parser.parse_from_string "" = None)
 
@@ -100,9 +100,9 @@ let () = assert (Parser.parse_from_string "(1 2 3)" = Some (Syntax.Node.List [on
 
 let () = assert (Parser.parse_from_string "(1 (2) 3)" = Some (Syntax.Node.List [one; (Syntax.Node.List [two]); three]))
 
-(* Cli.Semantic *)
+(* Drylang.Semantic *)
 
-module Semantic = Cli.Semantic
+module Semantic = Drylang.Semantic
 
 let analyze input =
   match Parser.parse_from_string input with

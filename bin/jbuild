@@ -5,4 +5,4 @@
 (executables
  ((names (analyze describe export parse shell))
   ;(public_names (dry-analyze dry-describe dry-export dry-parse dry-shell))
-  (libraries (DRY cli cmdliner))))
+  (libraries (DRY Drylang cmdliner))))

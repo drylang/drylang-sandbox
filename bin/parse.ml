@@ -1,7 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
 open DRY.Core
-open Cli
+open Drylang
 
 let main () =
   let lexbuf = Lexing.from_channel stdin in

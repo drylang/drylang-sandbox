@@ -9,6 +9,6 @@
   (modules (grammar))))
 
 (library
- ((name cli)
-  (synopsis "Command-line interface (CLI)")
+ ((name Drylang)
+  (synopsis "Drylang implementation")
   (libraries (DRY))))

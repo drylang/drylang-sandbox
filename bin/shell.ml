@@ -1,7 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
 open DRY.Core
-open Cli
+open Drylang
 
 let print_prompt () =
   print_string "> "; flush stdout

@@ -4,7 +4,7 @@
 
 (executable
  ((name test)
-  (libraries (DRY cli))))
+  (libraries (DRY Drylang))))
 
 (alias
  ((name runtest)
