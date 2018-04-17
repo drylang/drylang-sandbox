@@ -39,6 +39,10 @@ let () = assert (Lexer.lex_from_string "42" = Token.INTEGER 42)
 
 let () = assert (Lexer.lex_from_string "1.23" = Token.FLOAT 1.23)
 
+let () = assert (Lexer.lex_from_string "true" = Token.SYMBOL "true")
+
+let () = assert (Lexer.lex_from_string "false" = Token.SYMBOL "false")
+
 let () = assert (Lexer.lex_from_string "foobar" = Token.SYMBOL "foobar")
 
 let () = assert (Lexer.lex_from_string "+" = Token.SYMBOL "+")
@@ -81,6 +85,7 @@ let pi        = Syntax.Node.of_float 3.1415
 (* Drylang.Parser *)
 
 module Parser = Drylang.Parser
+module Datum  = DRY.Core.Datum
 
 let () = assert (Parser.parse_from_string "" = None)
 
@@ -104,15 +109,51 @@ let () = assert (Parser.parse_from_string "(1 (2) 3)" = Some (Syntax.Node.List [
 
 module Semantic = Drylang.Semantic
 
-let analyze input =
+let dry input =
   match Parser.parse_from_string input with
   | None -> failwith "syntax error"
   | Some syntax -> Semantic.analyze syntax
 
 let () = assert (Semantic.analyze forty_two = Semantic.Node.Const (Datum.of_int 42))
 
-let () = assert (analyze "42" = Semantic.Node.Const (Datum.of_int 42))
+let () = assert (dry "false" = Semantic.Node.Const (Datum.of_bool false))
+
+let () = assert (dry "true" = Semantic.Node.Const (Datum.of_bool true))
+
+let () = assert (dry "42" = Semantic.Node.Const (Datum.of_int 42))
 
 (*
-let () = assert (analyze "(inc 42)" = (Semantic.Node.Apply (Semantic.Node.Const (Datum.Symbol "inc"), [Semantic.Node.Const (Datum.of_int 42)])))
+let () = assert (dry "(inc 42)" = (Semantic.Node.Apply (Semantic.Node.Const (Datum.Symbol "inc"), [Semantic.Node.Const (Datum.of_int 42)])))
 *)
+
+(* Drylang.Target *)
+
+(* Drylang.Target.Java *)
+
+module Java = Drylang.Target.Java
+
+(*
+let () = assert (Java.compile_expr (Java.boolean false) = "false")
+
+let () = assert (Java.compile_expr (Java.boolean true) = "true")
+*)
+
+let () = assert (Java.compile_expr (dry "false") = "false")
+
+let () = assert (Java.compile_expr (dry "true") = "true")
+
+let () = assert (Java.compile_expr (dry "1.23") = "1.23")
+
+let () = assert (Java.compile_expr (dry "42") = "42")
+
+(* Drylang.Target.Lua *)
+
+module Lua = Drylang.Target.Lua
+
+let () = assert (Lua.compile_expr (dry "false") = "false")
+
+let () = assert (Lua.compile_expr (dry "true") = "true")
+
+let () = assert (Lua.compile_expr (dry "1.23") = "1.23")
+
+let () = assert (Lua.compile_expr (dry "42") = "42")

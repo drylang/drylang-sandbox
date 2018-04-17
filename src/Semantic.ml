@@ -20,8 +20,7 @@ module Node = struct
     | Div of t * t
 
   let rec to_string = function
-    | Const d ->
-      Printf.sprintf "(%s %s)" "#const" (Datum.to_string d)
+    | Const d -> Printf.sprintf "(%s %s)" "#const" (Datum.to_string d)
 
     | Var s ->
       Printf.sprintf "(%s %s)" "#var" (Symbol.to_string s)
@@ -55,6 +54,12 @@ module Node = struct
       Printf.sprintf "(%s %s %s)" "#div" (to_string a) (to_string b)
 end
 
+let analyze_identifier symbol =
+  match Symbol.to_string symbol with
+  | "true" -> Node.Const (Datum.of_bool true)
+  | "false" -> Node.Const (Datum.of_bool false)
+  | _ -> Node.Var symbol
+
 let analyze_operation operator operands =
   match operator with
   | Node.Var symbol -> begin
@@ -73,7 +78,7 @@ let analyze_operation operator operands =
 
 let rec analyze = function
   | Syntax.Node.Atom (Datum.Symbol symbol) ->
-    Node.Var symbol
+    analyze_identifier symbol
 
   | Syntax.Node.Atom datum ->
     Node.Const datum

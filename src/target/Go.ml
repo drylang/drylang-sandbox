@@ -1,5 +1,8 @@
 (* This is free and unencumbered software released into the public domain. *)
 
+module Source = Semantic.Node
+module Target = DRY.Code.Lua (* TODO *)
+
 let not_implemented () = failwith "not implemented yet"
 
 let word = function
@@ -27,6 +30,11 @@ let tensor = function
 let datum = function
   | Datum.Symbol _ -> not_implemented ()
   | Datum.Tensor x -> tensor x
+  | _ -> not_implemented ()
+
+let compile_expr code =
+  match code with
+  | Source.Const datum -> not_implemented ()
   | _ -> not_implemented ()
 
 let compile code buffer = not_implemented ()
