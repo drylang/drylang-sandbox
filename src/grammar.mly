@@ -39,7 +39,7 @@ number:
   | INTEGER             { Datum.of_int $1 }
 
 string:
-  | STRING              { Datum.Symbol $1 } (* FIXME *)
+  | STRING              { Datum.Symbol (Symbol.of_string $1) } (* FIXME *)
 
 symbol:
-  | SYMBOL              { Datum.Symbol $1 }
+  | SYMBOL              { Datum.Symbol (Symbol.of_string $1) }

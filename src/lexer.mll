@@ -24,61 +24,69 @@ let unexpected_char lexbuf =
   lexical_error (Printf.sprintf "unexpected character at %s" (format_lexbuf_pos lexbuf))
 }
 
-let digit = ['0'-'9']
-let frac  = '.' digit*
-let exp   = ['e' 'E'] ['-' '+']? digit+
+let digit      = ['0'-'9']
+let letter     = ['A'-'Z' 'a'-'z']
 
-let float = digit* frac? exp?
-let int   = '-'? digit+
+let integer    = '-'? digit+
 
-let ident = ['A'-'Z' 'a'-'z' '_']['0'-'9' 'A'-'Z' 'a'-'z' '_' '-']*
+let fraction   = '.' digit*
+let exponent   = ['e' 'E'] ['-' '+']? digit+
+let float      = digit* fraction? exponent?
+
+let special_initial     = '!' | '$' | '%' | '&' | '*' | '/' | ':' | '<' | '=' | '>' | '?' | '~' | '_' | '^'
+let special_subsequent  = '.' | '+' | '-'
+let peculiar_identifier = '+' | '-'
+
+let initial    = letter | special_initial
+let subsequent = initial | digit | special_subsequent
+let identifier = initial subsequent* | peculiar_identifier
 
 let whitespace = [' ' '\t']+
-let newline = '\n'
+let newline    = '\n'
 
 rule lex = parse
-  | whitespace { lex lexbuf }
-  | newline    { Lexing.new_line lexbuf; lex lexbuf }
-  | ';'        { lex_comment lexbuf; lex lexbuf }
-  | '('        { Token.LPAREN }
-  | ')'        { Token.RPAREN }
-  | "\n\"\"\"" { Lexing.new_line lexbuf; lex_doc_begin (Buffer.create 16) lexbuf }
-  | '"'        { lex_string (Buffer.create 16) lexbuf }
-  | int as n   { Token.INTEGER (int_of_string n) }
-  | float as f { Token.FLOAT (float_of_string f) }
-  | ident as s { Token.SYMBOL s }
-  | _          { unexpected_char lexbuf }
-  | eof        { Token.EOF }
+  | whitespace      { lex lexbuf }
+  | newline         { Lexing.new_line lexbuf; lex lexbuf }
+  | ';'             { lex_comment lexbuf; lex lexbuf }
+  | '('             { Token.LPAREN }
+  | ')'             { Token.RPAREN }
+  | "\n\"\"\""      { Lexing.new_line lexbuf; lex_doc_begin (Buffer.create 16) lexbuf }
+  | '"'             { lex_string (Buffer.create 16) lexbuf }
+  | integer as s    { Token.INTEGER (int_of_string s) }
+  | float as s      { Token.FLOAT (float_of_string s) }
+  | identifier as s { Token.SYMBOL s }
+  | _               { unexpected_char lexbuf }
+  | eof             { Token.EOF }
 
 and lex_comment = parse
-  | '\n'       { Lexing.new_line lexbuf }
-  | _          { lex_comment lexbuf }
-  | eof        { () }
+  | '\n'            { Lexing.new_line lexbuf }
+  | _               { lex_comment lexbuf }
+  | eof             { () }
 
 and lex_string buf = parse
-  | newline    { unexpected_lf lexbuf }
-  | '"'        { Token.STRING (Buffer.contents buf) }
-  | [^ '"']    { Buffer.add_string buf (Lexing.lexeme lexbuf); lex_string buf lexbuf }
-  | eof        { unexpected_eof lexbuf }
+  | newline         { unexpected_lf lexbuf }
+  | '"'             { Token.STRING (Buffer.contents buf) }
+  | [^ '"']         { Buffer.add_string buf (Lexing.lexeme lexbuf); lex_string buf lexbuf }
+  | eof             { unexpected_eof lexbuf }
 
 and lex_doc_begin buf = parse
-  | '"'*       { lex_doc_begin buf lexbuf }
-  | "\n\"\"\"" { Lexing.new_line lexbuf; lex_doc_end buf lexbuf } (* empty docstring *)
-  | newline    { Lexing.new_line lexbuf; lex_doc_string buf lexbuf }
-  | _          { unexpected_char lexbuf }
-  | eof        { unexpected_eof lexbuf }
+  | '"'*            { lex_doc_begin buf lexbuf }
+  | "\n\"\"\""      { Lexing.new_line lexbuf; lex_doc_end buf lexbuf } (* empty docstring *)
+  | newline         { Lexing.new_line lexbuf; lex_doc_string buf lexbuf }
+  | _               { unexpected_char lexbuf }
+  | eof             { unexpected_eof lexbuf }
 
 and lex_doc_string buf = parse
-  | "\n\"\"\"" { Lexing.new_line lexbuf; lex_doc_end buf lexbuf }
-  | newline    { Buffer.add_string buf (Lexing.lexeme lexbuf); Lexing.new_line lexbuf; lex_doc_string buf lexbuf }
-  | _          { Buffer.add_string buf (Lexing.lexeme lexbuf); lex_doc_string buf lexbuf }
-  | eof        { unexpected_eof lexbuf }
+  | "\n\"\"\""      { Lexing.new_line lexbuf; lex_doc_end buf lexbuf }
+  | newline         { Buffer.add_string buf (Lexing.lexeme lexbuf); Lexing.new_line lexbuf; lex_doc_string buf lexbuf }
+  | _               { Buffer.add_string buf (Lexing.lexeme lexbuf); lex_doc_string buf lexbuf }
+  | eof             { unexpected_eof lexbuf }
 
 and lex_doc_end buf = parse
-  | '"'*       { lex_doc_end buf lexbuf }
-  | newline    { Lexing.new_line lexbuf; Token.STRING (Buffer.contents buf) }
-  | _          { unexpected_char lexbuf }
-  | eof        { unexpected_eof lexbuf }
+  | '"'*            { lex_doc_end buf lexbuf }
+  | newline         { Lexing.new_line lexbuf; Token.STRING (Buffer.contents buf) }
+  | _               { unexpected_char lexbuf }
+  | eof             { unexpected_eof lexbuf }
 
 {
 let lex_from_string input =

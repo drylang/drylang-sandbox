@@ -41,6 +41,14 @@ let () = assert (Lexer.lex_from_string "1.23" = Token.FLOAT 1.23)
 
 let () = assert (Lexer.lex_from_string "foobar" = Token.SYMBOL "foobar")
 
+let () = assert (Lexer.lex_from_string "+" = Token.SYMBOL "+")
+
+let () = assert (Lexer.lex_from_string "-" = Token.SYMBOL "-")
+
+let () = assert (Lexer.lex_from_string "*" = Token.SYMBOL "*")
+
+let () = assert (Lexer.lex_from_string "/" = Token.SYMBOL "/")
+
 let () = assert (Lexer.lex_from_string "(" = Token.LPAREN)
 
 let () = assert (Lexer.lex_from_string ")" = Token.RPAREN)
@@ -76,7 +84,7 @@ module Parser = Cli.Parser
 
 let () = assert (Parser.parse_from_string "" = None)
 
-let () = assert (Parser.parse_from_string "foo" = Some (Syntax.Node.Atom (Datum.Symbol "foo")))
+let () = assert (Parser.parse_from_string "foo" = Some (Syntax.Node.Atom (Datum.Symbol (Symbol.of_string "foo"))))
 
 let () = assert (Parser.parse_from_string "42" = Some forty_two)
 
