@@ -3,8 +3,13 @@
 open DRY.Core
 open Drylang
 
-let main file =
-  let lexbuf = Lexing.from_channel stdin in (* TODO: file *)
+let main input =
+  let input_channel =
+    match input with
+    | None | Some "-" -> stdin
+    | Some s -> open_in s
+  in
+  let lexbuf = Lexing.from_channel input_channel in
   while true do
     try
       match Parser.parse_from_lexbuf lexbuf with
@@ -29,9 +34,9 @@ let main file =
 
 open Cmdliner
 
-let file =
+let input =
   let doc = "The input file to analyze." in
-  Arg.(value & pos 0 (some non_dir_file) None & info [] ~docv:"FILE" ~doc)
+  Arg.(value & pos 0 (some non_dir_file) None & info [] ~docv:"INPUT" ~doc)
 
 let cmd =
   let name = "dry-analyze" in
@@ -43,7 +48,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-analyze)(1)" ]
   in
-  Term.(const main $ file),
+  Term.(const main $ input),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)
