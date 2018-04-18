@@ -3,15 +3,33 @@
 open DRY.Core
 open Drylang
 
+module Stdlib = DRY__Stdlib
+module Buffer = Stdlib.Buffer
+module Printf = Stdlib.Printf
+module String = Stdlib.String
+
+let warn = Printf.eprintf
+
 let main root term output =
+  let target_ext = Stdlib.Filename.extension output in
+  let target_ext =
+    match String.sub target_ext 1 (String.length target_ext - 1) with
+    | exception Invalid_argument _ ->
+      warn "invalid output file name: %s\n%!" output;
+      exit 1
+    | "" ->
+      warn "invalid output file extension: %s\n%!" output;
+      exit 1
+    | s -> s
+  in
   let lexbuf = Lexing.from_channel stdin in
   while true do
     try
       match Parser.parse_from_lexbuf lexbuf with
       | None -> exit 0
       | Some syntax ->
-        begin match Target.by_extension "lua" with (* TODO *)
-        | None -> exit 1
+        begin match Target.by_extension target_ext with
+        | None -> warn "invalid target language%s\n%!"; exit 1
         | Some (module L : Target.Language) ->
           let code = Semantic.analyze syntax in
           let buffer = Buffer.create 16 in
@@ -21,13 +39,13 @@ let main root term output =
         end
     with
     | Syntax.Error (Lexical, message) ->
-      Printf.eprintf "lexical error: %s\n%!" message;
+      warn "lexical error: %s\n%!" message;
       exit 1
     | Syntax.Error (Syntactic, message) ->
-      Printf.eprintf "syntax error: %s\n%!" message;
+      warn "syntax error: %s\n%!" message;
       exit 1
     | Syntax.Error (Semantic, message) ->
-      Printf.eprintf "semantic error: %s\n%!" message;
+      warn "semantic error: %s\n%!" message;
       exit 1
   done
 
@@ -41,7 +59,7 @@ let term =
 
 let output =
   let doc = "The output file name." in
-  Arg.(value & opt string "" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
+  Arg.(value & opt string "out.c" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
 
 let root =
   let doc = "Overrides the default package index (\\$HOME/.dry)." in

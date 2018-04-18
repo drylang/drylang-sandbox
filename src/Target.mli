@@ -59,3 +59,5 @@ module Rust : Language
 val by_name : string -> (module Language) option
 
 val by_extension : string -> (module Language) option
+
+val is_supported : string -> bool

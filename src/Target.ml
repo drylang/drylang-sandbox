@@ -131,3 +131,7 @@ let by_extension = function
   | "rb" -> Some (module Ruby : Language)
   | "rs" -> Some (module Rust : Language)
   | _ -> None
+
+let is_supported ext =
+  match by_extension ext with
+  | None -> false | Some _ -> true
