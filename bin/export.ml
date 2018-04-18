@@ -9,10 +9,13 @@ let main () =
     try
       match Parser.parse_from_lexbuf lexbuf with
       | None -> exit 0
-      | Some syntax -> begin
+      | Some syntax ->
+        begin match Target.by_extension "lua" with (* TODO *)
+        | None -> exit 1
+        | Some (module L : Target.Language) ->
           let code = Semantic.analyze syntax in
           let buffer = Buffer.create 16 in
-          Target.Lua.compile code buffer;
+          L.compile code buffer;
           Buffer.output_buffer stdout buffer;
           Printf.printf "\n%!"
         end

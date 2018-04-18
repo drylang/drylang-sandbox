@@ -39,4 +39,5 @@ let compile_expr code =
   | Source.Const x -> Target.to_code (datum x)
   | _ -> not_implemented ()
 
-let compile code buffer = not_implemented ()
+let compile code buffer =
+  Buffer.add_string buffer (compile_expr code)
