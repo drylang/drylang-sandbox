@@ -11,13 +11,13 @@ let main term =
 open Cmdliner
 
 let term =
-  let doc = "The term to describe." in
+  let doc = "The term to locate." in
   Arg.(required & pos 0 (some string) None & info [] ~docv:"TERM" ~doc)
 
 let cmd =
-  let name = "dry-describe" in
+  let name = "dry-locate" in
   let version = Version.string in
-  let doc = "describe a DRY term" in
+  let doc = "locate the source file for a DRY term" in
   let exits = Term.default_exits in
   let envs =
     let doc = "Overrides the default package index (~/.dry)." in
