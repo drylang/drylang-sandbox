@@ -44,10 +44,11 @@ let output =
   Arg.(value & opt string "" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
 
 let root =
-  let doc = "Overrides the default package index (~/.dry)." in
+  let doc = "Overrides the default package index (\\$HOME/.dry)." in
   let env = Arg.env_var "DRY_ROOT" ~doc in
   let doc = "The package index root." in
-  Arg.(value & opt dir "~/.dry" & info ["root"] ~env ~docv:"ROOT" ~doc)
+  let def = Index.default_path () in
+  Arg.(value & opt dir def & info ["root"] ~env ~docv:"ROOT" ~doc)
 
 let cmd =
   let name = "dry-export" in
