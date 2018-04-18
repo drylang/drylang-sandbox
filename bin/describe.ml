@@ -4,7 +4,9 @@ open DRY.Core
 open Drylang
 
 let main root term =
-  print_endline term (* TODO *)
+  let package = "drylib" in
+  let path = Printf.sprintf "%s/%s/%s.dry" root package term in
+  Printf.printf "%s\n%!" path (* TODO *)
 
 (* Command-line interface *)
 
