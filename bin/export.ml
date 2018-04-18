@@ -50,8 +50,8 @@ let cmd =
   let exits = Term.default_exits in
   let envs =
     let doc = "Overrides the default package index (~/.dry)." in
-    let home = Arg.env_var "DRY_HOME" ~doc in
-    [home]
+    let root = Arg.env_var "DRY_ROOT" ~doc in
+    [root]
   in
   let man = [
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
