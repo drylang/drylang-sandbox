@@ -3,7 +3,7 @@
 open DRY.Core
 open Drylang
 
-let main id output =
+let main root term output =
   let lexbuf = Lexing.from_channel stdin in
   while true do
     try
@@ -35,29 +35,31 @@ let main id output =
 
 open Cmdliner
 
-let id =
-  let doc = "The identifier to export." in
-  Arg.(value & pos 0 (some string) None & info [] ~docv:"ID" ~doc)
+let term =
+  let doc = "The term to export." in
+  Arg.(value & pos 0 (some string) None & info [] ~docv:"TERM" ~doc)
 
 let output =
   let doc = "The output file name." in
   Arg.(value & opt string "" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
 
+let root =
+  let doc = "Overrides the default package index (~/.dry)." in
+  let env = Arg.env_var "DRY_ROOT" ~doc in
+  let doc = "The package index root." in
+  Arg.(value & opt dir "~/.dry" & info ["root"] ~env ~docv:"ROOT" ~doc)
+
 let cmd =
   let name = "dry-export" in
   let version = Version.string in
-  let doc = "export DRY code" in
+  let doc = "export a DRY term" in
   let exits = Term.default_exits in
-  let envs =
-    let doc = "Overrides the default package index (~/.dry)." in
-    let root = Arg.env_var "DRY_ROOT" ~doc in
-    [root]
-  in
+  let envs = [] in
   let man = [
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1)" ]
   in
-  Term.(const main $ id $ output),
+  Term.(const main $ root $ term $ output),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

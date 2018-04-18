@@ -9,7 +9,7 @@ let print_prompt () =
 let read_input () =
   try Some (read_line ()) with End_of_file -> None
 
-let main () =
+let main root =
   while true do
     print_prompt ();
     match read_input () with
@@ -33,21 +33,23 @@ let main () =
 
 open Cmdliner
 
+let root =
+  let doc = "Overrides the default package index (~/.dry)." in
+  let env = Arg.env_var "DRY_ROOT" ~doc in
+  let doc = "The package index root." in
+  Arg.(value & opt dir "~/.dry" & info ["root"] ~env ~docv:"ROOT" ~doc)
+
 let cmd =
   let name = "dry-shell" in
   let version = Version.string in
   let doc = "the interactive DRY shell" in
   let exits = Term.default_exits in
-  let envs =
-    let doc = "Overrides the default package index (~/.dry)." in
-    let root = Arg.env_var "DRY_ROOT" ~doc in
-    [root]
-  in
+  let envs = [] in
   let man = [
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1)" ]
   in
-  Term.(const main $ const ()),
+  Term.(const main $ root),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)
