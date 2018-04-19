@@ -3,8 +3,24 @@
 open DRY.Core
 open Drylang
 
+let printf = Printf.printf
+
+let iter_term (term : Local.Term.t) =
+  printf "%s\t%s\n%!" term.path "term"
+
+let iter_module (module_ : Local.Module.t) =
+  printf "%s\t%s\n%!" module_.path "module";
+  Local.Module.iter module_ iter_term
+
+let iter_package (package : Local.Package.t) =
+  printf "%s\t%s\n%!" package.path "package";
+  Local.Package.iter package iter_module
+
+let iter_index index =
+  Local.Index.iter index iter_package
+
 let main root =
-  Printf.printf "%s\n%!" root (* TODO *)
+  iter_index (Local.Index.open_path root)
 
 (* Command-line interface *)
 
@@ -14,7 +30,7 @@ let root =
   let doc = "Overrides the default package index (\\$HOME/.dry)." in
   let env = Arg.env_var "DRY_ROOT" ~doc in
   let doc = "The package index root." in
-  let def = Index.default_path () in
+  let def = Local.Index.default_path () in
   Arg.(value & opt dir def & info ["root"] ~env ~docv:"ROOT" ~doc)
 
 let cmd =

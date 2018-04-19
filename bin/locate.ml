@@ -20,7 +20,7 @@ let root =
   let doc = "Overrides the default package index (\\$HOME/.dry)." in
   let env = Arg.env_var "DRY_ROOT" ~doc in
   let doc = "The package index root." in
-  let def = Index.default_path () in
+  let def = Local.Index.default_path () in
   Arg.(value & opt dir def & info ["root"] ~env ~docv:"ROOT" ~doc)
 
 let cmd =
