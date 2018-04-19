@@ -21,7 +21,9 @@ module Module : sig
 
   val make : ?dirpath:string -> ?path:string -> string -> t
 
-  val iter : t -> (Term.t -> unit) -> unit
+  val iter_terms : t -> (Term.t -> unit) -> unit
+
+  val iter_modules : t -> (t -> unit) -> unit
 
   val to_string : t -> string
 end
@@ -35,7 +37,7 @@ module Package : sig
 
   val make : ?dirpath:string -> ?path:string -> string -> t
 
-  val iter : t -> (Module.t -> unit) -> unit
+  val iter_modules : t -> (Module.t -> unit) -> unit
 
   val to_string : t -> string
 end
@@ -51,7 +53,7 @@ module Index : sig
 
   val open_path : string -> t
 
-  val iter : t -> (Package.t -> unit) -> unit
+  val iter_packages : t -> (Package.t -> unit) -> unit
 
   val to_string : t -> string
 end

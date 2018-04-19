@@ -8,16 +8,17 @@ let printf = Printf.printf
 let iter_term (term : Local.Term.t) =
   printf "%s\t%s\n%!" term.path "term"
 
-let iter_module (module_ : Local.Module.t) =
+let rec iter_module (module_ : Local.Module.t) =
   printf "%s\t%s\n%!" module_.path "module";
-  Local.Module.iter module_ iter_term
+  Local.Module.iter_modules module_ iter_module;
+  Local.Module.iter_terms module_ iter_term
 
 let iter_package (package : Local.Package.t) =
   printf "%s\t%s\n%!" package.path "package";
-  Local.Package.iter package iter_module
+  Local.Package.iter_modules package iter_module
 
 let iter_index index =
-  Local.Index.iter index iter_package
+  Local.Index.iter_packages index iter_package
 
 let main root =
   iter_index (Local.Index.open_path root)

@@ -30,7 +30,7 @@ module Term = struct
       path = path;
       filepath = filepath; }
 
-  let to_string term = ""
+  let to_string term = term.filepath
 end
 
 module Module = struct
@@ -44,7 +44,7 @@ module Module = struct
       path = path;
       dirpath = dirpath; }
 
-  let iter mod_ fn =
+  let iter_terms mod_ fn =
     let dir = Unix.opendir mod_.dirpath in
     try
       while true do
@@ -58,7 +58,20 @@ module Module = struct
       done
     with End_of_file -> ()
 
-  let to_string mod_ = ""
+  let iter_modules mod_ fn =
+    let dir = Unix.opendir mod_.dirpath in
+    try
+      while true do
+        match Unix.readdir dir with
+        | "." | ".." -> ()
+        | name ->
+          let dirpath = concat_path mod_.dirpath name in
+          let path = mod_.path ^ "/" ^ name in
+          if is_module_dir dirpath then (fn @@ make name ~path ~dirpath) else ()
+      done
+    with End_of_file -> ()
+
+  let to_string mod_ = mod_.dirpath
 end
 
 module Package = struct
@@ -72,7 +85,7 @@ module Package = struct
       path = path;
       dirpath = dirpath; }
 
-  let iter pkg fn =
+  let iter_modules pkg fn =
     let dir = Unix.opendir pkg.dirpath in
     try
       while true do
@@ -103,7 +116,7 @@ module Index = struct
   let open_default () =
     open_path (default_path ())
 
-  let iter idx fn =
+  let iter_packages idx fn =
     let dir = Unix.opendir idx.dirpath in
     try
       while true do
