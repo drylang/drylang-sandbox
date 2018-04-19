@@ -1,12 +1,22 @@
-DUNE   ?= jbuilder
-PANDOC ?= pandoc
-
-PACKAGE :=
+PACKAGE := drylang
 VERSION := $(shell cat VERSION)
 
 SOURCES :=
 
 TARGETS := bin/analyze bin/describe bin/export bin/index bin/locate bin/parse bin/shell
+
+DUNE    ?= jbuilder
+PANDOC  ?= pandoc
+TAR     ?= tar
+
+INSTALL ?= install
+INSTALL_PROGRAM = $(INSTALL)
+INSTALL_DATA    = $(INSTALL) -m 644
+
+prefix     ?= /usr/local
+exec_prefix = $(prefix)
+bindir      = $(exec_prefix)/bin
+libexecdir  = $(exec_prefix)/libexec
 
 %.html: %.rst
 	$(PANDOC) -o $@ -t html5 -s $<
@@ -63,11 +73,18 @@ check:
 dist:
 	@echo "not implemented"; exit 2 # TODO
 
-install:
-	@echo "not implemented"; exit 2 # TODO
+installdirs: $(TARGETS)
+	$(INSTALL) -d $(DESTDIR)$(bindir)
+	$(INSTALL) -d $(DESTDIR)$(libexecdir)/$(PACKAGE)
+
+install: installdirs $(TARGETS)
+	$(foreach file,$(TARGETS),$(INSTALL_PROGRAM) $(file) $(DESTDIR)$(libexecdir)/$(PACKAGE)/$(file:bin/%=%);)
+
+install-strip: installdirs $(TARGETS)
+	$(foreach file,$(TARGETS),$(INSTALL_PROGRAM) -s $(file) $(DESTDIR)$(libexecdir)/$(PACKAGE)/$(file:bin/%=%);)
 
 uninstall:
-	@echo "not implemented"; exit 2 # TODO
+	$(foreach file,$(TARGETS),echo rm -f $(DESTDIR)$(libexecdir)/$(PACKAGE)/$(file:bin/%=%);)
 
 clean:
 	@rm -f *~ $(TARGETS)
@@ -77,6 +94,6 @@ distclean: clean
 
 mostlyclean: clean
 
-.PHONY: check dist install clean distclean mostlyclean
+.PHONY: check dist installdirs install install-strip clean distclean mostlyclean
 .SECONDARY:
 .SUFFIXES:
