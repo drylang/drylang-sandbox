@@ -15,12 +15,15 @@ let main root term output =
   let target_ext =
     match String.sub target_ext 1 (String.length target_ext - 1) with
     | exception Invalid_argument _ ->
-      warn "invalid output file name: %s\n%!" output;
+      warn "missing output file extension: %s\n%!" output;
       exit 1
     | "" ->
       warn "invalid output file extension: %s\n%!" output;
       exit 1
-    | s -> s
+    | s -> if Target.is_supported s then s else begin
+        warn "unknown output file extension: %s\n%!" s;
+        exit 1
+      end
   in
   let lexbuf = Lexing.from_channel stdin in
   while true do
@@ -29,7 +32,7 @@ let main root term output =
       | None -> exit 0
       | Some syntax ->
         begin match Target.by_extension target_ext with
-        | None -> warn "invalid target language%s\n%!"; exit 1
+        | None -> assert false
         | Some (module L : Target.Language) ->
           let code = Semantic.analyze syntax in
           let buffer = Buffer.create 16 in
