@@ -5,12 +5,19 @@ To-Dos
 Commands
 ========
 
-- `dry tokenize`
+- ``dry tokenize``
 
-- `dry execute`
+- ``dry execute``
 
-- `dry evaluate`
+- ``dry evaluate``
 
-- `dry check`
+- ``dry check``
 
-- `dry compile`
+- ``dry compile``
+
+- ``dry install`` & ``dry uninstall``?
+
+Installation
+============
+
+- Build and install man pages.
