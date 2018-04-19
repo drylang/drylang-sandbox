@@ -27,6 +27,20 @@ module LocatedNode = struct
 end
 *)
 
+module Context = struct
+  type t =
+    { source_file: string;
+      source_package: string;
+      source_module: string;
+      source_term: string; }
+
+  let create sf sm st =
+    { source_file = sf;
+      source_package = "drylib";
+      source_module = sm;
+      source_term = st; }
+end
+
 module Error = struct
   type t = Lexical | Syntactic | Semantic
 end

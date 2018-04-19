@@ -3,11 +3,20 @@
 open DRY.Core
 open Drylang
 
+module Stdlib = DRY__Stdlib
+
 let main input =
+  let source_context =
+    let source_file =
+      match input with None | Some "-" -> "stdin" | Some s -> s
+    in
+    let source_file = Stdlib.Filename.remove_extension source_file in
+    let source_module = Stdlib.Filename.dirname source_file in
+    let source_term = Stdlib.Filename.basename source_file in
+    Syntax.Context.create source_file source_module source_term
+  in
   let input_channel =
-    match input with
-    | None | Some "-" -> stdin
-    | Some s -> open_in s
+    match input with None | Some "-" -> stdin | Some s -> open_in s
   in
   let lexbuf = Lexing.from_channel input_channel in
   while true do

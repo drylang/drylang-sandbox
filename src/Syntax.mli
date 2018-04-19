@@ -19,6 +19,16 @@ module LocatedNode : sig
 end
 *)
 
+module Context : sig
+  type t =
+    { source_file: string;
+      source_package: string;
+      source_module: string;
+      source_term: string; }
+
+  val create : string -> string -> string -> t
+end
+
 module Error : sig
   type t = Lexical | Syntactic | Semantic
 end

@@ -1,6 +1,6 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-module Source = Semantic.Node
+module Source = Semantic
 module Target = DRY.Code.Java
 
 let not_implemented () = failwith "not implemented yet"
@@ -39,8 +39,21 @@ let datum = function
 
 let compile_expr code =
   match code with
-  | Source.Const x -> Target.to_code (datum x)
+  | Source.Node.Const x -> Target.to_code (datum x)
   | _ -> not_implemented ()
 
 let compile code buffer =
   Buffer.add_string buffer (compile_expr code)
+
+let translate_module (code : Source.Module.t) =
+  let modifiers  = [Target.ClassModifier.Public; Target.ClassModifier.Final] in
+  let imports    = [Target.ImportDecl.Normal "dry.*"] in
+  let extends    = Target.Identifier.of_string "java.lang.Object" in
+  let implements = [] in
+  let class_decl = Target.ClassDecl.create (Symbol.to_string code.name) ~modifiers ~extends ~implements in
+  let class_def  = Target.TypeDecl.Class class_decl in
+  Target.CompilationUnit.create ~imports class_def
+
+let compile_module (code : Source.Module.t) buffer =
+  let output = translate_module code in
+  Buffer.add_string buffer (Target.CompilationUnit.to_code output)

@@ -38,3 +38,6 @@ let compile_expr code =
   | _ -> not_implemented ()
 
 let compile code buffer = not_implemented ()
+
+let compile_module code buffer =
+  not_implemented ()

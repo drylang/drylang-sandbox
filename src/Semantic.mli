@@ -2,8 +2,9 @@
 
 (** Semantic analysis. *)
 
-module Datum  = DRY.Core.Datum
-module Symbol = DRY.Core.Symbol
+module Datum   = DRY.Core.Datum
+module Symbol  = DRY.Core.Symbol
+module Comment = DRY.Code.DRY.Comment
 
 module Node : sig
   type t =
@@ -19,7 +20,24 @@ module Node : sig
     | Mul of t * t
     | Div of t * t
 
+  val to_code : t -> string
+  val to_string : t -> string
+end
+
+module Module : sig
+  type t =
+    { name: Symbol.t;
+      comment: Comment.t option; }
+
+  val create :
+    ?comment:string ->
+    name:string ->
+    t
+
+  val to_code : t -> string
   val to_string : t -> string
 end
 
 val analyze : Syntax.Node.t -> Node.t
+
+val analyze_module : Syntax.Context.t -> Syntax.Node.t -> Module.t

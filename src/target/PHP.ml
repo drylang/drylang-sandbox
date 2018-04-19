@@ -41,3 +41,6 @@ let compile_expr code =
 
 let compile code buffer =
   Buffer.add_string buffer (compile_expr code)
+
+let compile_module code buffer =
+  not_implemented ()

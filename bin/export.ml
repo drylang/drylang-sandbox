@@ -10,7 +10,7 @@ module String = Stdlib.String
 
 let warn = Printf.eprintf
 
-let main root term output =
+let main root input output =
   let target_ext = Stdlib.Filename.extension output in
   let target_ext =
     match String.sub target_ext 1 (String.length target_ext - 1) with
@@ -25,7 +25,19 @@ let main root term output =
         exit 1
       end
   in
-  let lexbuf = Lexing.from_channel stdin in
+  let source_context =
+    let source_file =
+      match input with None | Some "-" -> "stdin" | Some s -> s
+    in
+    let source_file = Stdlib.Filename.remove_extension source_file in
+    let source_module = Stdlib.Filename.dirname source_file in
+    let source_term = Stdlib.Filename.basename source_file in
+    Syntax.Context.create source_file source_module source_term
+  in
+  let input_channel =
+    match input with None | Some "-" -> stdin | Some s -> open_in s
+  in
+  let lexbuf = Lexing.from_channel input_channel in
   while true do
     try
       match Parser.parse_from_lexbuf lexbuf with
@@ -34,9 +46,9 @@ let main root term output =
         begin match Target.by_extension target_ext with
         | None -> assert false
         | Some (module L : Target.Language) ->
-          let code = Semantic.analyze syntax in
+          let code = Semantic.analyze_module source_context syntax in
           let buffer = Buffer.create 16 in
-          L.compile code buffer;
+          L.compile_module code buffer;
           Buffer.output_buffer stdout buffer;
           Printf.printf "\n%!"
         end
@@ -62,7 +74,7 @@ let term =
 
 let output =
   let doc = "The output file name." in
-  Arg.(value & opt string "out.c" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
+  Arg.(value & opt string "out.java" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
 
 let root =
   let doc = "Overrides the default package index (\\$HOME/.dry)." in
