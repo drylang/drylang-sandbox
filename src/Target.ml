@@ -136,3 +136,8 @@ let by_extension = function
 let is_supported ext =
   match by_extension ext with
   | None -> false | Some _ -> true
+
+let get name =
+  match by_name name with
+  | None -> assert false
+  | Some language -> language

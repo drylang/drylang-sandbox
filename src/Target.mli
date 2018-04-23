@@ -6,59 +6,10 @@ module type Language = sig
   val compile_module : Semantic.Module.t -> Buffer.t -> unit
 end
 
-(** C *)
-module C : Language
-
-(** C++ *)
-module Cpp : Language
-
-(** D *)
-module D : Language
-
-(** Dart *)
-module Dart : Language
-
-(** Elixir *)
-module Elixir : Language
-
-(** Go *)
-module Go : Language
-
-(** Java *)
-module Java : Language
-
-(** Julia *)
-module Julia : Language
-
-(** JS *)
-module JS : Language
-
-(** Kotlin *)
-module Kotlin : Language
-
-(** Common Lisp *)
-module Lisp : Language
-
-(** Lua *)
-module Lua : Language
-
-(** OCaml *)
-module OCaml : Language
-
-(** PHP *)
-module PHP : Language
-
-(** Python *)
-module Python : Language
-
-(** Ruby *)
-module Ruby : Language
-
-(** Rust *)
-module Rust : Language
-
 val by_name : string -> (module Language) option
 
 val by_extension : string -> (module Language) option
 
 val is_supported : string -> bool
+
+val get : string -> (module Language)

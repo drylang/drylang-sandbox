@@ -3,7 +3,7 @@
 open DRY.Core
 
 module Lua    = DRY.Code.Lua
-module Target = Drylang.Target.Lua
+module Target = (val (Drylang.Target.get "lua") : Drylang.Target.Language)
 
 let dry input =
   match Drylang.Parser.parse_from_string input with

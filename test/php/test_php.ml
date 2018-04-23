@@ -3,7 +3,7 @@
 open DRY.Core
 
 module PHP    = DRY.Code.PHP
-module Target = Drylang.Target.PHP
+module Target = (val (Drylang.Target.get "php") : Drylang.Target.Language)
 
 let dry input =
   match Drylang.Parser.parse_from_string input with

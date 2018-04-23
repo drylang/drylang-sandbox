@@ -3,7 +3,7 @@
 open DRY.Core
 
 module Java   = DRY.Code.Java
-module Target = Drylang.Target.Java
+module Target = (val (Drylang.Target.get "java") : Drylang.Target.Language)
 
 let dry input =
   match Drylang.Parser.parse_from_string input with
