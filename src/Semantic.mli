@@ -20,8 +20,9 @@ module Node : sig
     | Mul of t * t
     | Div of t * t
 
-  val to_code : t -> string
   val to_string : t -> string
+
+  val print : Format.formatter -> t -> unit
 end
 
 module Module : sig
@@ -34,8 +35,17 @@ module Module : sig
     name:string ->
     t
 
-  val to_code : t -> string
   val to_string : t -> string
+
+  val print : Format.formatter -> t -> unit
+end
+
+module Program : sig
+  type t = Module.t
+
+  val to_string : t -> string
+
+  val print : Format.formatter -> t -> unit
 end
 
 val analyze : Syntax.Node.t -> Node.t

@@ -6,7 +6,7 @@ open Drylang
 module Stdlib = DRY__Stdlib
 
 let main input =
-  let source_context =
+  let _source_context =
     let source_file =
       match input with None | Some "-" -> "stdin" | Some s -> s
     in

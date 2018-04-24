@@ -6,11 +6,11 @@ module Datum   = DRY.Core.Datum
 module Symbol  = DRY.Core.Symbol
 module Comment = DRY.Code.DRY.Comment
 
-let sprintf = Printf.sprintf
-
 let not_implemented () = failwith "not implemented yet"
 
 module Node = struct
+  open Format
+
   type t =
     | Const of Datum.t
     | Var of Symbol.t
@@ -24,41 +24,70 @@ module Node = struct
     | Mul of t * t
     | Div of t * t
 
-  let rec to_code = function
-    | Const d -> sprintf "(%s %s)" "#const" (Datum.to_string d)
-
+  let rec print ppf = function
+    | Const d ->
+      pp_print_char ppf '(';
+      pp_print_char ppf '#';
+      pp_print_string ppf "const";
+      pp_print_char ppf ' ';
+      pp_print_string ppf (Datum.to_string d);
+      pp_print_char ppf ')'
     | Var s ->
-      sprintf "(%s %s)" "#var" (Symbol.to_string s)
+      pp_print_char ppf '(';
+      pp_print_char ppf '#';
+      pp_print_string ppf "var";
+      pp_print_char ppf ' ';
+      pp_print_string ppf (Symbol.to_string s);
+      pp_print_char ppf ')'
+    | Apply (f, args) -> pp_opn ppf "apply" args
+    | Not a -> pp_op1 ppf "not" a
+    | And (a, b) -> pp_op2 ppf "and" a b
+    | Or (a, b) -> pp_op2 ppf "or" a b
+    | If (a, b, c) -> pp_op3 ppf "if" a b c
+    | Add (a, b) -> pp_op2 ppf "add" a b
+    | Sub (a, b) -> pp_op2 ppf "sub" a b
+    | Mul (a, b) -> pp_op2 ppf "mul" a b
+    | Div (a, b) -> pp_op2 ppf "div" a b
 
-    | Apply (f, args) ->
-      sprintf "(%s %s %s)" "#apply" (to_code f)
-        (String.concat " " (List.map to_code args))
+  and pp_op1 ppf op a =
+    pp_print_char ppf '(';
+    pp_print_char ppf '#';
+    pp_print_string ppf op;
+    pp_print_space ppf ();
+    print ppf a;
+    pp_print_char ppf ')'
 
-    | Not a ->
-      sprintf "(%s %s)" "#not" (to_code a)
+  and pp_op2 ppf op a b =
+    pp_print_char ppf '(';
+    pp_print_char ppf '#';
+    pp_print_string ppf op;
+    pp_print_space ppf ();
+    print ppf a;
+    pp_print_space ppf ();
+    print ppf b;
+    pp_print_char ppf ')'
 
-    | And (a, b) ->
-      sprintf "(%s %s %s)" "#and" (to_code a) (to_code b)
+  and pp_op3 ppf op a b c =
+    pp_print_char ppf '(';
+    pp_print_char ppf '#';
+    pp_print_string ppf op;
+    pp_print_space ppf ();
+    print ppf a;
+    pp_print_space ppf ();
+    print ppf b;
+    pp_print_space ppf ();
+    print ppf c;
+    pp_print_char ppf ')'
 
-    | Or (a, b) ->
-      sprintf "(%s %s %s)" "#or" (to_code a) (to_code b)
+  and pp_opn ppf op args =
+    pp_print_char ppf '(';
+    pp_print_char ppf '#';
+    pp_print_string ppf op;
+    pp_print_space ppf ();
+    pp_print_list ~pp_sep:pp_print_space print ppf args;
+    pp_print_char ppf ')'
 
-    | If (p, c, a) ->
-      sprintf "(%s %s %s %s)" "#if" (to_code p) (to_code c) (to_code a)
-
-    | Add (a, b) ->
-      sprintf "(%s %s %s)" "#add" (to_code a) (to_code b)
-
-    | Sub (a, b) ->
-      sprintf "(%s %s %s)" "#sub" (to_code a) (to_code b)
-
-    | Mul (a, b) ->
-      sprintf "(%s %s %s)" "#mul" (to_code a) (to_code b)
-
-    | Div (a, b) ->
-      sprintf "(%s %s %s)" "#div" (to_code a) (to_code b)
-
-  let to_string = to_code
+  let to_string x = ""
 end
 
 module Module = struct
@@ -70,9 +99,17 @@ module Module = struct
     { name = Symbol.of_string name;
       comment = (match comment with "" -> None | s -> Some (Comment.of_string comment)); }
 
-  let to_code (mod_ : t) = ""
+  let to_string (code : t) = ""
 
-  let to_string = to_code
+  let print ppf (code : t) = ()
+end
+
+module Program = struct
+  type t = Module.t
+
+  let to_string = Module.to_string
+
+  let print = Module.print
 end
 
 let analyze_identifier symbol =
@@ -111,7 +148,7 @@ let rec analyze = function
     Syntax.semantic_error "invalid expression"
 
 let analyze_module (context : Syntax.Context.t) (syntax : Syntax.Node.t) =
-  let module_name = context.source_module in
+  let _module_name = context.source_module in
   let term_name = context.source_term in
   match syntax with
   | Syntax.Node.Atom datum ->

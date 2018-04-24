@@ -37,13 +37,9 @@ let datum = function
   | Datum.Tensor x -> tensor x
   | _ -> not_implemented ()
 
-let compile_expr code =
-  match code with
-  | Source.Node.Const x -> Target.to_code (datum x)
+let compile_node ppf = function
+  | Source.Node.Const x -> Target.print ppf (datum x)
   | _ -> not_implemented ()
-
-let compile code buffer =
-  Buffer.add_string buffer (compile_expr code)
 
 let translate_module (code : Source.Module.t) =
   let modifiers  = [Target.ClassModifier.Public; Target.ClassModifier.Final] in
@@ -54,6 +50,9 @@ let translate_module (code : Source.Module.t) =
   let class_def  = Target.TypeDecl.Class class_decl in
   Target.CompilationUnit.create ~imports class_def
 
-let compile_module (code : Source.Module.t) buffer =
+let compile_module ppf code =
   let output = translate_module code in
-  Buffer.add_string buffer (Target.CompilationUnit.to_code output)
+  Target.CompilationUnit.print ppf output
+
+let compile_program ppf code =
+  not_implemented ()

@@ -37,14 +37,13 @@ let datum = function
   | Datum.Tensor x -> tensor x
   | _ -> not_implemented ()
 
-let compile_expr code =
-  match code with
-  | Source.Node.Const x -> Target.to_code (datum x)
+let compile_node ppf = function
+  | Source.Node.Const x -> Target.print ppf (datum x)
   | _ -> not_implemented ()
 
-let compile code buffer =
-  Buffer.add_string buffer (compile_expr code)
-
-let compile_module (code : Source.Module.t) buffer =
+let compile_module ppf (code : Source.Module.t) =
   let output = Target.Module.create () in (* TODO *)
-  Buffer.add_string buffer (Target.Module.to_code output)
+  Target.Module.print ppf output
+
+let compile_program ppf code =
+  not_implemented ()

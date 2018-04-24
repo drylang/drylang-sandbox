@@ -4,9 +4,10 @@ open DRY.Core
 open Drylang
 
 module Stdlib = DRY__Stdlib
+module Format = Stdlib.Format
 
 let main input =
-  let source_context =
+  let _source_context =
     let source_file =
       match input with None | Some "-" -> "stdin" | Some s -> s
     in
@@ -18,6 +19,7 @@ let main input =
   let input_channel =
     match input with None | Some "-" -> stdin | Some s -> open_in s
   in
+  let output_formatter = Format.std_formatter in
   let lexbuf = Lexing.from_channel input_channel in
   while true do
     try
@@ -25,7 +27,8 @@ let main input =
       | None -> exit 0
       | Some syntax -> begin
           let semantic = Semantic.analyze syntax in
-          Printf.printf "%s\n%!" (Semantic.Node.to_string semantic)
+          Semantic.Node.print output_formatter semantic;
+          Format.pp_print_newline output_formatter ()
         end
     with
     | Syntax.Error (Lexical, message) ->

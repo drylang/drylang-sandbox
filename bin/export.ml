@@ -5,10 +5,10 @@ open Drylang
 
 module Stdlib = DRY__Stdlib
 module Buffer = Stdlib.Buffer
-module Printf = Stdlib.Printf
+module Format = Stdlib.Format
 module String = Stdlib.String
 
-let warn = Printf.eprintf
+let warn = Stdlib.Printf.eprintf
 
 let main root input output =
   let target_ext = Stdlib.Filename.extension output in
@@ -37,6 +37,7 @@ let main root input output =
   let input_channel =
     match input with None | Some "-" -> stdin | Some s -> open_in s
   in
+  let output_formatter = Format.std_formatter in
   let lexbuf = Lexing.from_channel input_channel in
   while true do
     try
@@ -47,10 +48,8 @@ let main root input output =
         | None -> assert false
         | Some (module L : Target.Language) ->
           let code = Semantic.analyze_module source_context syntax in
-          let buffer = Buffer.create 16 in
-          L.compile_module code buffer;
-          Buffer.output_buffer stdout buffer;
-          Printf.printf "\n%!"
+          L.compile_module output_formatter code;
+          Format.pp_print_newline output_formatter ()
         end
     with
     | Syntax.Error (Lexical, message) ->

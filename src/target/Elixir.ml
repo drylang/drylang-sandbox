@@ -1,6 +1,6 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-module Source = Semantic.Node
+module Source = Semantic
 module Target = DRY.Code.Lua (* TODO *)
 
 let not_implemented () = failwith "not implemented yet"
@@ -32,12 +32,12 @@ let datum = function
   | Datum.Tensor x -> tensor x
   | _ -> not_implemented ()
 
-let compile_expr code =
-  match code with
-  | Source.Const datum -> not_implemented ()
+let compile_node ppf = function
+  | Source.Node.Const x -> Target.print ppf (datum x)
   | _ -> not_implemented ()
 
-let compile code buffer = not_implemented ()
+let compile_module ppf code =
+  not_implemented ()
 
-let compile_module code buffer =
+let compile_program ppf code =
   not_implemented ()
