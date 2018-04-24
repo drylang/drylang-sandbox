@@ -93,6 +93,11 @@ module Rust : Language = struct
   #include "target/Rust.ml"
 end
 
+(** Wasm *)
+module Wasm : Language = struct
+  #include "target/Wasm.ml"
+end
+
 let by_name = function
   | "c" -> Some (module C : Language)
   | "cpp" | "c++" -> Some (module Cpp : Language)
@@ -111,6 +116,7 @@ let by_name = function
   | "python" -> Some (module Python : Language)
   | "ruby" -> Some (module Ruby : Language)
   | "rust" -> Some (module Rust : Language)
+  | "wast" -> Some (module Wasm : Language)
   | _ -> None
 
 let by_extension = function
@@ -131,6 +137,7 @@ let by_extension = function
   | "py" -> Some (module Python : Language)
   | "rb" -> Some (module Ruby : Language)
   | "rs" -> Some (module Rust : Language)
+  | "wast" | "wat" -> Some (module Wasm : Language)
   | _ -> None
 
 let is_supported ext =

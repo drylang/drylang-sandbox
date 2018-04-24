@@ -1,0 +1,12 @@
+;; This is free and unencumbered software released into the public domain.
+
+(jbuild_version 1)
+
+(executables
+ ((names (test_wasm))
+  (libraries (DRY Drylang))))
+
+(alias
+ ((name runtest)
+  (deps ((glob_files test*.exe)))
+  (action (run ../jbuild_run.sh ${^}))))
