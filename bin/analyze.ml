@@ -26,7 +26,7 @@ let main input =
       match Parser.parse_from_lexbuf lexbuf with
       | None -> exit 0
       | Some syntax -> begin
-          let semantic = Semantic.analyze syntax in
+          let semantic = Semantic.analyze_node syntax in
           Semantic.Node.print output_formatter semantic;
           Format.pp_print_newline output_formatter ()
         end

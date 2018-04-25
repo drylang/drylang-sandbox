@@ -34,19 +34,23 @@ module Module : sig
   val make :
     ?comment:string ->
     name:string ->
+    code:Node.t list ->
     t
 
   val print : Format.formatter -> t -> unit
 end
 
 module Program : sig
-  type t = Node.t list
+  type t =
+    { code: Node.t list; }
 
   val make : Node.t list -> t
 
   val print : Format.formatter -> t -> unit
 end
 
-val analyze : Syntax.Node.t -> Node.t
+val analyze_node : Syntax.Node.t -> Node.t
 
 val analyze_module : Syntax.Context.t -> Syntax.Node.t -> Module.t
+
+val analyze_program : Syntax.Context.t -> Syntax.Node.t -> Program.t

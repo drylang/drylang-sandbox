@@ -98,10 +98,10 @@ module Module = struct
       comment: Comment.t option;
       code: Node.t list; }
 
-  let make ?(comment = "") ~name =
+  let make ?(comment = "") ~name ~code =
     { name = Symbol.of_string name;
       comment = (match comment with "" -> None | s -> Some (Comment.of_string comment));
-      code = []; }
+      code = code; }
 
   let print ppf module_ =
     pp_print_char ppf '(';
@@ -112,13 +112,15 @@ end
 module Program = struct
   open Format
 
-  type t = Node.t list
+  type t =
+    { code: Node.t list; }
 
-  let make args = args
+  let make args =
+    { code = args; }
 
-  let print ppf code =
+  let print ppf program =
     pp_print_char ppf '(';
-    pp_print_list ~pp_sep:pp_print_space Node.print ppf code;
+    pp_print_list ~pp_sep:pp_print_space Node.print ppf program.code;
     pp_print_char ppf ')';
 end
 
@@ -144,7 +146,7 @@ let analyze_operation operator operands =
     end
   | _ -> Syntax.semantic_error "invalid operation"
 
-let rec analyze = function
+let rec analyze_node = function
   | Syntax.Node.Atom (Datum.Symbol symbol) ->
     analyze_identifier symbol
 
@@ -152,7 +154,7 @@ let rec analyze = function
     Node.Const datum
 
   | Syntax.Node.List (hd :: tl) ->
-    analyze_operation (analyze hd) (List.map analyze tl)
+    analyze_operation (analyze_node hd) (List.map analyze_node tl)
 
   | Syntax.Node.List [] ->
     Syntax.semantic_error "invalid expression"
@@ -163,7 +165,16 @@ let analyze_module (context : Syntax.Context.t) (syntax : Syntax.Node.t) =
   match syntax with
   | Syntax.Node.Atom datum ->
     Syntax.semantic_error "invalid module definition"
-  | Syntax.Node.List (hd :: tl) ->
-    Module.make term_name (* TODO *)
   | Syntax.Node.List [] ->
-    Module.make term_name (* TODO *)
+    Module.make term_name [] (* TODO *)
+  | Syntax.Node.List code ->
+    Module.make term_name (List.map analyze_node code)
+
+let analyze_program (context : Syntax.Context.t) (syntax : Syntax.Node.t) =
+  let _module_name = context.source_module in
+  let _term_name = context.source_term in
+  match syntax with
+  | Syntax.Node.Atom datum ->
+    Syntax.semantic_error "invalid program structure"
+  | Syntax.Node.List code ->
+    Program.make (List.map analyze_node code)
