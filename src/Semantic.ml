@@ -91,25 +91,35 @@ module Node = struct
 end
 
 module Module = struct
+  open Format
+
   type t =
     { name: Symbol.t;
-      comment: Comment.t option; }
+      comment: Comment.t option;
+      code: Node.t list; }
 
-  let create ?(comment = "") ~name =
+  let make ?(comment = "") ~name =
     { name = Symbol.of_string name;
-      comment = (match comment with "" -> None | s -> Some (Comment.of_string comment)); }
+      comment = (match comment with "" -> None | s -> Some (Comment.of_string comment));
+      code = []; }
 
-  let to_string (code : t) = ""
-
-  let print ppf (code : t) = ()
+  let print ppf module_ =
+    pp_print_char ppf '(';
+    pp_print_list ~pp_sep:pp_print_space Node.print ppf module_.code;
+    pp_print_char ppf ')';
 end
 
 module Program = struct
-  type t = Module.t
+  open Format
 
-  let to_string = Module.to_string
+  type t = Node.t list
 
-  let print = Module.print
+  let make args = args
+
+  let print ppf code =
+    pp_print_char ppf '(';
+    pp_print_list ~pp_sep:pp_print_space Node.print ppf code;
+    pp_print_char ppf ')';
 end
 
 let analyze_identifier symbol =
@@ -154,6 +164,6 @@ let analyze_module (context : Syntax.Context.t) (syntax : Syntax.Node.t) =
   | Syntax.Node.Atom datum ->
     Syntax.semantic_error "invalid module definition"
   | Syntax.Node.List (hd :: tl) ->
-    Module.create term_name (* TODO *)
+    Module.make term_name (* TODO *)
   | Syntax.Node.List [] ->
-    Module.create term_name (* TODO *)
+    Module.make term_name (* TODO *)

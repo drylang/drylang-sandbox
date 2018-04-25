@@ -28,22 +28,21 @@ end
 module Module : sig
   type t =
     { name: Symbol.t;
-      comment: Comment.t option; }
+      comment: Comment.t option;
+      code: Node.t list; }
 
-  val create :
+  val make :
     ?comment:string ->
     name:string ->
     t
-
-  val to_string : t -> string
 
   val print : Format.formatter -> t -> unit
 end
 
 module Program : sig
-  type t = Module.t
+  type t = Node.t list
 
-  val to_string : t -> string
+  val make : Node.t list -> t
 
   val print : Format.formatter -> t -> unit
 end
