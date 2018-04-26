@@ -111,9 +111,9 @@ module Semantic = Drylang.Semantic
 let dry input =
   match Drylang.Parser.parse_from_string input with
   | None -> assert false
-  | Some syntax -> Drylang.Semantic.analyze syntax
+  | Some syntax -> Drylang.Semantic.analyze_node syntax
 
-let () = assert (Semantic.analyze forty_two = Semantic.Node.Const (Datum.of_int 42))
+let () = assert (Semantic.analyze_node forty_two = Semantic.Node.Const (Datum.of_int 42))
 
 let () = assert (dry "true" = Semantic.Node.Const (Datum.of_bool true))
 

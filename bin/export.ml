@@ -10,7 +10,7 @@ module String = Stdlib.String
 
 let warn = Stdlib.Printf.eprintf
 
-let main root input output =
+let main root input output language =
   let target_ext = Stdlib.Filename.extension output in
   let target_ext =
     match String.sub target_ext 1 (String.length target_ext - 1) with
@@ -47,8 +47,8 @@ let main root input output =
         begin match Target.by_extension target_ext with
         | None -> assert false
         | Some (module L : Target.Language) ->
-          let code = Semantic.analyze_module source_context syntax in
-          L.compile_module output_formatter code;
+          let code = Semantic.analyze_program source_context syntax in
+          L.compile_program output_formatter code;
           Format.pp_print_newline output_formatter ()
         end
     with
@@ -73,7 +73,11 @@ let term =
 
 let output =
   let doc = "The output file name." in
-  Arg.(value & opt string "out.java" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
+  Arg.(value & opt string "out.dry" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
+
+let language =
+  let doc = "The output language." in
+  Arg.(value & opt string "" & info ["L"; "language"] ~docv:"OUTPUT" ~doc)
 
 let root =
   let doc = "Overrides the default package index (\\$HOME/.dry)." in
@@ -92,7 +96,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1)" ]
   in
-  Term.(const main $ root $ term $ output),
+  Term.(const main $ root $ term $ output $ language),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

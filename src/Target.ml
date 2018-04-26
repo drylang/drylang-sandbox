@@ -23,6 +23,11 @@ module D : Language = struct
   #include "target/D.ml"
 end
 
+(** DRY *)
+module Dry : Language = struct
+  #include "target/Dry.ml"
+end
+
 (** Dart *)
 module Dart : Language = struct
   #include "target/Dart.ml"
@@ -103,6 +108,7 @@ let by_name = function
   | "cpp" | "c++" -> Some (module Cpp : Language)
   | "d" -> Some (module D : Language)
   | "dart" -> Some (module Dart : Language)
+  | "dry" -> Some (module Dry : Language)
   | "elixir" -> Some (module Elixir : Language)
   | "go" -> Some (module Go : Language)
   | "java" -> Some (module Java : Language)
@@ -124,6 +130,7 @@ let by_extension = function
   | "cpp" | "cc" -> Some (module Cpp : Language)
   | "d" -> Some (module D : Language)
   | "dart" -> Some (module Dart : Language)
+  | "dry" -> Some (module Dry : Language)
   | "ex" -> Some (module Elixir : Language)
   | "go" -> Some (module Go : Language)
   | "java" -> Some (module Java : Language)
