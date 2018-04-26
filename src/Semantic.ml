@@ -105,6 +105,8 @@ module Module = struct
 
   let print ppf module_ =
     pp_print_char ppf '(';
+    pp_print_string ppf "module";
+    pp_print_space ppf ();
     pp_print_list ~pp_sep:pp_print_space Node.print ppf module_.code;
     pp_print_char ppf ')';
 end
@@ -120,6 +122,8 @@ module Program = struct
 
   let print ppf program =
     pp_print_char ppf '(';
+    pp_print_string ppf "program";
+    pp_print_space ppf ();
     pp_print_list ~pp_sep:pp_print_space Node.print ppf program.code;
     pp_print_char ppf ')';
 end

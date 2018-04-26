@@ -1,5 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
+open DRY.Core
+
 module Source = Semantic
 module Target = DRY.Code.Lua (* TODO *)
 
