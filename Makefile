@@ -78,13 +78,16 @@ installdirs: $(TARGETS)
 	$(INSTALL) -d $(DESTDIR)$(libexecdir)/$(PACKAGE)
 
 install: installdirs $(TARGETS)
+	$(INSTALL_PROGRAM) bin/dry $(DESTDIR)$(bindir)/dry
 	$(foreach file,$(TARGETS),$(INSTALL_PROGRAM) $(file) $(DESTDIR)$(libexecdir)/$(PACKAGE)/$(file:bin/%=%);)
 
 install-strip: installdirs $(TARGETS)
+	$(INSTALL_PROGRAM) bin/dry $(DESTDIR)$(bindir)/dry
 	$(foreach file,$(TARGETS),$(INSTALL_PROGRAM) -s $(file) $(DESTDIR)$(libexecdir)/$(PACKAGE)/$(file:bin/%=%);)
 
 uninstall:
-	$(foreach file,$(TARGETS),echo rm -f $(DESTDIR)$(libexecdir)/$(PACKAGE)/$(file:bin/%=%);)
+	rm -f $(DESTDIR)$(bindir)/dry
+	$(foreach file,$(TARGETS),rm -f $(DESTDIR)$(libexecdir)/$(PACKAGE)/$(file:bin/%=%);)
 
 clean:
 	@rm -f *~ $(TARGETS)
