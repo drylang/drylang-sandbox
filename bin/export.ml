@@ -10,7 +10,7 @@ module String = Stdlib.String
 
 let warn = Stdlib.Printf.eprintf
 
-let main root input output language =
+let main root input output language options =
   let target_ext = Stdlib.Filename.extension output in
   let target_ext =
     match String.sub target_ext 1 (String.length target_ext - 1) with
@@ -108,7 +108,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1)" ]
   in
-  Term.(const main $ root $ term $ output $ language),
+  Term.(const main $ root $ term $ output $ language $ Options.term),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

@@ -20,7 +20,7 @@ let iter_package (package : Local.Package.t) =
 let iter_index index =
   Local.Index.iter_packages index iter_package
 
-let main root =
+let main root options =
   iter_index (Local.Index.open_path root)
 
 (* Command-line interface *)
@@ -44,7 +44,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-describe)(1)" ]
   in
-  Term.(const main $ root),
+  Term.(const main $ root $ Options.term),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

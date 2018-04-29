@@ -5,7 +5,7 @@ open Drylang
 
 module Stdlib = DRY__Stdlib
 
-let main input =
+let main input options =
   let _source_context =
     let source_file =
       match input with None | Some "-" -> "stdin" | Some s -> s
@@ -54,7 +54,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-analyze)(1)" ]
   in
-  Term.(const main $ input),
+  Term.(const main $ input $ Options.term),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

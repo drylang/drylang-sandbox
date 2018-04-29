@@ -9,7 +9,7 @@ let print_prompt () =
 let read_input () =
   try Some (read_line ()) with End_of_file -> None
 
-let main root =
+let main root options =
   while true do
     print_prompt ();
     match read_input () with
@@ -50,7 +50,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1)" ]
   in
-  Term.(const main $ root),
+  Term.(const main $ root $ Options.term),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)
