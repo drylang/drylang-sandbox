@@ -25,6 +25,14 @@ let main root input output language =
         exit 1
       end
   in
+  let target_ext =
+    match language with
+    | "" -> target_ext
+    | s -> if Target.is_supported s then s else begin
+        warn "unknown output language: %s\n%!" s;
+        exit 1
+      end
+  in
   let source_context =
     let source_file =
       match input with None | Some "-" -> "stdin" | Some s -> s
@@ -37,7 +45,11 @@ let main root input output language =
   let input_channel =
     match input with None | Some "-" -> stdin | Some s -> open_in s
   in
-  let output_formatter = Format.std_formatter in
+  let output_formatter =
+    match output with
+    | "" | "-" -> Format.std_formatter
+    | s -> Stdlib.open_out s |> Format.formatter_of_out_channel
+  in
   let lexbuf = Lexing.from_channel input_channel in
   while true do
     try
@@ -73,11 +85,11 @@ let term =
 
 let output =
   let doc = "The output file name." in
-  Arg.(value & opt string "out.dry" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
+  Arg.(value & opt string "-" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
 
 let language =
   let doc = "The output language." in
-  Arg.(value & opt string "" & info ["L"; "language"] ~docv:"OUTPUT" ~doc)
+  Arg.(value & opt string "dry" & info ["L"; "language"] ~docv:"OUTPUT" ~doc)
 
 let root =
   let doc = "Overrides the default package index (\\$HOME/.dry)." in
