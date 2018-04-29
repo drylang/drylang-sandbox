@@ -46,15 +46,37 @@ let required_term idx doc =
 let optional_term idx doc =
   Arg.(value & pos idx (some string) None & info [] ~docv:"TERM" ~doc)
 
+let source_file idx doc =
+  let open Result in
+  let source_file =
+    let parse = function
+      | "" | "-" | "/dev/stdin" ->
+        Ok (SourceFile.stdin)
+      | filepath ->
+        begin match Unix.stat filepath with
+        | { st_kind = S_REG } ->
+          Ok (SourceFile.from_path filepath)
+        | _ ->
+          Error (`Msg (Printf.sprintf "%s" "Not a file"))
+        | exception Unix.Unix_error (error, _, _) ->
+          Error (`Msg (Printf.sprintf "%s" (Unix.error_message error)))
+        end
+    in
+    let print ppf p = Format.fprintf ppf "%s" (SourceFile.to_string p) in
+    Arg.conv ~docv:"INPUT" (parse, print)
+  in
+  Arg.(value & pos idx source_file SourceFile.stdin & info [] ~docv:"INPUT" ~doc)
+
 let input_file idx doc =
   Arg.(value & pos idx (some non_dir_file) None & info [] ~docv:"INPUT" ~doc)
 
 let output_language =
+  let open Result in
   let doc = "The output language." in
   let lang =
     let parse s = if Target.is_supported s
-      then Result.Ok s
-      else Result.Error (`Msg "unknown output language")
+      then Ok s
+      else Error (`Msg "Unknown output language")
     in
     let print ppf p = Format.fprintf ppf "%s" p in
     Arg.conv ~docv:"LANG" (parse, print)
