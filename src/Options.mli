@@ -1,5 +1,9 @@
 (* This is free and unencumbered software released into the public domain. *)
 
+module PackageRoot : sig
+  val term : string Cmdliner.Term.t
+end
+
 module Verbosity : sig
   type t = Normal | Quiet | Verbose
 

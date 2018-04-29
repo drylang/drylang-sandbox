@@ -33,13 +33,6 @@ let main root options =
 
 open Cmdliner
 
-let root =
-  let doc = "Overrides the default package index (\\$HOME/.dry)." in
-  let env = Arg.env_var "DRY_ROOT" ~doc in
-  let doc = "The package index root." in
-  let def = Local.Index.default_path () in
-  Arg.(value & opt dir def & info ["root"] ~env ~docv:"ROOT" ~doc)
-
 let cmd =
   let name = "dry-shell" in
   let version = Version.string in
@@ -50,7 +43,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1)" ]
   in
-  Term.(const main $ root $ Options.term),
+  Term.(const main $ Options.PackageRoot.term $ Options.term),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)
