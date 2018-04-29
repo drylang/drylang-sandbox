@@ -79,17 +79,7 @@ let main root input output language options =
 
 open Cmdliner
 
-let term =
-  let doc = "The term to export." in
-  Arg.(value & pos 0 (some string) None & info [] ~docv:"TERM" ~doc)
-
-let output =
-  let doc = "The output file name." in
-  Arg.(value & opt string "-" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
-
-let language =
-  let doc = "The output language." in
-  Arg.(value & opt string "dry" & info ["L"; "language"] ~docv:"OUTPUT" ~doc)
+let term = Options.optional_term 0 "The term to export."
 
 let cmd =
   let name = "dry-export" in
@@ -101,7 +91,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1)" ]
   in
-  Term.(const main $ Options.PackageRoot.term $ term $ output $ language $ Options.term),
+  Term.(const main $ Options.package_root $ term $ Options.output_file $ Options.output_language $ Options.common),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

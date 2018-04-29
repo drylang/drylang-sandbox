@@ -37,7 +37,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-describe)(1)" ]
   in
-  Term.(const main $ Options.PackageRoot.term $ Options.term),
+  Term.(const main $ Options.package_root $ Options.common),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

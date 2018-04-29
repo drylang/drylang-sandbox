@@ -12,9 +12,7 @@ let main root term options =
 
 open Cmdliner
 
-let term =
-  let doc = "The term to describe." in
-  Arg.(required & pos 0 (some string) None & info [] ~docv:"TERM" ~doc)
+let term = Options.required_term 0 "The term to describe."
 
 let cmd =
   let name = "dry-describe" in
@@ -26,7 +24,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-locate)(1)" ]
   in
-  Term.(const main $ Options.PackageRoot.term $ term $ Options.term),
+  Term.(const main $ Options.package_root $ term $ Options.common),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

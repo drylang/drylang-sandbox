@@ -46,9 +46,7 @@ let main input options =
 
 open Cmdliner
 
-let input =
-  let doc = "The input file to analyze." in
-  Arg.(value & pos 0 (some non_dir_file) None & info [] ~docv:"INPUT" ~doc)
+let input_file = Options.input_file 0 "The input file to analyze."
 
 let cmd =
   let name = "dry-analyze" in
@@ -60,7 +58,7 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-analyze)(1)" ]
   in
-  Term.(const main $ input $ Options.term),
+  Term.(const main $ input_file $ Options.common),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)
