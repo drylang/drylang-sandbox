@@ -21,49 +21,13 @@ libexecdir  = $(exec_prefix)/libexec
 %.html: %.rst
 	$(PANDOC) -o $@ -t html5 -s $<
 
+_build/default/bin/%.exe: bin/%.ml
+	$(DUNE) build $(@:_build/default/%=%)
+
+bin/%: _build/default/bin/%.exe
+	ln -f $< $@
+
 all: build
-
-_build/default/bin/analyze.exe: bin/analyze.ml
-	$(DUNE) build bin/analyze.exe
-
-_build/default/bin/describe.exe: bin/describe.ml
-	$(DUNE) build bin/describe.exe
-
-_build/default/bin/export.exe: bin/export.ml
-	$(DUNE) build bin/export.exe
-
-_build/default/bin/index.exe: bin/index.ml
-	$(DUNE) build bin/index.exe
-
-_build/default/bin/locate.exe: bin/locate.ml
-	$(DUNE) build bin/locate.exe
-
-_build/default/bin/parse.exe: bin/parse.ml
-	$(DUNE) build bin/parse.exe
-
-_build/default/bin/shell.exe: bin/shell.ml
-	$(DUNE) build bin/shell.exe
-
-bin/analyze: _build/default/bin/analyze.exe
-	ln -f $< $@
-
-bin/describe: _build/default/bin/describe.exe
-	ln -f $< $@
-
-bin/export: _build/default/bin/export.exe
-	ln -f $< $@
-
-bin/index: _build/default/bin/index.exe
-	ln -f $< $@
-
-bin/locate: _build/default/bin/locate.exe
-	ln -f $< $@
-
-bin/parse: _build/default/bin/parse.exe
-	ln -f $< $@
-
-bin/shell: _build/default/bin/shell.exe
-	ln -f $< $@
 
 build: $(TARGETS)
 
