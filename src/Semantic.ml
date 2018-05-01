@@ -163,9 +163,11 @@ let rec analyze_node = function
   | Syntax.Node.List [] ->
     Syntax.semantic_error "invalid expression"
 
-let analyze_module (context : Syntax.Context.t) (syntax : Syntax.Node.t) =
-  let _module_name = context.source_module in
-  let term_name = context.source_term in
+let analyze_module (context : SourceFile.t) (syntax : Syntax.Node.t) =
+(*
+  let _module_name = context.module_ in
+*)
+  let term_name = context.term in
   match syntax with
   | Syntax.Node.Atom datum ->
     Syntax.semantic_error "invalid module definition"
@@ -174,9 +176,11 @@ let analyze_module (context : Syntax.Context.t) (syntax : Syntax.Node.t) =
   | Syntax.Node.List code ->
     Module.make term_name (List.map analyze_node code)
 
-let analyze_program (context : Syntax.Context.t) (syntax : Syntax.Node.t) =
-  let _module_name = context.source_module in
-  let _term_name = context.source_term in
+let analyze_program (context : SourceFile.t) (syntax : Syntax.Node.t) =
+(*
+  let _module_name = context.module_ in
+  let _term_name = context.term in
+*)
   match syntax with
   | Syntax.Node.Atom datum ->
     Syntax.semantic_error "invalid program structure"

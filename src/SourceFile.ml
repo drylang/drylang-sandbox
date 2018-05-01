@@ -15,7 +15,7 @@ let make channel ~path ~name ~package ~module_ ~term =
   { channel; path; name; package; module_; term; }
 
 let stdin =
-  { channel = stdin;
+  { channel = Stdlib.stdin;
     path    = "/dev/stdin";
     name    = "<stdin>";
     package = "user";

@@ -2,6 +2,10 @@
 
 open Cmdliner
 
+module Stdlib   = DRY__Stdlib
+module Filename = Stdlib.Filename
+module String   = Stdlib.String
+
 module Verbosity = struct
   type t = Normal | Quiet | Verbose
 
@@ -46,6 +50,26 @@ let required_term idx doc =
 let optional_term idx doc =
   Arg.(value & pos idx (some string) None & info [] ~docv:"TERM" ~doc)
 
+let input_file idx doc =
+  Arg.(value & pos idx (some non_dir_file) None & info [] ~docv:"INPUT" ~doc)
+
+let output_file =
+  let doc = "The output file name." in
+  Arg.(value & opt string "-" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
+
+let output_language =
+  let open Result in
+  let doc = "The output language." in
+  let lang =
+    let parse s = if Target.is_supported s
+      then Ok s
+      else Error (`Msg "Unknown output language")
+    in
+    let print ppf p = Format.fprintf ppf "%s" p in
+    Arg.conv ~docv:"LANG" (parse, print)
+  in
+  Arg.(value & opt (some lang) None & info ["L"; "language"] ~docv:"LANG" ~doc)
+
 let source_file idx doc =
   let open Result in
   let source_file =
@@ -67,22 +91,24 @@ let source_file idx doc =
   in
   Arg.(value & pos idx source_file SourceFile.stdin & info [] ~docv:"INPUT" ~doc)
 
-let input_file idx doc =
-  Arg.(value & pos idx (some non_dir_file) None & info [] ~docv:"INPUT" ~doc)
-
-let output_language =
+let target_file doc =
   let open Result in
-  let doc = "The output language." in
-  let lang =
-    let parse s = if Target.is_supported s
-      then Ok s
-      else Error (`Msg "Unknown output language")
+  let target_file =
+    let parse = function
+      | "" | "-" | "/dev/stdout" -> Ok (TargetFile.stdout)
+      | filepath ->
+        begin let ext = Filename.extension filepath in
+        match String.sub ext 1 (String.length ext - 1) with
+        | exception Invalid_argument _ ->
+          Error (`Msg (Printf.sprintf "missing output file extension: %s" filepath))
+        | "" ->
+          Error (`Msg (Printf.sprintf "invalid output file extension: %s" filepath))
+        | ext when not (Target.is_supported ext) ->
+          Error (`Msg (Printf.sprintf "unknown output file extension: %s" ext))
+        | _ -> TargetFile.open_file filepath
+        end
     in
-    let print ppf p = Format.fprintf ppf "%s" p in
-    Arg.conv ~docv:"LANG" (parse, print)
+    let print ppf p = Format.fprintf ppf "%s" (TargetFile.to_string p) in
+    Arg.conv ~docv:"OUTPUT" (parse, print)
   in
-  Arg.(value & opt lang "dry" & info ["L"; "language"] ~docv:"LANG" ~doc)
-
-let output_file =
-  let doc = "The output file name." in
-  Arg.(value & opt string "-" & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
+  Arg.(value & opt target_file TargetFile.stdout & info ["o"; "output"] ~docv:"OUTPUT" ~doc)

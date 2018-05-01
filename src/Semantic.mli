@@ -51,6 +51,6 @@ end
 
 val analyze_node : Syntax.Node.t -> Node.t
 
-val analyze_module : Syntax.Context.t -> Syntax.Node.t -> Module.t
+val analyze_module : SourceFile.t -> Syntax.Node.t -> Module.t
 
-val analyze_program : Syntax.Context.t -> Syntax.Node.t -> Program.t
+val analyze_program : SourceFile.t -> Syntax.Node.t -> Program.t
