@@ -55,7 +55,7 @@ let source_file idx doc =
       | filepath ->
         begin match Unix.stat filepath with
         | { st_kind = S_REG } ->
-          Ok (SourceFile.from_path filepath)
+          Ok (SourceFile.open_user_program filepath)
         | _ ->
           Error (`Msg (Printf.sprintf "%s" "Not a file"))
         | exception Unix.Unix_error (error, _, _) ->
