@@ -19,23 +19,24 @@ let stdin =
     path    = "/dev/stdin";
     name    = "<stdin>";
     package = "user";
-    module_ = "stdin";
-    term    = ""; }
+    module_ = "program";
+    term    = "main"; }
 
-let open_user_program path =
-  { channel = open_in path;
-    path;
-    name    = Filename.remove_extension path;
+let open_user_program file_path =
+  { channel = open_in file_path;
+    path    = file_path;
+    name    = Filename.remove_extension file_path;
     package = "user";
-    module_ = Filename.dirname path; (* FIXME *)
-    term    = Filename.basename path; } (* FIXME *)
+    module_ = Filename.dirname file_path; (* FIXME *)
+    term    = Filename.basename file_path; } (* FIXME *)
 
-let open_drylib_term path =
-  { channel = open_in path;
-    path;
-    name    = Filename.remove_extension path;
-    package = "drylib";
-    module_ = Filename.dirname path; (* FIXME *)
-    term    = Filename.basename path; } (* FIXME *)
+let open_package_term ~index ~package term_path =
+  let file_path = Printf.sprintf "%s/%s/%s.dry" index package term_path in
+  { channel = open_in file_path;
+    path    = file_path;
+    name    = term_path;
+    package = package;
+    module_ = Filename.dirname file_path;
+    term    = Filename.basename file_path; }
 
 let to_string { name } = name

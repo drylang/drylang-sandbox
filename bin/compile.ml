@@ -9,7 +9,8 @@ module Format = Stdlib.Format
 let warn = Stdlib.Printf.eprintf
 
 let main root (input : SourceFile.t) (output : TargetFile.t) language options =
-  let output_ext = match language with Some s -> s | None -> output.ext in
+  let output_ext = match output.ext with "" -> "dry" | s -> s in
+  let output_ext = match language with Some s -> s | None -> output_ext in
   let output_ppf = Format.formatter_of_out_channel output.channel in
   let input_lexbuf = Lexing.from_channel input.channel in
   while true do

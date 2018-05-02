@@ -12,6 +12,6 @@ val stdin : t
 
 val open_user_program : string -> t
 
-val open_drylib_term : string -> t
+val open_package_term : index:string -> package:string -> string -> t
 
 val to_string : t -> string
