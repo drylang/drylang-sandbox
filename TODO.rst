@@ -5,17 +5,21 @@ To-Dos
 Commands
 ========
 
-- ``dry tokenize``
+- Implement ``dry check``.
 
-- ``dry execute``
+- Implement ``dry compile``.
 
-- ``dry evaluate``
+- Implement ``dry evaluate``.
 
-- ``dry check``
+- Implement ``dry execute``.
 
-- ``dry compile``
+- Implement ``dry format``.
 
-- ``dry install`` & ``dry uninstall``?
+- Implement ``dry optimize``.
+
+- Define ``dry tokenize``? (Or, just overload ``dry parse``?)
+
+- Define ``dry install`` & ``dry uninstall``?
 
 Installation
 ============

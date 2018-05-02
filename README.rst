@@ -20,14 +20,14 @@ Prerequisites
 Build Prerequisites
 -------------------
 
-* `OCaml <https://en.wikipedia.org/wiki/OCaml>`__
+* `OCaml <https://ocaml.org>`__
   4.06+
 
 * `Dune (aka Jbuilder) <https://github.com/ocaml/dune>`__
   1.0+beta20
 
 * `GNU Make <https://www.gnu.org/software/make/>`__
-  3.81
+  3.81+
 
 Runtime Prerequisites
 ---------------------
@@ -37,6 +37,8 @@ the system's standard library (``libc``).
 
 Caveats
 =======
+
+**Here be dragons**.
 
 **Caveat utilitor**: assume nothing works, and you may be pleasantly
 surprised; and when it breaks, you get to keep both pieces.
@@ -67,10 +69,16 @@ Usage
 
 ::
 
-   $ dry analyze --help         # analyze DRY code
-   $ dry describe --help        # describe a DRY term
-   $ dry export --help          # export a DRY term
+   $ dry analyze --help         # analyze code
+   $ dry check --help           # type-check code
+   $ dry compile --help         # compile program
+   $ dry describe --help        # describe a term
+   $ dry evaluate --help        # evaluate code
+   $ dry execute --help         # execute function
+   $ dry export --help          # export terms into a target language
+   $ dry format --help          # reformat code
    $ dry index --help           # show the package index
-   $ dry locate --help          # locate the source file for a DRY term
-   $ dry parse --help           # parse DRY code
+   $ dry locate --help          # locate the source file for a term
+   $ dry optimize --help        # optimize code
+   $ dry parse --help           # parse code
    $ dry shell --help           # the interactive DRY shell

@@ -30,7 +30,7 @@ open Cmdliner
 let cmd =
   let name = "dry-index" in
   let version = Version.string in
-  let doc = "show the package index" in
+  let doc = "show the DRY package index" in
   let exits = Term.default_exits in
   let envs = [] in
   let man = [
