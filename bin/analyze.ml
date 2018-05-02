@@ -44,7 +44,7 @@ let cmd =
   let envs = [] in
   let man = [
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
-    `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-analyze)(1)" ]
+    `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-check)(1), $(b,dry-optimize)(1)" ]
   in
   Term.(const main $ input $ Options.common),
   Term.info name ~version ~doc ~exits ~envs ~man
