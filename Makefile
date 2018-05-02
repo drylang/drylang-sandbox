@@ -11,7 +11,6 @@ TARGETS :=     \
   bin/evaluate \
   bin/execute  \
   bin/export   \
-  bin/format   \
   bin/index    \
   bin/locate   \
   bin/optimize \
