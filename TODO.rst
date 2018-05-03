@@ -13,8 +13,6 @@ Commands
 
 - Implement ``dry format``.
 
-- Implement ``dry optimize``.
-
 - Define ``dry tokenize``? (Or, just overload ``dry parse``?)
 
 - Define ``dry install`` & ``dry uninstall``?

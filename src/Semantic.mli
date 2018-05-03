@@ -49,8 +49,18 @@ module Program : sig
   val print : Format.formatter -> t -> unit
 end
 
+(* Semantic analysis *)
+
 val analyze_node : Syntax.Node.t -> Node.t
 
 val analyze_module : SourceFile.t -> Syntax.Node.t -> Module.t
 
 val analyze_program : SourceFile.t -> Syntax.Node.t -> Program.t
+
+(* Optimization *)
+
+val optimize_node : Node.t -> Node.t
+
+val optimize_module : SourceFile.t -> Module.t -> Module.t
+
+val optimize_program : SourceFile.t -> Program.t -> Program.t
