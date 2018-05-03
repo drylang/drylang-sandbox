@@ -1,5 +1,6 @@
 (* This is free and unencumbered software released into the public domain. *)
 
+open DRY.Core
 open Cmdliner
 
 module Stdlib   = DRY__Stdlib
@@ -15,12 +16,33 @@ module Verbosity = struct
     | Verbose -> "verbose"
 end
 
+module OptimizationLevel = struct
+  type t = None | Low | Medium | High
+
+  let from_int = function
+    | 0 -> None | 1 -> Low | 2 -> Medium | 3 | 4 -> High
+    | _ -> failwith "invalid optimization level"
+
+  let to_int = function
+    | None -> 0 | Low -> 1 | Medium -> 2 | High -> 3
+
+  let to_string opt =
+    Printf.sprintf "%d" (to_int opt)
+end
+
 module Common = struct
   type t =
     { debug: bool;
       verbosity: Verbosity.t; }
 
   let make debug verbosity = { debug; verbosity; }
+end
+
+module Output = struct
+  type t =
+    { optimization: OptimizationLevel.t; }
+
+  let make optimization = { optimization; }
 end
 
 let common =
@@ -36,6 +58,19 @@ let common =
     Arg.(last & vflag_all [Verbosity.Normal] [quiet; verbose])
   in
   Term.(const Common.make $ debug $ verbosity)
+
+let output =
+  let open Result in
+  let optimization_level =
+    let doc = "Specify optimization level (0..3)." in
+    let converter =
+      let parse s = Result.Ok (OptimizationLevel.from_int (Stdlib.int_of_string s)) in
+      let print ppf x = Format.fprintf ppf "%s" (OptimizationLevel.to_string x) in
+      Arg.conv ~docv:"LEVEL" (parse, print)
+    in
+    Arg.(value & opt converter OptimizationLevel.None & info ["O"] ~docv:"LEVEL" ~doc)
+  in
+  Term.(const Output.make $ optimization_level)
 
 let package_root =
   let doc = "Overrides the default package index (\\$HOME/.dry)." in
@@ -60,7 +95,7 @@ let output_file =
 let output_language =
   let open Result in
   let doc = "The output language." in
-  let lang =
+  let converter =
     let parse s = if Target.is_supported s
       then Ok s
       else Error (`Msg "Unknown output language")
@@ -68,11 +103,11 @@ let output_language =
     let print ppf p = Format.fprintf ppf "%s" p in
     Arg.conv ~docv:"LANG" (parse, print)
   in
-  Arg.(value & opt (some lang) None & info ["L"; "language"] ~docv:"LANG" ~doc)
+  Arg.(value & opt (some converter) None & info ["L"; "language"] ~docv:"LANG" ~doc)
 
 let source_file idx doc =
   let open Result in
-  let source_file =
+  let converter =
     let parse = function
       | "" | "-" | "/dev/stdin" ->
         Ok (SourceFile.stdin)
@@ -89,11 +124,11 @@ let source_file idx doc =
     let print ppf p = Format.fprintf ppf "%s" (SourceFile.to_string p) in
     Arg.conv ~docv:"INPUT" (parse, print)
   in
-  Arg.(value & pos idx source_file SourceFile.stdin & info [] ~docv:"INPUT" ~doc)
+  Arg.(value & pos idx converter SourceFile.stdin & info [] ~docv:"INPUT" ~doc)
 
 let target_file doc =
   let open Result in
-  let target_file =
+  let converter =
     let parse = function
       | "" | "-" | "/dev/stdout" -> Ok (TargetFile.stdout)
       | filepath ->
@@ -111,4 +146,4 @@ let target_file doc =
     let print ppf p = Format.fprintf ppf "%s" (TargetFile.to_string p) in
     Arg.conv ~docv:"OUTPUT" (parse, print)
   in
-  Arg.(value & opt target_file TargetFile.stdout & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
+  Arg.(value & opt converter TargetFile.stdout & info ["o"; "output"] ~docv:"OUTPUT" ~doc)

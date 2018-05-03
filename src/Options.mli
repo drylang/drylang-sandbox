@@ -6,13 +6,28 @@ module Verbosity : sig
   val to_string : t -> string
 end
 
+module OptimizationLevel : sig
+  type t = None | Low | Medium | High
+
+  val from_int : int -> t
+
+  val to_int : t -> int
+  val to_string : t -> string
+end
+
 module Common : sig
   type t =
     { debug: bool;
       verbosity: Verbosity.t; }
 end
 
+module Output : sig
+  type t =
+    { optimization: OptimizationLevel.t; }
+end
+
 val common : Common.t Cmdliner.Term.t
+val output : Output.t Cmdliner.Term.t
 
 val package_root : string Cmdliner.Term.t
 
