@@ -6,7 +6,7 @@ open Drylang
 module Stdlib = DRY__Stdlib
 module Format = Stdlib.Format
 
-let main (input : SourceFile.t) (output : Options.Output.t) options =
+let main (input : SourceFile.t) (output : Options.OutputOptions.t) options =
   let output_formatter = Format.std_formatter in
   let lexbuf = Lexing.from_channel input.channel in
   while true do

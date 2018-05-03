@@ -8,12 +8,12 @@ module Format = Stdlib.Format
 
 let warn = Stdlib.Printf.eprintf
 
-let main root term (output : TargetFile.t) language options =
+let main root term (output : Options.TargetOptions.t) options =
   let input_package = "drylib" in
   let input = SourceFile.open_package_term term ~index:root ~package:input_package in
-  let output_ext = match output.ext with "" -> "dry" | s -> s in
-  let output_ext = match language with Some s -> s | None -> output_ext in
-  let output_ppf = Format.formatter_of_out_channel output.channel in
+  let output_ext = match output.file.ext with "" -> "dry" | s -> s in
+  let output_ext = match output.language with Some s -> s | None -> output_ext in
+  let output_ppf = Format.formatter_of_out_channel output.file.channel in
   let input_lexbuf = Lexing.from_channel input.channel in
   while true do
     try
@@ -43,9 +43,6 @@ let main root term (output : TargetFile.t) language options =
 
 open Cmdliner
 
-let term = Options.required_term 0 "The term to export."
-let output = Options.target_file "The output file name."
-
 let cmd =
   let name = "dry-export" in
   let version = Version.string in
@@ -56,7 +53,8 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-compile)(1)" ]
   in
-  Term.(const main $ Options.package_root $ term $ output $ Options.output_language $ Options.common),
+  let term = Options.required_term 0 "The term to export." in
+  Term.(const main $ Options.package_root $ term $ Options.target $ Options.common),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

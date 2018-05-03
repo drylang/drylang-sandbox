@@ -16,12 +16,17 @@ module Verbosity = struct
     | Verbose -> "verbose"
 end
 
-module OptimizationLevel = struct
+module WarningLevel = struct
   type t = None | Low | Medium | High
 
   let from_int = function
-    | 0 -> None | 1 -> Low | 2 -> Medium | 3 | 4 -> High
-    | _ -> failwith "invalid optimization level"
+    | 0 -> None | 1 -> Low | 2 -> Medium | 3 | 4 | 5 | 6 | 7 | 8 | 9 -> High
+    | _ -> failwith "invalid warning level"
+
+  let from_string = function
+    | "none" -> None
+    | "all" | "extra" | "pedantic" -> High
+    | s -> Stdlib.int_of_string s |> from_int
 
   let to_int = function
     | None -> 0 | Low -> 1 | Medium -> 2 | High -> 3
@@ -30,7 +35,26 @@ module OptimizationLevel = struct
     Printf.sprintf "%d" (to_int opt)
 end
 
-module Common = struct
+module OptimizationLevel = struct
+  type t = None | Low | Medium | High
+
+  let from_int = function
+    | 0 -> None | 1 -> Low | 2 -> Medium | 3 | 4 | 5 | 6 | 7 | 8 | 9 -> High
+    | _ -> failwith "invalid optimization level"
+
+  let from_string = function
+    | "none" | "g" -> None
+    | "all" | "fast" | "s" -> High
+    | s -> Stdlib.int_of_string s |> from_int
+
+  let to_int = function
+    | None -> 0 | Low -> 1 | Medium -> 2 | High -> 3
+
+  let to_string opt =
+    Printf.sprintf "%d" (to_int opt)
+end
+
+module CommonOptions = struct
   type t =
     { debug: bool;
       verbosity: Verbosity.t; }
@@ -38,39 +62,41 @@ module Common = struct
   let make debug verbosity = { debug; verbosity; }
 end
 
-module Output = struct
+module OutputOptions = struct
   type t =
-    { optimization: OptimizationLevel.t; }
+    { optimizations: OptimizationLevel.t; }
 
-  let make optimization = { optimization; }
+  let make optimizations = { optimizations; }
 end
 
-let common =
-  let debug =
-    let doc = "Give only debug output." in
-    Arg.(value & flag & info ["debug"] ~doc)
-  in
-  let verbosity =
-    let doc = "Suppress informational output." in
-    let quiet = Verbosity.Quiet, Arg.info ["q"; "quiet"] ~doc in
-    let doc = "Give verbose output." in
-    let verbose = Verbosity.Verbose, Arg.info ["v"; "verbose"] ~doc in
-    Arg.(last & vflag_all [Verbosity.Normal] [quiet; verbose])
-  in
-  Term.(const Common.make $ debug $ verbosity)
+module TargetOptions = struct
+  type t =
+    { file: TargetFile.t;
+      language: string option;
+      optimizations: OptimizationLevel.t;
+      warnings: WarningLevel.t; }
 
-let output =
-  let open Result in
-  let optimization_level =
-    let doc = "Specify optimization level (0..3)." in
-    let converter =
-      let parse s = Result.Ok (OptimizationLevel.from_int (Stdlib.int_of_string s)) in
-      let print ppf x = Format.fprintf ppf "%s" (OptimizationLevel.to_string x) in
-      Arg.conv ~docv:"LEVEL" (parse, print)
-    in
-    Arg.(value & opt converter OptimizationLevel.None & info ["O"] ~docv:"LEVEL" ~doc)
+  let make file language optimizations warnings =
+    { file; language; optimizations; warnings; }
+end
+
+let optimization_level =
+  let doc = "Specify the optimization level (0..3; 0=none, 3=all)." in
+  let converter =
+    let parse s = Result.Ok (OptimizationLevel.from_string s) in
+    let print ppf x = Format.fprintf ppf "%s" (OptimizationLevel.to_string x) in
+    Arg.conv ~docv:"LEVEL" (parse, print)
   in
-  Term.(const Output.make $ optimization_level)
+  Arg.(value & opt converter OptimizationLevel.None & info ["O"] ~docv:"LEVEL" ~doc)
+
+let warning_level =
+  let doc = "Specify the optimization level (0..3; 0=none, 3=all)." in
+  let converter =
+    let parse s = Result.Ok (WarningLevel.from_string s) in
+    let print ppf x = Format.fprintf ppf "%s" (WarningLevel.to_string x) in
+    Arg.conv ~docv:"LEVEL" (parse, print)
+  in
+  Arg.(value & opt converter WarningLevel.None & info ["W"] ~docv:"LEVEL" ~doc)
 
 let package_root =
   let doc = "Overrides the default package index (\\$HOME/.dry)." in
@@ -147,3 +173,27 @@ let target_file doc =
     Arg.conv ~docv:"OUTPUT" (parse, print)
   in
   Arg.(value & opt converter TargetFile.stdout & info ["o"; "output"] ~docv:"OUTPUT" ~doc)
+
+let common =
+  let open Result in
+  let debug =
+    let doc = "Give only debug output." in
+    Arg.(value & flag & info ["debug"] ~doc)
+  in
+  let verbosity =
+    let doc = "Suppress informational output." in
+    let quiet = Verbosity.Quiet, Arg.info ["q"; "quiet"] ~doc in
+    let doc = "Give verbose output." in
+    let verbose = Verbosity.Verbose, Arg.info ["v"; "verbose"] ~doc in
+    Arg.(last & vflag_all [Verbosity.Normal] [quiet; verbose])
+  in
+  Term.(const CommonOptions.make $ debug $ verbosity)
+
+let output =
+  let open Result in
+  Term.(const OutputOptions.make $ optimization_level)
+
+let target =
+  let open Result in
+  Term.(const TargetOptions.make $ (target_file "The output file name.")
+    $ output_language $ optimization_level $ warning_level)
