@@ -6,7 +6,7 @@ open Drylang
 module Stdlib = DRY__Stdlib
 module Format = Stdlib.Format
 
-let main (input : SourceFile.t) options =
+let main (input : SourceFile.t) (output : Options.OutputOptions.t) options =
   let output_formatter = Format.std_formatter in
   let lexbuf = Lexing.from_channel input.channel in
   while true do
@@ -34,8 +34,6 @@ let main (input : SourceFile.t) options =
 
 open Cmdliner
 
-let input = Options.source_file 0 "The input file to analyze."
-
 let cmd =
   let name = "dry-analyze" in
   let version = Version.string in
@@ -46,7 +44,8 @@ let cmd =
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
     `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-check)(1), $(b,dry-optimize)(1)" ]
   in
-  Term.(const main $ input $ Options.common),
+  let input = Options.source_file 0 "The input file to analyze." in
+  Term.(const main $ input $ Options.output $ Options.common),
   Term.info name ~version ~doc ~exits ~envs ~man
 
 let () = Term.(exit @@ eval cmd)

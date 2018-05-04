@@ -6,7 +6,7 @@ module Verbosity : sig
   val to_string : t -> string
 end
 
-module OptimizationLevel : sig
+module WarningLevel : sig
   type t = None | Low | Medium | High
 
   val from_int : int -> t
@@ -16,7 +16,7 @@ module OptimizationLevel : sig
   val to_string : t -> string
 end
 
-module WarningLevel : sig
+module OptimizationLevel : sig
   type t = None | Low | Medium | High
 
   val from_int : int -> t
@@ -34,7 +34,8 @@ end
 
 module OutputOptions : sig
   type t =
-    { optimizations: OptimizationLevel.t; }
+    { file: TargetFile.t;
+      warnings: WarningLevel.t; }
 end
 
 module TargetOptions : sig
@@ -45,9 +46,8 @@ module TargetOptions : sig
       warnings: WarningLevel.t; }
 end
 
-val common : CommonOptions.t Cmdliner.Term.t
-val output : OutputOptions.t Cmdliner.Term.t
-val target : TargetOptions.t Cmdliner.Term.t
+val warning_level : WarningLevel.t Cmdliner.Term.t
+val optimization_level : OptimizationLevel.t Cmdliner.Term.t
 
 val package_root : string Cmdliner.Term.t
 
@@ -60,3 +60,7 @@ val output_language : string option Cmdliner.Term.t
 
 val source_file : int -> string -> SourceFile.t Cmdliner.Term.t
 val target_file : string -> TargetFile.t Cmdliner.Term.t
+
+val common : CommonOptions.t Cmdliner.Term.t
+val output : OutputOptions.t Cmdliner.Term.t
+val target : TargetOptions.t Cmdliner.Term.t

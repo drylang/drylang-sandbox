@@ -64,9 +64,11 @@ end
 
 module OutputOptions = struct
   type t =
-    { optimizations: OptimizationLevel.t; }
+    { file: TargetFile.t;
+      warnings: WarningLevel.t; }
 
-  let make optimizations = { optimizations; }
+  let make file warnings =
+    { file; warnings; }
 end
 
 module TargetOptions = struct
@@ -80,6 +82,15 @@ module TargetOptions = struct
     { file; language; optimizations; warnings; }
 end
 
+let warning_level =
+  let doc = "Specify the warning level (0..3; 0=none, 3=all)." in
+  let converter =
+    let parse s = Result.Ok (WarningLevel.from_string s) in
+    let print ppf x = Format.fprintf ppf "%s" (WarningLevel.to_string x) in
+    Arg.conv ~docv:"LEVEL" (parse, print)
+  in
+  Arg.(value & opt converter WarningLevel.None & info ["W"] ~docv:"LEVEL" ~doc)
+
 let optimization_level =
   let doc = "Specify the optimization level (0..3; 0=none, 3=all)." in
   let converter =
@@ -88,15 +99,6 @@ let optimization_level =
     Arg.conv ~docv:"LEVEL" (parse, print)
   in
   Arg.(value & opt converter OptimizationLevel.None & info ["O"] ~docv:"LEVEL" ~doc)
-
-let warning_level =
-  let doc = "Specify the optimization level (0..3; 0=none, 3=all)." in
-  let converter =
-    let parse s = Result.Ok (WarningLevel.from_string s) in
-    let print ppf x = Format.fprintf ppf "%s" (WarningLevel.to_string x) in
-    Arg.conv ~docv:"LEVEL" (parse, print)
-  in
-  Arg.(value & opt converter WarningLevel.None & info ["W"] ~docv:"LEVEL" ~doc)
 
 let package_root =
   let doc = "Overrides the default package index (\\$HOME/.dry)." in
@@ -191,9 +193,12 @@ let common =
 
 let output =
   let open Result in
-  Term.(const OutputOptions.make $ optimization_level)
+  Term.(const OutputOptions.make
+    $ (target_file "The output file name.")
+    $ warning_level)
 
 let target =
   let open Result in
-  Term.(const TargetOptions.make $ (target_file "The output file name.")
+  Term.(const TargetOptions.make
+    $ (target_file "The output file name.")
     $ output_language $ optimization_level $ warning_level)
