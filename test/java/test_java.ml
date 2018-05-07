@@ -13,7 +13,7 @@ let compile code =
   Buffer.contents buffer
 
 let dry input =
-  match Drylang.Parser.parse_datum_from_string input with
+  match Drylang.Parser.parse_datum input with
   | None -> assert false
   | Some syntax -> Drylang.Semantic.analyze_node syntax
 

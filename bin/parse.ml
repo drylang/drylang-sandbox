@@ -11,8 +11,7 @@ let main (input : SourceFile.t) (output : Options.OutputOptions.t) options =
     try
       match Parser.parse_data_from_lexbuf lexbuf with
       | [] -> exit 0
-      | [syntax] -> Printf.printf "%s\n%!" (Syntax.Node.to_string syntax)
-      | _ -> failwith "not implemented yet" (* TODO *)
+      | syntax -> Printf.printf "%s\n%!" (Stdlib.String.concat " " (Stdlib.List.map Syntax.Node.to_string syntax))
     with
     | Syntax.Error (Lexical, message) ->
       Printf.eprintf "lexical error: %s\n%!" message;

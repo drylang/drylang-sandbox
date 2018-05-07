@@ -7,18 +7,17 @@ module Stdlib = DRY__Stdlib
 module Format = Stdlib.Format
 
 let main (input : SourceFile.t) (output : Options.OutputOptions.t) options =
-  let output_formatter = Format.std_formatter in
+  let output_ppf = Format.std_formatter in
   let lexbuf = Lexing.from_channel input.channel in
   while true do
     try
-      match Parser.parse_data_from_lexbuf lexbuf with
+      match Reader.read_expressions_from_lexbuf lexbuf with
       | [] -> exit 0
-      | [syntax] -> begin
-          let semantic = Semantic.analyze_node syntax in
-          Semantic.Node.print output_formatter semantic;
-          Format.pp_print_newline output_formatter ()
+      | code -> begin
+          let program = Semantic.Program.make code in
+          Format.pp_print_list ~pp_sep:Format.pp_print_space Semantic.Node.print output_ppf program.code;
+          Format.pp_print_newline output_ppf ()
         end
-      | _ -> failwith "not implemented yet" (* TODO *)
     with
     | Syntax.Error (Lexical, message) ->
       Printf.eprintf "lexical error: %s\n%!" message;

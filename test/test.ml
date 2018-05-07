@@ -86,30 +86,30 @@ let pi        = Syntax.Node.of_float 3.1415
 module Parser = Drylang.Parser
 module Datum  = DRY.Core.Datum
 
-let () = assert (Parser.parse_datum_from_string "" = None)
+let () = assert (Parser.parse_datum "" = None)
 
-let () = assert (Parser.parse_datum_from_string "foo" = Some (Syntax.Node.Atom (Datum.Symbol (Symbol.of_string "foo"))))
+let () = assert (Parser.parse_datum "foo" = Some (Syntax.Node.Atom (Datum.Symbol (Symbol.of_string "foo"))))
 
-let () = assert (Parser.parse_datum_from_string "42" = Some forty_two)
+let () = assert (Parser.parse_datum "42" = Some forty_two)
 
-let () = assert (Parser.parse_datum_from_string "1.23" = Some (Syntax.Node.of_float 1.23))
+let () = assert (Parser.parse_datum "1.23" = Some (Syntax.Node.of_float 1.23))
 
-let () = assert (Parser.parse_datum_from_string "()" = Some (Syntax.Node.List []))
+let () = assert (Parser.parse_datum "()" = Some (Syntax.Node.List []))
 
-let () = assert (Parser.parse_datum_from_string "(42)" = Some (Syntax.Node.List [forty_two]))
+let () = assert (Parser.parse_datum "(42)" = Some (Syntax.Node.List [forty_two]))
 
-let () = assert (Parser.parse_datum_from_string "((42))" = Some (Syntax.Node.List [Syntax.Node.List [forty_two]]))
+let () = assert (Parser.parse_datum "((42))" = Some (Syntax.Node.List [Syntax.Node.List [forty_two]]))
 
-let () = assert (Parser.parse_datum_from_string "(1 2 3)" = Some (Syntax.Node.List [one; two; three]))
+let () = assert (Parser.parse_datum "(1 2 3)" = Some (Syntax.Node.List [one; two; three]))
 
-let () = assert (Parser.parse_datum_from_string "(1 (2) 3)" = Some (Syntax.Node.List [one; (Syntax.Node.List [two]); three]))
+let () = assert (Parser.parse_datum "(1 (2) 3)" = Some (Syntax.Node.List [one; (Syntax.Node.List [two]); three]))
 
 (* Drylang.Semantic *)
 
 module Semantic = Drylang.Semantic
 
 let dry input =
-  match Drylang.Parser.parse_datum_from_string input with
+  match Drylang.Parser.parse_datum input with
   | None -> assert false
   | Some syntax -> Drylang.Semantic.analyze_node syntax
 
