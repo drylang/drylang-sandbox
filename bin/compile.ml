@@ -15,9 +15,9 @@ let main root (input : SourceFile.t) (output : Options.TargetOptions.t) options 
   let input_lexbuf = Lexing.from_channel input.channel in
   while true do
     try
-      match Parser.parse_from_lexbuf input_lexbuf with
-      | None -> exit 0
-      | Some syntax ->
+      match Parser.parse_data_from_lexbuf input_lexbuf with
+      | [] -> exit 0
+      | [syntax] ->
         begin match Target.by_extension output_ext with
         | None -> assert false
         | Some (module L : Target.Language) ->
@@ -25,6 +25,7 @@ let main root (input : SourceFile.t) (output : Options.TargetOptions.t) options 
           L.compile_program output_ppf code;
           Format.pp_print_newline output_ppf ()
         end
+      | _ -> failwith "not implemented yet" (* TODO *)
     with
     | Syntax.Error (Lexical, message) ->
       warn "lexical error: %s\n%!" message;

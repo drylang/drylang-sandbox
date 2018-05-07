@@ -11,13 +11,14 @@ let main (input : SourceFile.t) (output : Options.OutputOptions.t) options =
   let lexbuf = Lexing.from_channel input.channel in
   while true do
     try
-      match Parser.parse_from_lexbuf lexbuf with
-      | None -> exit 0
-      | Some syntax -> begin
+      match Parser.parse_data_from_lexbuf lexbuf with
+      | [] -> exit 0
+      | [syntax] -> begin
           let semantic = Semantic.analyze_node syntax in
           Semantic.Node.print output_formatter semantic;
           Format.pp_print_newline output_formatter ()
         end
+      | _ -> failwith "not implemented yet" (* TODO *)
     with
     | Syntax.Error (Lexical, message) ->
       Printf.eprintf "lexical error: %s\n%!" message;

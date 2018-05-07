@@ -13,11 +13,16 @@ open Syntax.Expression
 let syntactic_error = Syntax.syntactic_error
 %}
 
-%start <Syntax.Node.t> parse
+%start <Syntax.Node.t list> parse_all
+%start <Syntax.Node.t> parse_one
 
 %%
 
-parse:
+parse_all:
+  | EOF                 { raise Token.EOF }
+  | expr exprs EOF      { $1 :: $2 }
+
+parse_one:
   | EOF                 { raise Token.EOF }
   | expr EOF            { $1 }
 

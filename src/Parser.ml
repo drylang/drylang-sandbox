@@ -2,18 +2,34 @@
 
 open DRY.Core
 
-let parse_from_lexbuf input =
-  try (Some (Grammar.parse Lexer.lex input)) with
+let parse_data_from_lexbuf input =
+  try Grammar.parse_all Lexer.lex input with
+  | Token.EOF -> []
+  | Grammar.Error -> Syntax.syntactic_error "invalid syntax"
+
+let parse_datum_from_lexbuf input =
+  try (Some (Grammar.parse_one Lexer.lex input)) with
   | Token.EOF -> None
   | Grammar.Error -> Syntax.syntactic_error "invalid syntax"
 
-let parse_from_channel input =
-  Lexing.from_channel input |> parse_from_lexbuf
+let parse_datum_from_channel input =
+  Lexing.from_channel input |> parse_datum_from_lexbuf
 
-let parse_from_string input =
-  Lexing.from_string input |> parse_from_lexbuf
+let parse_data_from_channel input =
+  Lexing.from_channel input |> parse_data_from_lexbuf
 
-let is_valid string =
-  match parse_from_string string with
-  | Some _ -> true | None -> false
+let parse_datum_from_string input =
+  Lexing.from_string input |> parse_datum_from_lexbuf
+
+let parse_data_from_string input =
+  Lexing.from_string input |> parse_data_from_lexbuf
+
+let is_valid_datum string =
+  match parse_datum_from_string string with
+  | None -> false | Some _ -> true
+  | exception Syntax.Error _ -> false
+
+let is_valid_data string =
+  match parse_data_from_string string with
+  | [] -> false | _ :: _ -> true
   | exception Syntax.Error _ -> false

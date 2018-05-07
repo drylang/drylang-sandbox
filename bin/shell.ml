@@ -16,9 +16,10 @@ let main root options =
     | None -> print_newline(); exit 0
     | Some input -> begin
         try
-          match Parser.parse_from_string input with
-          | None -> assert false (* EOF already handled *)
-          | Some node -> Printf.printf "%s\n%!" (Syntax.Node.to_string node)
+          match Parser.parse_data_from_string input with
+          | [] -> assert false (* EOF already handled *)
+          | [node] -> Printf.printf "%s\n%!" (Syntax.Node.to_string node)
+          | _ -> failwith "not implemented yet" (* TODO *)
         with
         | Syntax.Error (Lexical, message) ->
           Printf.eprintf "lexical error: %s\n%!" message
