@@ -1,17 +1,37 @@
 (* This is free and unencumbered software released into the public domain. *)
 
 open DRY.Core
-open Semantic
+open Semantic.Node
 
 module Datum = DRY.Core.Datum
 module Int8  = DRY.Core.Int8
+
+let not_implemented () = failwith "not implemented yet"
 
 (* Expressions *)
 
 let rec eval_expression expr =
   match expr with
-  | Node.Const datum -> datum
-  | _ -> Datum.of_int (-1) (* TODO *)
+  | Const datum -> datum
+
+  | Not a ->
+    begin match eval_expression a with
+    | Tensor (Scalar (Bool a)) -> Datum.of_bool (not a)
+    | _ -> failwith "expected boolean expression"
+    end
+
+  | And (a, b) -> not_implemented () (* TODO *)
+
+  | Or (a, b) -> not_implemented () (* TODO *)
+
+  | If (a, b, c) ->
+    begin match eval_expression a with
+    | Tensor (Scalar (Bool a)) ->
+      eval_expression (if a then b else c)
+    | _ -> failwith "expected boolean expression"
+    end
+
+  | _ -> not_implemented () (* TODO *)
 
 (* Expressions *)
 

@@ -18,7 +18,9 @@ let main root options =
         try
           match Reader.read_expression input with
           | None -> assert false (* EOF already handled *)
-          | Some code -> Printf.printf "%s\n%!" (Semantic.Node.to_string code)
+          | Some code ->
+            let result = Evaluator.eval_expression code in
+            Printf.printf "%s\n%!" (Datum.to_string result)
         with
         | Syntax.Error (Lexical, message) ->
           Printf.eprintf "lexical error: %s\n%!" message
