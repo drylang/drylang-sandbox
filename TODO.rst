@@ -7,8 +7,6 @@ Commands
 
 - Implement ``dry check``.
 
-- Implement ``dry evaluate``.
-
 - Implement ``dry execute``.
 
 - Implement ``dry format``.
