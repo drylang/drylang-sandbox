@@ -11,10 +11,9 @@ let main (input : SourceFile.t) (output : Options.OutputOptions.t) options =
   let lexbuf = Lexing.from_channel input.channel in
   while true do
     try
-      match Reader.read_expressions_from_lexbuf lexbuf with
-      | [] -> exit 0
-      | code -> begin
-          let program = Semantic.Program.make code in
+      match Reader.read_program_from_lexbuf lexbuf with
+      | None -> exit 0
+      | Some program -> begin
           Format.pp_print_list ~pp_sep:Format.pp_print_space Semantic.Node.print output_ppf program.code;
           Format.pp_print_newline output_ppf ()
         end

@@ -15,14 +15,13 @@ let main root (input : SourceFile.t) (output : Options.TargetOptions.t) options 
   let input_lexbuf = Lexing.from_channel input.channel in
   while true do
     try
-      match Reader.read_expressions_from_lexbuf input_lexbuf with
-      | [] -> exit 0
-      | code ->
+      match Reader.read_program_from_lexbuf input_lexbuf with
+      | None -> exit 0
+      | Some program ->
         begin match Target.by_extension output_ext with
         | None -> assert false
         | Some (module L : Target.Language) ->
-          let input_program = Semantic.Program.make code in
-          L.compile_program output_ppf input_program;
+          L.compile_program output_ppf program;
           Format.pp_print_newline output_ppf ()
         end
     with

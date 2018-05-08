@@ -11,12 +11,11 @@ let main (input : SourceFile.t) (output : Options.OutputOptions.t) optimizations
   let lexbuf = Lexing.from_channel input.channel in
   while true do
     try
-      match Reader.read_expressions_from_lexbuf lexbuf with
-      | [] -> exit 0
-      | code -> begin
-          let input_program = Semantic.Program.make code in
-          let output_program = Semantic.optimize_program input input_program in
-          Format.pp_print_list ~pp_sep:Format.pp_print_space Semantic.Node.print output_ppf output_program.code;
+      match Reader.read_program_from_lexbuf lexbuf with
+      | None -> exit 0
+      | Some program -> begin
+          let program = Semantic.optimize_program input program in
+          Format.pp_print_list ~pp_sep:Format.pp_print_space Semantic.Node.print output_ppf program.code;
           Format.pp_print_newline output_ppf ()
         end
     with

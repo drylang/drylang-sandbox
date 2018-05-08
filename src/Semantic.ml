@@ -112,7 +112,7 @@ module Module = struct
 
   let print ppf module_ =
     pp_print_char ppf '(';
-    pp_print_string ppf "module";
+    pp_print_string ppf "#module";
     pp_print_space ppf ();
     pp_print_list ~pp_sep:pp_print_space Node.print ppf module_.code;
     pp_print_char ppf ')';
@@ -129,7 +129,7 @@ module Program = struct
 
   let print ppf program =
     pp_print_char ppf '(';
-    pp_print_string ppf "program";
+    pp_print_string ppf "#program";
     pp_print_space ppf ();
     pp_print_list ~pp_sep:pp_print_space Node.print ppf program.code;
     pp_print_char ppf ')';
@@ -169,32 +169,6 @@ let rec analyze_node = function
 
   | Syntax.Node.List [] ->
     Syntax.semantic_error "invalid expression"
-
-(*
-let analyze_module (source : SourceFile.t) (syntax : Syntax.Node.t) =
-(*
-  let _module_name = source.module_ in
-*)
-  let term_name = source.term in
-  match syntax with
-  | Syntax.Node.Atom datum ->
-    Syntax.semantic_error "invalid module definition"
-  | Syntax.Node.List [] ->
-    Module.make term_name [] (* TODO *)
-  | Syntax.Node.List code ->
-    Module.make term_name code
-
-let analyze_program (source : SourceFile.t) (syntax : Syntax.Node.t) =
-(*
-  let _module_name = source.module_ in
-  let _term_name = source.term in
-*)
-  match syntax with
-  | Syntax.Node.Atom datum ->
-    Syntax.semantic_error "invalid program structure"
-  | Syntax.Node.List code ->
-    Program.make code
-*)
 
 let optimize_node = function
   | node -> node (* TODO *)
