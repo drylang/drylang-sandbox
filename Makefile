@@ -3,19 +3,20 @@ VERSION := $(shell cat VERSION)
 
 SOURCES :=
 
-TARGETS :=     \
-  bin/analyze  \
-  bin/check    \
-  bin/compile  \
-  bin/describe \
-  bin/evaluate \
-  bin/execute  \
-  bin/export   \
-  bin/index    \
-  bin/locate   \
-  bin/optimize \
-  bin/parse    \
-  bin/shell
+TARGETS :=      \
+  bin/analyze   \
+  bin/check     \
+  bin/compile   \
+  bin/describe  \
+  bin/evaluate  \
+  bin/execute   \
+  bin/export    \
+  bin/index     \
+  bin/locate    \
+  bin/optimize  \
+  bin/parse     \
+  bin/shell     \
+  bin/translate
 
 DUNE    ?= jbuilder
 PANDOC  ?= pandoc

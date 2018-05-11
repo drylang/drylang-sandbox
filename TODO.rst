@@ -5,6 +5,10 @@ To-Dos
 Commands
 ========
 
+- Implement the ``dry`` script.
+
+- Implement ``dry translate``.
+
 - Implement ``dry check``.
 
 - Implement ``dry execute``.

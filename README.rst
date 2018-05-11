@@ -14,27 +14,6 @@ DRY
 
 *An experimental programming language.*
 
-Prerequisites
-=============
-
-Build Prerequisites
--------------------
-
-* `OCaml <https://ocaml.org>`__
-  4.06+
-
-* `Dune (aka Jbuilder) <https://github.com/ocaml/dune>`__
-  1.0+beta20
-
-* `GNU Make <https://www.gnu.org/software/make/>`__
-  3.81+
-
-Runtime Prerequisites
----------------------
-
-The installed binaries have no runtime requirements or dependencies beyond
-the system's standard library (``libc``).
-
 Caveats
 =======
 
@@ -42,6 +21,27 @@ Caveats
 
 **Caveat utilitor**: assume nothing works, and you may be pleasantly
 surprised; and when it breaks, you get to keep both pieces.
+
+Prerequisites
+=============
+
+Build Prerequisites
+-------------------
+
+- `OCaml <https://ocaml.org>`__
+  4.06+
+
+- `Dune (aka Jbuilder) <https://github.com/ocaml/dune>`__
+  1.0+beta20
+
+- `GNU Make <https://www.gnu.org/software/make/>`__
+  3.81+
+
+Runtime Prerequisites
+---------------------
+
+The installed binaries have no runtime requirements or dependencies beyond
+the system's standard library (``libc``).
 
 Installation
 ============
@@ -82,3 +82,4 @@ Usage
    $ dry optimize --help        # optimize code
    $ dry parse --help           # parse code
    $ dry shell --help           # the interactive DRY shell
+   $ dry translate --help       # translate code

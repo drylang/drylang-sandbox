@@ -15,13 +15,13 @@ let main root (input : SourceFile.t) (output : Options.TargetOptions.t) options 
   let input_lexbuf = Lexing.from_channel input.channel in
   while true do
     try
-      match Reader.read_program_from_lexbuf input_lexbuf with
+      match Reader.read_expression_from_lexbuf input_lexbuf with
       | None -> exit 0
-      | Some program ->
+      | Some expression ->
         begin match Target.by_extension output_ext with
         | None -> assert false
         | Some (module L : Target.Language) ->
-          L.compile_program output_ppf program;
+          L.compile_node output_ppf expression;
           Format.pp_print_newline output_ppf ()
         end
     with
@@ -41,16 +41,16 @@ let main root (input : SourceFile.t) (output : Options.TargetOptions.t) options 
 open Cmdliner
 
 let cmd =
-  let name = "dry-compile" in
+  let name = "dry-translate" in
   let version = Version.string in
-  let doc = "compile a DRY program" in
+  let doc = "translate DRY code" in
   let exits = Term.default_exits in
   let envs = [] in
   let man = [
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
-    `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-export)(1), $(b,dry-translate)(1)" ]
+    `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-compile)(1), $(b,dry-export)(1)" ]
   in
-  let input  = Options.source_file 0 "The input file to compile." in
+  let input  = Options.source_file 0 "The input file to translate." in
   Term.(const main $ Options.package_root $ input $ Options.target $ Options.common),
   Term.info name ~version ~doc ~exits ~envs ~man
 

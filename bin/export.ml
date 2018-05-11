@@ -50,7 +50,7 @@ let cmd =
   let envs = [] in
   let man = [
     `S Manpage.s_bugs; `P "File bug reports at <$(b,https://github.com/dryproject/drylang)>.";
-    `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-compile)(1)" ]
+    `S Manpage.s_see_also; `P "$(b,dry)(1), $(b,dry-compile)(1), $(b,dry-translate)(1)" ]
   in
   let term = Options.required_term 0 "The term to export." in
   Term.(const main $ Options.package_root $ term $ Options.target $ Options.common),

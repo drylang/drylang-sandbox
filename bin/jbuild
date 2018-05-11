@@ -3,5 +3,5 @@
 (jbuild_version 1)
 
 (executables
- ((names (analyze check compile describe evaluate execute export #;format index locate optimize parse shell))
+ ((names (analyze check compile describe evaluate execute export #;format index locate optimize parse shell translate))
   (libraries (DRY Drylang cmdliner))))
