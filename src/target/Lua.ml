@@ -38,12 +38,21 @@ let datum = function
   | Datum.Tensor x -> tensor x
   | _ -> not_implemented ()
 
-let compile_node ppf = function
-  | Source.Node.Const x -> Target.print ppf (datum x)
+let rec translate_node = function
+  | Source.Node.Const x -> datum x
   | _ -> not_implemented ()
 
-let compile_module ppf code =
+let translate_module (module_ : Source.Module.t) =
   not_implemented ()
 
-let compile_program ppf code =
+let translate_program (program : Source.Program.t) =
+  not_implemented ()
+
+let compile_node ppf node =
+  translate_node node |> Target.print ppf
+
+let compile_module ppf module_ =
+  not_implemented ()
+
+let compile_program ppf program =
   not_implemented ()

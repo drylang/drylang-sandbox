@@ -39,22 +39,35 @@ let datum = function
   | Datum.Tensor x -> tensor x
   | _ -> not_implemented ()
 
-let compile_node ppf = function
-  | Source.Node.Const x -> Target.print ppf (datum x)
+let rec translate_node = function
+  | Source.Node.Const x -> datum x
   | _ -> not_implemented ()
 
-let translate_module (code : Source.Module.t) =
+let translate_module (module_ : Source.Module.t) =
   let modifiers  = [Target.ClassModifier.Public; Target.ClassModifier.Final] in
   let imports    = [Target.ImportDecl.Normal "dry.*"] in
   let extends    = Target.Identifier.of_string "java.lang.Object" in
   let implements = [] in
-  let class_decl = Target.ClassDecl.create (Symbol.to_string code.name) ~modifiers ~extends ~implements in
+  let class_decl = Target.ClassDecl.create (Symbol.to_string module_.name) ~modifiers ~extends ~implements in
   let class_def  = Target.TypeDecl.Class class_decl in
   Target.CompilationUnit.create ~imports class_def
 
-let compile_module ppf code =
-  let output = translate_module code in
+let translate_program (program : Source.Program.t) =
+  let modifiers  = [Target.ClassModifier.Public; Target.ClassModifier.Final] in
+  let imports    = [Target.ImportDecl.Normal "dry.*"] in
+  let extends    = Target.Identifier.of_string "java.lang.Object" in
+  let implements = [] in
+  let class_decl = Target.ClassDecl.create "main" ~modifiers ~extends ~implements in
+  let class_def  = Target.TypeDecl.Class class_decl in
+  Target.CompilationUnit.create ~imports class_def
+
+let compile_node ppf node =
+  translate_node node |> Target.print ppf
+
+let compile_module ppf module_ =
+  let output = translate_module module_ in
   Target.CompilationUnit.print ppf output
 
-let compile_program ppf code =
-  not_implemented ()
+let compile_program ppf program =
+  let output = translate_program program in
+  Target.CompilationUnit.print ppf output

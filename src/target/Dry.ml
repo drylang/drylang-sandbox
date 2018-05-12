@@ -5,8 +5,6 @@ open DRY.Core
 module Source = Semantic
 module Target = Source
 
-let not_implemented () = failwith "not implemented yet"
-
 let translate_node node = node
 
 let translate_module (module_ : Source.Module.t) =
