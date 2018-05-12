@@ -40,7 +40,20 @@ let datum = function
 
 let rec translate_node = function
   | Source.Node.Const x -> datum x
-  | _ -> not_implemented ()
+  | Source.Node.Var x -> Target.var (Symbol.to_string x)
+  | Source.Node.Apply (op, args) ->
+    begin match op with
+    | Source.Node.Var fname -> Target.Expression.FunctionCall (fname, (List.map translate_node args))
+    | _ -> failwith "invalid function call" (* TODO *)
+    end
+  | Source.Node.Not a -> Target.Expression.UnaryOperator (Not, translate_node a)
+  | Source.Node.And (a, b) -> Target.Expression.BinaryOperator (And, translate_node a, translate_node b)
+  | Source.Node.Or (a, b) -> Target.Expression.BinaryOperator (Or, translate_node a, translate_node b)
+  | Source.Node.If (a, b, c) -> Target.Expression.If ((translate_node a), (translate_node b), (translate_node c))
+  | Source.Node.Add (a, b) -> Target.Expression.BinaryOperator (Add, translate_node a, translate_node b)
+  | Source.Node.Sub (a, b) -> Target.Expression.BinaryOperator (Sub, translate_node a, translate_node b)
+  | Source.Node.Mul (a, b) -> Target.Expression.BinaryOperator (Mul, translate_node a, translate_node b)
+  | Source.Node.Div (a, b) -> Target.Expression.BinaryOperator (Div, translate_node a, translate_node b)
 
 let translate_module (module_ : Source.Module.t) =
   not_implemented ()

@@ -39,7 +39,7 @@ module Node = struct
       pp_print_char ppf ' ';
       pp_print_string ppf (Symbol.to_string s);
       pp_print_char ppf ')'
-    | Apply (f, args) -> pp_opn ppf "apply" args
+    | Apply (f, args) -> pp_opn ppf "apply" (f :: args)
     | Not a -> pp_op1 ppf "not" a
     | And (a, b) -> pp_op2 ppf "and" a b
     | Or (a, b) -> pp_op2 ppf "or" a b
