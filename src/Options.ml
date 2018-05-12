@@ -179,8 +179,8 @@ let target_file doc =
 let common =
   let open Result in
   let debug =
-    let doc = "Give only debug output." in
-    Arg.(value & flag & info ["debug"] ~doc)
+    let doc = "Give debug output." in
+    Arg.(value & flag & info ["d"; "debug"] ~doc)
   in
   let verbosity =
     let doc = "Suppress informational output." in

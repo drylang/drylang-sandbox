@@ -8,7 +8,7 @@ module Format = Stdlib.Format
 
 let warn = Stdlib.Printf.eprintf
 
-let main root (input : SourceFile.t) (output : Options.TargetOptions.t) options =
+let main root (input : SourceFile.t) (output : Options.TargetOptions.t) (options : Options.CommonOptions.t) =
   let output_ext = match output.file.ext with "" -> "dry" | s -> s in
   let output_ext = match output.language with Some s -> s | None -> output_ext in
   let output_ppf = Format.formatter_of_out_channel output.file.channel in
@@ -21,6 +21,11 @@ let main root (input : SourceFile.t) (output : Options.TargetOptions.t) options 
         begin match Target.by_extension output_ext with
         | None -> assert false
         | Some (module L : Target.Language) ->
+          if not options.debug then () else begin
+            Format.pp_print_char output_ppf ';';
+            Semantic.Program.print output_ppf program;
+            Format.pp_print_newline output_ppf ()
+          end;
           L.compile_program output_ppf program;
           Format.pp_print_newline output_ppf ()
         end

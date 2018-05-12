@@ -53,13 +53,10 @@ let translate_program (program : Source.Program.t) =
   Target.Program.make (List.map translate_node program.code)
 
 let compile_node ppf node =
-  (* DEBUG *) Format.pp_print_char ppf ';'; Source.Node.print ppf node; Format.pp_print_newline ppf ();
   translate_node node |> Target.Expression.print ppf
 
 let compile_module ppf module_ =
-  (* DEBUG *) Format.pp_print_char ppf ';'; Source.Module.print ppf module_; Format.pp_print_newline ppf ();
   translate_module module_ |> Target.Program.print ppf
 
 let compile_program ppf program =
-  (* DEBUG *) Format.pp_print_char ppf ';'; Source.Program.print ppf program; Format.pp_print_newline ppf ();
   translate_program program |> Target.Program.print ppf
