@@ -50,6 +50,7 @@ let rec translate_node = function
   | Source.Node.And (a, b) -> Target.Expression.BinaryOperator (And, translate_node a, translate_node b)
   | Source.Node.Or (a, b) -> Target.Expression.BinaryOperator (Or, translate_node a, translate_node b)
   | Source.Node.If (a, b, c) -> Target.Expression.If ((translate_node a), (translate_node b), (translate_node c))
+  | Source.Node.Loop body -> not_implemented ()
   | Source.Node.Neg a -> Target.Expression.UnaryOperator (Neg, translate_node a)
   | Source.Node.Add (a, b) -> Target.Expression.BinaryOperator (Add, translate_node a, translate_node b)
   | Source.Node.Sub (a, b) -> Target.Expression.BinaryOperator (Sub, translate_node a, translate_node b)
@@ -63,7 +64,7 @@ let translate_program (program : Source.Program.t) =
   not_implemented ()
 
 let compile_node ppf node =
-  translate_node node |> Target.print ppf
+  Target.Block.make [Target.Statement.Return (Some (translate_node node))] |> Target.Block.print ppf
 
 let compile_module ppf module_ =
   not_implemented ()

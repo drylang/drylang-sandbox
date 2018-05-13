@@ -19,6 +19,7 @@ module Node = struct
     | And of t * t
     | Or of t * t
     | If of t * t * t
+    | Loop of t list
     | Neg of t
     | Add of t * t
     | Sub of t * t
@@ -45,6 +46,7 @@ module Node = struct
     | And (a, b) -> pp_op2 ppf "and" a b
     | Or (a, b) -> pp_op2 ppf "or" a b
     | If (a, b, c) -> pp_op3 ppf "if" a b c
+    | Loop body -> pp_opn ppf "loop" body
     | Neg a -> pp_op1 ppf "neg" a
     | Add (a, b) -> pp_op2 ppf "add" a b
     | Sub (a, b) -> pp_op2 ppf "sub" a b
@@ -149,13 +151,14 @@ let analyze_operation operator operands =
       match (Symbol.to_string symbol, operands) with
       | "not", a :: [] -> Node.Not a
       | "and", a :: b :: [] -> Node.And (a, b)
-      | "or", a :: b :: [] -> Node.Or (a, b)
-      | "if", a :: b :: c :: [] -> Node.If (a, b, c)
+      | "or",  a :: b :: [] -> Node.Or (a, b)
+      | "if",  a :: b :: c :: [] -> Node.If (a, b, c)
+      | "loop", _ -> Node.Loop operands
       | "neg", a :: [] -> Node.Neg a
-      | "+", a :: b :: [] -> Node.Add (a, b)
-      | "-", a :: b :: [] -> Node.Sub (a, b)
-      | "*", a :: b :: [] -> Node.Mul (a, b)
-      | "/", a :: b :: [] -> Node.Div (a, b)
+      | "+",   a :: b :: [] -> Node.Add (a, b)
+      | "-",   a :: b :: [] -> Node.Sub (a, b)
+      | "*",   a :: b :: [] -> Node.Mul (a, b)
+      | "/",   a :: b :: [] -> Node.Div (a, b)
       | _, _ -> Node.Apply (operator, operands)
     end
   | _ -> Syntax.semantic_error "invalid operation"

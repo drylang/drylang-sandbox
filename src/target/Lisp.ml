@@ -41,6 +41,7 @@ let rec translate_node = function
   | Source.Node.And (a, b) -> Target.form [symbol "and"; translate_node a; translate_node b]
   | Source.Node.Or (a, b) -> Target.form [symbol "or"; translate_node a; translate_node b]
   | Source.Node.If (a, b, c) -> Target.form [symbol "if"; translate_node a; translate_node b; translate_node c]
+  | Source.Node.Loop body -> Target.form ((symbol "loop") :: (List.map translate_node body))
   | Source.Node.Neg a -> Target.form [symbol "-"; translate_node a]
   | Source.Node.Add (a, b) -> Target.form [symbol "+"; translate_node a; translate_node b]
   | Source.Node.Sub (a, b) -> Target.form [symbol "-"; translate_node a; translate_node b]
