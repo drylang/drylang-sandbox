@@ -15,6 +15,7 @@ module Node : sig
     | And of t * t
     | Or of t * t
     | If of t * t * t
+    | Neg of t
     | Add of t * t
     | Sub of t * t
     | Mul of t * t

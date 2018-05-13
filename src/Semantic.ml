@@ -19,6 +19,7 @@ module Node = struct
     | And of t * t
     | Or of t * t
     | If of t * t * t
+    | Neg of t
     | Add of t * t
     | Sub of t * t
     | Mul of t * t
@@ -44,6 +45,7 @@ module Node = struct
     | And (a, b) -> pp_op2 ppf "and" a b
     | Or (a, b) -> pp_op2 ppf "or" a b
     | If (a, b, c) -> pp_op3 ppf "if" a b c
+    | Neg a -> pp_op1 ppf "neg" a
     | Add (a, b) -> pp_op2 ppf "add" a b
     | Sub (a, b) -> pp_op2 ppf "sub" a b
     | Mul (a, b) -> pp_op2 ppf "mul" a b
@@ -149,6 +151,7 @@ let analyze_operation operator operands =
       | "and", a :: b :: [] -> Node.And (a, b)
       | "or", a :: b :: [] -> Node.Or (a, b)
       | "if", a :: b :: c :: [] -> Node.If (a, b, c)
+      | "neg", a :: [] -> Node.Neg a
       | "+", a :: b :: [] -> Node.Add (a, b)
       | "-", a :: b :: [] -> Node.Sub (a, b)
       | "*", a :: b :: [] -> Node.Mul (a, b)

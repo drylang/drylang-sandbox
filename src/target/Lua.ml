@@ -50,6 +50,7 @@ let rec translate_node = function
   | Source.Node.And (a, b) -> Target.Expression.BinaryOperator (And, translate_node a, translate_node b)
   | Source.Node.Or (a, b) -> Target.Expression.BinaryOperator (Or, translate_node a, translate_node b)
   | Source.Node.If (a, b, c) -> Target.Expression.If ((translate_node a), (translate_node b), (translate_node c))
+  | Source.Node.Neg a -> Target.Expression.UnaryOperator (Neg, translate_node a)
   | Source.Node.Add (a, b) -> Target.Expression.BinaryOperator (Add, translate_node a, translate_node b)
   | Source.Node.Sub (a, b) -> Target.Expression.BinaryOperator (Sub, translate_node a, translate_node b)
   | Source.Node.Mul (a, b) -> Target.Expression.BinaryOperator (Mul, translate_node a, translate_node b)
