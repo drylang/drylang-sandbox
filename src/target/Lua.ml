@@ -38,24 +38,28 @@ let datum = function
   | Datum.Tensor x -> tensor x
   | _ -> not_implemented ()
 
-let rec translate_node = function
+let rec translate_expr = function
   | Source.Node.Const x -> datum x
   | Source.Node.Var x -> Target.var (Symbol.to_string x)
   | Source.Node.Apply (op, args) ->
     begin match op with
-    | Source.Node.Var fname -> Target.Expression.FunctionCall (fname, (List.map translate_node args))
+    | Source.Node.Var fname -> Target.Expression.FunctionCall (fname, (List.map translate_expr args))
     | _ -> failwith "invalid function call" (* TODO *)
     end
-  | Source.Node.Not a -> Target.Expression.UnaryOperator (Not, translate_node a)
-  | Source.Node.And (a, b) -> Target.Expression.BinaryOperator (And, translate_node a, translate_node b)
-  | Source.Node.Or (a, b) -> Target.Expression.BinaryOperator (Or, translate_node a, translate_node b)
-  | Source.Node.If (a, b, c) -> Target.Expression.If ((translate_node a), (translate_node b), (translate_node c))
-  | Source.Node.Loop body -> not_implemented ()
-  | Source.Node.Neg a -> Target.Expression.UnaryOperator (Neg, translate_node a)
-  | Source.Node.Add (a, b) -> Target.Expression.BinaryOperator (Add, translate_node a, translate_node b)
-  | Source.Node.Sub (a, b) -> Target.Expression.BinaryOperator (Sub, translate_node a, translate_node b)
-  | Source.Node.Mul (a, b) -> Target.Expression.BinaryOperator (Mul, translate_node a, translate_node b)
-  | Source.Node.Div (a, b) -> Target.Expression.BinaryOperator (Div, translate_node a, translate_node b)
+  | Source.Node.Not a -> Target.Expression.UnaryOperator (Not, translate_expr a)
+  | Source.Node.And (a, b) -> Target.Expression.BinaryOperator (And, translate_expr a, translate_expr b)
+  | Source.Node.Or (a, b) -> Target.Expression.BinaryOperator (Or, translate_expr a, translate_expr b)
+  | Source.Node.If (a, b, c) -> Target.Expression.If ((translate_expr a), (translate_expr b), (translate_expr c))
+  | Source.Node.Loop body -> assert false
+  | Source.Node.Neg a -> Target.Expression.UnaryOperator (Neg, translate_expr a)
+  | Source.Node.Add (a, b) -> Target.Expression.BinaryOperator (Add, translate_expr a, translate_expr b)
+  | Source.Node.Sub (a, b) -> Target.Expression.BinaryOperator (Sub, translate_expr a, translate_expr b)
+  | Source.Node.Mul (a, b) -> Target.Expression.BinaryOperator (Mul, translate_expr a, translate_expr b)
+  | Source.Node.Div (a, b) -> Target.Expression.BinaryOperator (Div, translate_expr a, translate_expr b)
+
+and translate_node = function
+  | Source.Node.Loop body -> Target.Statement.While (Target.of_bool true, List.map translate_node body)
+  | node -> Target.Statement.Return (Some (translate_expr node))
 
 let translate_module (module_ : Source.Module.t) =
   not_implemented ()
@@ -64,7 +68,7 @@ let translate_program (program : Source.Program.t) =
   not_implemented ()
 
 let compile_node ppf node =
-  Target.Block.make [Target.Statement.Return (Some (translate_node node))] |> Target.Block.print ppf
+  Target.Block.make [translate_node node] |> Target.Block.print ppf
 
 let compile_module ppf module_ =
   not_implemented ()
