@@ -1,0 +1,5 @@
+#!/usr/bin/env dry evaluate
+
+(import text/printf/*)
+
+(printf "Hello, world!\n")
