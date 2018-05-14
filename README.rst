@@ -83,3 +83,28 @@ Usage
    $ dry parse --help           # parse code
    $ dry shell --help           # the interactive DRY shell
    $ dry translate --help       # translate code
+
+Syntax
+======
+
+Scalar Literals
+---------------
+
+=============================================== ================================
+Literal                                         Type
+=============================================== ================================
+``true``, ``false``                             ``core/bool``
+``foobar``                                      ``core/symbol``
+``1.23``                                        ``core/float``
+``123``                                         ``core/integer``
+``1/3``, ``-3/4``                               ``core/rational``
+``1+2i``                                        ``core/complex``
+``0xDEADBEEF``                                  ``core/word``
+``\u+``                                         ``core/char``
+``\U+``                                         ``core/char``
+``"hello"``                                     ``text/utf8/string``
+``@2020-12-31T23:59:59``                        ``time/instant``
+``<urn:ietf:rfc:2648>``                         ``std/ietf/urn``
+``<http://example.org/>``                       ``std/ietf/url``
+``123e4567-e89b-12d3-a456-426655440000``        ``std/ietf/uuid``
+=============================================== ================================
