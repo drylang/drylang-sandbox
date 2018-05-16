@@ -36,6 +36,7 @@ let datum = function
 let rec translate_node = function
   | Source.Node.Const x -> datum x
   | Source.Node.Var x -> Target.symbol x
+  | Source.Node.Name _ -> not_implemented ()
   | Source.Node.Apply (op, args) -> Target.form ((translate_node op) :: (List.map translate_node args))
   | Source.Node.Not a -> Target.form [symbol "not"; translate_node a]
   | Source.Node.And (a, b) -> Target.form [symbol "and"; translate_node a; translate_node b]

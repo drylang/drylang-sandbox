@@ -14,6 +14,7 @@ module Node = struct
   type t =
     | Const of Datum.t
     | Var of Symbol.t
+    | Name of Symbol.t * Symbol.t list
     | Apply of t * t list
     | Not of t
     | And of t * t
@@ -40,6 +41,15 @@ module Node = struct
       pp_print_string ppf "var";
       pp_print_char ppf ' ';
       pp_print_string ppf (Symbol.to_string s);
+      pp_print_char ppf ')'
+    | Name (pkg, path) ->
+      pp_print_char ppf '(';
+      pp_print_char ppf '#';
+      pp_print_string ppf "name";
+      pp_print_char ppf ' ';
+      pp_print_string ppf (Symbol.to_string pkg);
+      pp_print_char ppf ':';
+      pp_print_list ~pp_sep:(fun ppf () -> pp_print_char ppf '/') pp_print_string ppf (List.map Symbol.to_string path);
       pp_print_char ppf ')'
     | Apply (f, args) -> pp_opn ppf "apply" (f :: args)
     | Not a -> pp_op1 ppf "not" a
@@ -143,7 +153,12 @@ let analyze_identifier symbol =
   match Symbol.to_string symbol with
   | "true" -> Node.Const (Datum.of_bool true)
   | "false" -> Node.Const (Datum.of_bool false)
-  | _ -> Node.Var symbol
+  | "/" -> Node.Var symbol
+  | s ->
+    begin match String.contains s '/' with
+    | false -> Node.Var symbol
+    | true  -> Node.Name (Symbol.of_string "dry", List.map Symbol.of_string (String.split_on_char '/' s))
+    end
 
 let analyze_operation operator operands =
   match operator with
@@ -161,6 +176,7 @@ let analyze_operation operator operands =
       | "/",   a :: b :: [] -> Node.Div (a, b)
       | _, _ -> Node.Apply (operator, operands)
     end
+  | Node.Name (pkg, path) -> Node.Apply (operator, operands)
   | _ -> Syntax.semantic_error "invalid operation"
 
 let rec analyze_node = function

@@ -8,22 +8,22 @@ module Target = DRY.Code.Lua
 let not_implemented () = failwith "not implemented yet"
 
 let word = function
-  | Word.Word8 _ -> not_implemented ()
+  | Word.Word8 _  -> not_implemented ()
   | Word.Word16 _ -> not_implemented ()
   | Word.Word32 _ -> not_implemented ()
   | Word.Word64 _ -> not_implemented ()
 
 let number = function
-  | Number.Float r -> Target.float r
-  | Number.Int ((Int8 _) as z) -> Target.integer z
-  | Number.Int ((Int16 _) as z) -> Target.integer z
-  | Number.Int ((Int32 _) as z) -> Target.integer z
-  | Number.Int ((Int64 _) as z) -> Target.integer z
-  | Number.Int ((Int128 _)) -> not_implemented ()
+  | Number.Float r -> Target.call "dry.float" [Target.float r]
+  | Number.Int ((Int8 _) as z)  -> Target.call "dry.int8"   [Target.integer z]
+  | Number.Int ((Int16 _) as z) -> Target.call "dry.int16"  [Target.integer z]
+  | Number.Int ((Int32 _) as z) -> Target.call "dry.int32"  [Target.integer z]
+  | Number.Int ((Int64 _) as z) -> Target.call "dry.int64"  [Target.integer z]
+  | Number.Int ((Int128 z))     -> Target.call "dry.int128" [Target.string (Int128.to_string z)]
   | _ -> not_implemented ()
 
 let scalar = function
-  | Scalar.Bool b -> Target.boolean b
+  | Scalar.Bool b -> Target.call "dry.bool" [Target.boolean b]
   | Scalar.Char _ -> not_implemented ()
   | Scalar.Number n -> number n
   | Scalar.Word w -> word w
@@ -41,9 +41,15 @@ let datum = function
 let rec translate_expr = function
   | Source.Node.Const x -> datum x
   | Source.Node.Var x -> Target.var (Symbol.to_string x)
+  | Source.Node.Name (_, []) -> assert false
+  | Source.Node.Name (pkg, name) -> Target.var (String.concat "." ("dry" :: (List.map Symbol.to_string name)))
   | Source.Node.Apply (op, args) ->
     begin match op with
-    | Source.Node.Var fname -> Target.Expression.FunctionCall (fname, (List.map translate_expr args))
+    | Source.Node.Var fname ->
+      Target.Expression.FunctionCall (fname, (List.map translate_expr args))
+    | Source.Node.Name (pkg, name) ->
+      let fname = Symbol.of_string (String.concat "." (List.map Symbol.to_string (pkg :: name))) in
+      Target.Expression.FunctionCall (fname, (List.map translate_expr args))
     | _ -> failwith "invalid function call" (* TODO *)
     end
   | Source.Node.Not a -> Target.Expression.UnaryOperator (Not, translate_expr a)
@@ -59,7 +65,7 @@ let rec translate_expr = function
 
 and translate_node = function
   | Source.Node.Loop body -> Target.Statement.While (Target.of_bool true, List.map translate_node body)
-  | node -> Target.Statement.Return (Some (translate_expr node))
+  | node -> Target.Statement.LocalVarBind (Target.Name.of_string "_", translate_expr node)
 
 let translate_module (module_ : Source.Module.t) =
   not_implemented ()
