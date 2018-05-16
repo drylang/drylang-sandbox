@@ -16,16 +16,16 @@ module Node = struct
     | Var of Symbol.t
     | Name of Symbol.t * Symbol.t list
     | Apply of t * t list
-    | Not of t
-    | And of t * t
-    | Or of t * t
+    | MathNeg of t
+    | MathAdd of t * t
+    | MathSub of t * t
+    | MathMul of t * t
+    | MathDiv of t * t
+    | LogicNot of t
+    | LogicAnd of t * t
+    | LogicOr of t * t
     | If of t * t * t
     | Loop of t list
-    | Neg of t
-    | Add of t * t
-    | Sub of t * t
-    | Mul of t * t
-    | Div of t * t
 
   let rec print ppf = function
     | Const d ->
@@ -52,16 +52,16 @@ module Node = struct
       pp_print_list ~pp_sep:(fun ppf () -> pp_print_char ppf '/') pp_print_string ppf (List.map Symbol.to_string path);
       pp_print_char ppf ')'
     | Apply (f, args) -> pp_opn ppf "apply" (f :: args)
-    | Not a -> pp_op1 ppf "not" a
-    | And (a, b) -> pp_op2 ppf "and" a b
-    | Or (a, b) -> pp_op2 ppf "or" a b
+    | MathNeg a -> pp_op1 ppf "neg" a
+    | MathAdd (a, b) -> pp_op2 ppf "add" a b
+    | MathSub (a, b) -> pp_op2 ppf "sub" a b
+    | MathMul (a, b) -> pp_op2 ppf "mul" a b
+    | MathDiv (a, b) -> pp_op2 ppf "div" a b
+    | LogicNot a -> pp_op1 ppf "not" a
+    | LogicAnd (a, b) -> pp_op2 ppf "and" a b
+    | LogicOr (a, b) -> pp_op2 ppf "or" a b
     | If (a, b, c) -> pp_op3 ppf "if" a b c
     | Loop body -> pp_opn ppf "loop" body
-    | Neg a -> pp_op1 ppf "neg" a
-    | Add (a, b) -> pp_op2 ppf "add" a b
-    | Sub (a, b) -> pp_op2 ppf "sub" a b
-    | Mul (a, b) -> pp_op2 ppf "mul" a b
-    | Div (a, b) -> pp_op2 ppf "div" a b
 
   and pp_op1 ppf op a =
     pp_print_char ppf '(';
@@ -164,16 +164,16 @@ let analyze_operation operator operands =
   match operator with
   | Node.Var symbol -> begin
       match (Symbol.to_string symbol, operands) with
-      | "not", a :: [] -> Node.Not a
-      | "and", a :: b :: [] -> Node.And (a, b)
-      | "or",  a :: b :: [] -> Node.Or (a, b)
+      | "neg", a :: [] -> Node.MathNeg a
+      | "+",   a :: b :: [] -> Node.MathAdd (a, b)
+      | "-",   a :: b :: [] -> Node.MathSub (a, b)
+      | "*",   a :: b :: [] -> Node.MathMul (a, b)
+      | "/",   a :: b :: [] -> Node.MathDiv (a, b)
+      | "not", a :: [] -> Node.LogicNot a
+      | "and", a :: b :: [] -> Node.LogicAnd (a, b)
+      | "or",  a :: b :: [] -> Node.LogicOr (a, b)
       | "if",  a :: b :: c :: [] -> Node.If (a, b, c)
       | "loop", _ -> Node.Loop operands
-      | "neg", a :: [] -> Node.Neg a
-      | "+",   a :: b :: [] -> Node.Add (a, b)
-      | "-",   a :: b :: [] -> Node.Sub (a, b)
-      | "*",   a :: b :: [] -> Node.Mul (a, b)
-      | "/",   a :: b :: [] -> Node.Div (a, b)
       | _, _ -> Node.Apply (operator, operands)
     end
   | Node.Name (pkg, path) -> Node.Apply (operator, operands)

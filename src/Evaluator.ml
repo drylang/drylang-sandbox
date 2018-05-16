@@ -14,15 +14,15 @@ let rec eval_expression expr =
   match expr with
   | Const datum -> datum
 
-  | Not a ->
+  | LogicNot a ->
     begin match eval_expression a with
     | Tensor (Scalar (Bool a)) -> Datum.of_bool (not a)
     | _ -> failwith "expected boolean expression"
     end
 
-  | And (a, b) -> not_implemented () (* TODO *)
+  | LogicAnd (a, b) -> not_implemented () (* TODO *)
 
-  | Or (a, b) -> not_implemented () (* TODO *)
+  | LogicOr (a, b) -> not_implemented () (* TODO *)
 
   | If (a, b, c) ->
     begin match eval_expression a with

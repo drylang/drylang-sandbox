@@ -52,16 +52,16 @@ let rec translate_expr = function
       Target.Expression.FunctionCall (fname, (List.map translate_expr args))
     | _ -> failwith "invalid function call" (* TODO *)
     end
-  | Source.Node.Not a -> Target.Expression.UnaryOperator (Not, translate_expr a)
-  | Source.Node.And (a, b) -> Target.Expression.BinaryOperator (And, translate_expr a, translate_expr b)
-  | Source.Node.Or (a, b) -> Target.Expression.BinaryOperator (Or, translate_expr a, translate_expr b)
+  | Source.Node.MathNeg a -> Target.Expression.UnaryOperator (Neg, translate_expr a)
+  | Source.Node.MathAdd (a, b) -> Target.Expression.BinaryOperator (Add, translate_expr a, translate_expr b)
+  | Source.Node.MathSub (a, b) -> Target.Expression.BinaryOperator (Sub, translate_expr a, translate_expr b)
+  | Source.Node.MathMul (a, b) -> Target.Expression.BinaryOperator (Mul, translate_expr a, translate_expr b)
+  | Source.Node.MathDiv (a, b) -> Target.Expression.BinaryOperator (Div, translate_expr a, translate_expr b)
+  | Source.Node.LogicNot a -> Target.Expression.UnaryOperator (Not, translate_expr a)
+  | Source.Node.LogicAnd (a, b) -> Target.Expression.BinaryOperator (And, translate_expr a, translate_expr b)
+  | Source.Node.LogicOr (a, b) -> Target.Expression.BinaryOperator (Or, translate_expr a, translate_expr b)
   | Source.Node.If (a, b, c) -> Target.Expression.If ((translate_expr a), (translate_expr b), (translate_expr c))
   | Source.Node.Loop body -> assert false
-  | Source.Node.Neg a -> Target.Expression.UnaryOperator (Neg, translate_expr a)
-  | Source.Node.Add (a, b) -> Target.Expression.BinaryOperator (Add, translate_expr a, translate_expr b)
-  | Source.Node.Sub (a, b) -> Target.Expression.BinaryOperator (Sub, translate_expr a, translate_expr b)
-  | Source.Node.Mul (a, b) -> Target.Expression.BinaryOperator (Mul, translate_expr a, translate_expr b)
-  | Source.Node.Div (a, b) -> Target.Expression.BinaryOperator (Div, translate_expr a, translate_expr b)
 
 and translate_node = function
   | Source.Node.Loop body -> Target.Statement.While (Target.of_bool true, List.map translate_node body)

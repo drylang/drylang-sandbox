@@ -12,16 +12,16 @@ module Node : sig
     | Var of Symbol.t
     | Name of Symbol.t * Symbol.t list
     | Apply of t * t list
-    | Not of t
-    | And of t * t
-    | Or of t * t
+    | MathNeg of t
+    | MathAdd of t * t
+    | MathSub of t * t
+    | MathMul of t * t
+    | MathDiv of t * t
+    | LogicNot of t
+    | LogicAnd of t * t
+    | LogicOr of t * t
     | If of t * t * t
     | Loop of t list
-    | Neg of t
-    | Add of t * t
-    | Sub of t * t
-    | Mul of t * t
-    | Div of t * t
 
   val to_string : t -> string
 
