@@ -35,7 +35,7 @@ let datum = function
 
 let rec translate_node = function
   | Source.Node.Const x -> datum x
-  | Source.Node.Var x -> Target.symbol x
+  | Source.Node.Id x -> Target.symbol x
   | Source.Node.Name _ -> not_implemented ()
   | Source.Node.Import names -> not_implemented ()
   | Source.Node.Export names -> not_implemented ()

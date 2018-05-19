@@ -9,7 +9,7 @@ module Comment = DRY.Code.DRY.Comment
 module Node : sig
   type t =
     | Const of Datum.t
-    | Var of Symbol.t
+    | Id of Symbol.t
     | Name of Name.t
     | Import of Name.t list
     | Export of Name.t list

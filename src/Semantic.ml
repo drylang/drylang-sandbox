@@ -13,7 +13,7 @@ module Node = struct
 
   type t =
     | Const of Datum.t
-    | Var of Symbol.t
+    | Id of Symbol.t
     | Name of Name.t
     | Import of Name.t list
     | Export of Name.t list
@@ -37,10 +37,10 @@ module Node = struct
       pp_print_char ppf ' ';
       pp_print_string ppf (Datum.to_string d);
       pp_print_char ppf ')'
-    | Var s ->
+    | Id s ->
       pp_print_char ppf '(';
       pp_print_char ppf '#';
-      pp_print_string ppf "var";
+      pp_print_string ppf "id";
       pp_print_char ppf ' ';
       pp_print_string ppf (Symbol.to_string s);
       pp_print_char ppf ')'
@@ -167,10 +167,10 @@ let analyze_identifier symbol =
   match Symbol.to_string symbol with
   | "true" -> Node.Const (Datum.of_bool true)
   | "false" -> Node.Const (Datum.of_bool false)
-  | "/" -> Node.Var symbol
+  | "/" -> Node.Id symbol
   | s ->
     begin match String.contains s '/' with
-    | false -> Node.Var symbol
+    | false -> Node.Id symbol
     | true  -> Node.Name (Name.of_string s)
     end
 
@@ -180,7 +180,7 @@ let analyze_name = function
 
 let analyze_operation operator operands =
   match operator with
-  | Node.Var symbol -> begin
+  | Node.Id symbol -> begin
       match (Symbol.to_string symbol, operands) with
       | "neg", a :: [] -> Node.MathNeg a
       | "+",   a :: b :: [] -> Node.MathAdd (a, b)
