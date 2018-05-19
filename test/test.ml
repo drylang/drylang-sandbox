@@ -104,6 +104,18 @@ let () = assert (Parser.parse_datum "(1 2 3)" = Some (Syntax.Node.List [one; two
 
 let () = assert (Parser.parse_datum "(1 (2) 3)" = Some (Syntax.Node.List [one; (Syntax.Node.List [two]); three]))
 
+(* Drylang.Name *)
+
+module Name = Drylang.Name
+
+let () = assert (Name.of_string "foo" = Name.of_string "foo")
+
+let () = assert (Name.of_string "foo/bar" = Name.of_string "foo/bar")
+
+let () = assert (Name.of_string "foo/bar" <> Name.of_string "foo/BAR")
+
+let () = assert (Name.to_string (Name.of_string "text/ascii/string") = "dry:text/ascii/string")
+
 (* Drylang.Semantic *)
 
 module Semantic = Drylang.Semantic
