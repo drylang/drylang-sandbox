@@ -43,6 +43,8 @@ let rec translate_expr = function
   | Source.Node.Var x -> Target.var (Symbol.to_string x)
   | Source.Node.Name (_, []) -> assert false
   | Source.Node.Name (pkg, name) -> Target.var (String.concat "." ("dry" :: (List.map Symbol.to_string name)))
+  | Source.Node.Import names -> not_implemented ()
+  | Source.Node.Export names -> not_implemented ()
   | Source.Node.Apply (op, args) ->
     begin match op with
     | Source.Node.Var fname ->

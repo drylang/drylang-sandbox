@@ -14,7 +14,9 @@ module Node = struct
   type t =
     | Const of Datum.t
     | Var of Symbol.t
-    | Name of Symbol.t * Symbol.t list
+    | Name of Name.t
+    | Import of Name.t list
+    | Export of Name.t list
     | Apply of t * t list
     | MathNeg of t
     | MathAdd of t * t
@@ -42,14 +44,26 @@ module Node = struct
       pp_print_char ppf ' ';
       pp_print_string ppf (Symbol.to_string s);
       pp_print_char ppf ')'
-    | Name (pkg, path) ->
+    | Name name ->
       pp_print_char ppf '(';
       pp_print_char ppf '#';
       pp_print_string ppf "name";
       pp_print_char ppf ' ';
-      pp_print_string ppf (Symbol.to_string pkg);
-      pp_print_char ppf ':';
-      pp_print_list ~pp_sep:(fun ppf () -> pp_print_char ppf '/') pp_print_string ppf (List.map Symbol.to_string path);
+      pp_print_string ppf (Name.to_string name);
+      pp_print_char ppf ')'
+    | Import names ->
+      pp_print_char ppf '(';
+      pp_print_char ppf '#';
+      pp_print_string ppf "import";
+      pp_print_char ppf ' ';
+      pp_print_list ~pp_sep:pp_print_space pp_print_string ppf (List.map Name.to_string names);
+      pp_print_char ppf ')'
+    | Export names ->
+      pp_print_char ppf '(';
+      pp_print_char ppf '#';
+      pp_print_string ppf "import";
+      pp_print_char ppf ' ';
+      pp_print_list~pp_sep:pp_print_space pp_print_string ppf (List.map Name.to_string names);
       pp_print_char ppf ')'
     | Apply (f, args) -> pp_opn ppf "apply" (f :: args)
     | MathNeg a -> pp_op1 ppf "neg" a
@@ -157,8 +171,12 @@ let analyze_identifier symbol =
   | s ->
     begin match String.contains s '/' with
     | false -> Node.Var symbol
-    | true  -> Node.Name (Symbol.of_string "dry", List.map Symbol.of_string (String.split_on_char '/' s))
+    | true  -> Node.Name (Name.of_string s)
     end
+
+let analyze_name = function
+  | Node.Name name -> name
+  | _ -> Syntax.semantic_error "invalid name"
 
 let analyze_operation operator operands =
   match operator with
@@ -174,9 +192,11 @@ let analyze_operation operator operands =
       | "or",  a :: b :: [] -> Node.LogicOr (a, b)
       | "if",  a :: b :: c :: [] -> Node.If (a, b, c)
       | "loop", _ -> Node.Loop operands
+      | "import", _ -> Node.Import (List.map analyze_name operands)
+      | "export", _ -> Node.Export (List.map analyze_name operands)
       | _, _ -> Node.Apply (operator, operands)
     end
-  | Node.Name (pkg, path) -> Node.Apply (operator, operands)
+  | Node.Name name -> Node.Apply (operator, operands)
   | _ -> Syntax.semantic_error "invalid operation"
 
 let rec analyze_node = function

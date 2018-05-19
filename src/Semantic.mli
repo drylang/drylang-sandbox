@@ -10,7 +10,9 @@ module Node : sig
   type t =
     | Const of Datum.t
     | Var of Symbol.t
-    | Name of Symbol.t * Symbol.t list
+    | Name of Name.t
+    | Import of Name.t list
+    | Export of Name.t list
     | Apply of t * t list
     | MathNeg of t
     | MathAdd of t * t

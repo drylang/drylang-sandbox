@@ -37,6 +37,8 @@ let rec translate_node = function
   | Source.Node.Const x -> datum x
   | Source.Node.Var x -> Target.symbol x
   | Source.Node.Name _ -> not_implemented ()
+  | Source.Node.Import names -> not_implemented ()
+  | Source.Node.Export names -> not_implemented ()
   | Source.Node.Apply (op, args) -> Target.form ((translate_node op) :: (List.map translate_node args))
   | Source.Node.MathNeg a -> Target.form [symbol "-"; translate_node a]
   | Source.Node.MathAdd (a, b) -> Target.form [symbol "+"; translate_node a; translate_node b]
