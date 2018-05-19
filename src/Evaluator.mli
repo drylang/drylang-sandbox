@@ -7,5 +7,5 @@ module Int8  = DRY.Core.Int8
 
 val eval_expression : Semantic.Node.t -> Datum.t
 val eval_expressions : Semantic.Node.t list -> Datum.t
-val eval_program : Semantic.Program.t -> Datum.t
-val eval_script : Semantic.Program.t -> Datum.t
+val eval_program : Program.t -> Datum.t
+val eval_script : Program.t -> Datum.t

@@ -18,10 +18,10 @@ val read_module_from_lexbuf : ?name:string -> Lexing.lexbuf -> Semantic.Module.t
 val read_module_from_channel : ?name:string -> in_channel -> Semantic.Module.t option
 val read_module : ?name:string -> string -> Semantic.Module.t option
 
-val read_program_from_lexbuf : Lexing.lexbuf -> Semantic.Program.t option
-val read_program_from_channel : in_channel -> Semantic.Program.t option
-val read_program : string -> Semantic.Program.t option
+val read_program_from_lexbuf : Lexing.lexbuf -> Program.t option
+val read_program_from_channel : in_channel -> Program.t option
+val read_program : string -> Program.t option
 
-val read_script_from_lexbuf : Lexing.lexbuf -> Semantic.Program.t option
-val read_script_from_channel : in_channel -> Semantic.Program.t option
-val read_script : string -> Semantic.Program.t option
+val read_script_from_lexbuf : Lexing.lexbuf -> Program.t option
+val read_script_from_channel : in_channel -> Program.t option
+val read_script : string -> Program.t option

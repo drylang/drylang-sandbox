@@ -59,7 +59,7 @@ let read_module ?(name = "") input =
 let read_program_from_lexbuf input =
   match Parser.parse_data_from_lexbuf input with
   | [] -> None
-  | syntax -> Some (Semantic.Program.make (List.map Semantic.analyze_node syntax))
+  | syntax -> Some (Program.make (List.map Semantic.analyze_node syntax))
 
 let read_program_from_channel input =
   Lexing.from_channel input |> read_program_from_lexbuf
@@ -72,7 +72,7 @@ let read_program input =
 let read_script_from_lexbuf input =
   match Parser.parse_data_from_lexbuf input with
   | [] -> None
-  | syntax -> Some (Semantic.Program.make (List.map Semantic.analyze_node syntax))
+  | syntax -> Some (Program.make (List.map Semantic.analyze_node syntax))
 
 let read_script_from_channel input =
   Lexing.from_channel input |> read_script_from_lexbuf

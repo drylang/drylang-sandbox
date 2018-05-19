@@ -45,23 +45,6 @@ module Module : sig
   val print : Format.formatter -> t -> unit
 end
 
-module Program : sig
-  type t =
-    { code: Node.t list; }
-
-  val make : Node.t list -> t
-
-  val print : Format.formatter -> t -> unit
-end
-
 (* Semantic analysis *)
 
 val analyze_node : Syntax.Node.t -> Node.t
-
-(* Optimization *)
-
-val optimize_node : Node.t -> Node.t
-
-val optimize_module : SourceFile.t -> Module.t -> Module.t
-
-val optimize_program : SourceFile.t -> Program.t -> Program.t

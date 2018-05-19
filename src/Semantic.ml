@@ -146,23 +146,6 @@ module Module = struct
     pp_print_char ppf ')';
 end
 
-module Program = struct
-  open Format
-
-  type t =
-    { code: Node.t list; }
-
-  let make args =
-    { code = args; }
-
-  let print ppf program =
-    pp_print_char ppf '(';
-    pp_print_string ppf "#program";
-    pp_print_space ppf ();
-    pp_print_list ~pp_sep:pp_print_space Node.print ppf program.code;
-    pp_print_char ppf ')';
-end
-
 let analyze_identifier symbol =
   match Symbol.to_string symbol with
   | "true" -> Node.Const (Datum.of_bool true)
@@ -211,12 +194,3 @@ let rec analyze_node = function
 
   | Syntax.Node.List [] ->
     Syntax.semantic_error "invalid expression"
-
-let optimize_node = function
-  | node -> node (* TODO *)
-
-let optimize_module (source : SourceFile.t) (module_ : Module.t) =
-  module_ (* TODO *)
-
-let optimize_program (source : SourceFile.t) (program : Program.t) =
-  program (* TODO *)

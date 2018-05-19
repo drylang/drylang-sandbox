@@ -45,10 +45,10 @@ let rec eval_expressions = function
 
 (* Program *)
 
-let eval_program (program : Semantic.Program.t) =
+let eval_program (program : Program.t) =
   eval_expressions program.code
 
 (* Script *)
 
-let eval_script (script : Semantic.Program.t) =
+let eval_script (script : Program.t) =
   eval_expressions script.code

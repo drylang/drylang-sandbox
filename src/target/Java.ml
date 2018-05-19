@@ -52,7 +52,7 @@ let translate_module (module_ : Source.Module.t) =
   let class_def  = Target.TypeDecl.Class class_decl in
   Target.CompilationUnit.create ~imports class_def
 
-let translate_program (program : Source.Program.t) =
+let translate_program (program : Program.t) =
   let modifiers  = [Target.ClassModifier.Public; Target.ClassModifier.Final] in
   let imports    = [Target.ImportDecl.Normal "dry.*"] in
   let extends    = Target.Identifier.of_string "java.lang.Object" in

@@ -23,7 +23,7 @@ let main root (input : SourceFile.t) (output : Options.TargetOptions.t) (options
         | Some (module L : Target.Language) ->
           if not options.debug then () else begin
             Format.pp_print_char output_ppf ';';
-            Semantic.Program.print output_ppf program;
+            Program.print output_ppf program;
             Format.pp_print_newline output_ppf ()
           end;
           L.compile_program output_ppf program;

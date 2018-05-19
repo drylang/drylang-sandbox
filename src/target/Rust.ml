@@ -41,7 +41,7 @@ let rec translate_node = function
 let translate_module (module_ : Source.Module.t) =
   not_implemented ()
 
-let translate_program (program : Source.Program.t) =
+let translate_program (program : Program.t) =
   not_implemented ()
 
 let compile_node ppf node =

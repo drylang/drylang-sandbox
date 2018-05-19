@@ -54,7 +54,7 @@ let rec translate_node = function
 let translate_module (module_ : Source.Module.t) =
   Target.Program.make (List.map translate_node module_.code)
 
-let translate_program (program : Source.Program.t) =
+let translate_program (program : Program.t) =
   Target.Program.make (List.map translate_node program.code)
 
 let compile_node ppf node =
