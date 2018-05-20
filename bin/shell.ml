@@ -19,8 +19,9 @@ let main root options =
           match Reader.read_expression input with
           | None -> assert false (* EOF already handled *)
           | Some code ->
+            let result_type = Type.of_node code in
             let result = Evaluator.eval_expression code in
-            Printf.printf "%s\n%!" (Datum.to_string result)
+            Printf.printf "%s ; %s\n%!" (Datum.to_string result) (Type.to_string result_type)
         with
         | Syntax.Error (Lexical, message) ->
           Printf.eprintf "lexical error: %s\n%!" message
