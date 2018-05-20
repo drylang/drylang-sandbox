@@ -43,7 +43,7 @@ let rec translate_node = function
   | Source.Node.Const x -> datum x
   | _ -> not_implemented ()
 
-let translate_module (module_ : Source.Module.t) =
+let translate_module (module_ : Module.t) =
   let modifiers  = [Target.ClassModifier.Public; Target.ClassModifier.Final] in
   let imports    = [Target.ImportDecl.Normal "dry.*"] in
   let extends    = Target.Identifier.of_string "java.lang.Object" in

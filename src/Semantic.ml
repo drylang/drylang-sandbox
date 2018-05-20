@@ -125,27 +125,6 @@ module Node = struct
     Buffer.contents buffer
 end
 
-module Module = struct
-  open Format
-
-  type t =
-    { name: Symbol.t;
-      comment: Comment.t option;
-      code: Node.t list; }
-
-  let make ?(comment = "") ~name ~code =
-    { name = Symbol.of_string name;
-      comment = (match comment with "" -> None | s -> Some (Comment.of_string comment));
-      code = code; }
-
-  let print ppf module_ =
-    pp_print_char ppf '(';
-    pp_print_string ppf "#module";
-    pp_print_space ppf ();
-    pp_print_list ~pp_sep:pp_print_space Node.print ppf module_.code;
-    pp_print_char ppf ')';
-end
-
 let analyze_identifier symbol =
   match Symbol.to_string symbol with
   | "true" -> Node.Const (Datum.of_bool true)

@@ -69,7 +69,7 @@ and translate_node = function
   | Source.Node.Loop body -> Target.Statement.While (Target.of_bool true, List.map translate_node body)
   | node -> Target.Statement.LocalVarBind (Target.Name.of_string "_", translate_expr node)
 
-let translate_module (module_ : Source.Module.t) =
+let translate_module (module_ : Module.t) =
   not_implemented ()
 
 let translate_program (program : Program.t) =

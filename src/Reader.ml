@@ -46,7 +46,7 @@ let read_expressions input =
 let read_module_from_lexbuf ?(name = "") input =
   match Parser.parse_data_from_lexbuf input with
   | [] -> None
-  | syntax -> Some (Semantic.Module.make name (List.map Semantic.analyze_node syntax))
+  | syntax -> Some (Module.make name (List.map Semantic.analyze_node syntax))
 
 let read_module_from_channel ?(name = "") input =
   Lexing.from_channel input |> read_module_from_lexbuf ~name

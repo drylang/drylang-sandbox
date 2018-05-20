@@ -30,21 +30,6 @@ module Node : sig
   val print : Format.formatter -> t -> unit
 end
 
-module Module : sig
-  type t =
-    { name: Symbol.t;
-      comment: Comment.t option;
-      code: Node.t list; }
-
-  val make :
-    ?comment:string ->
-    name:string ->
-    code:Node.t list ->
-    t
-
-  val print : Format.formatter -> t -> unit
-end
-
 (* Semantic analysis *)
 
 val analyze_node : Syntax.Node.t -> Node.t

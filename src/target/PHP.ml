@@ -40,7 +40,7 @@ let rec translate_node = function
   | Source.Node.Const x -> datum x
   | _ -> not_implemented ()
 
-let translate_module (module_ : Source.Module.t) =
+let translate_module (module_ : Module.t) =
   not_implemented ()
 
 let translate_program (program : Program.t) =

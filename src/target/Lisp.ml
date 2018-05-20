@@ -51,7 +51,7 @@ let rec translate_node = function
   | Source.Node.If (a, b, c) -> Target.form [symbol "if"; translate_node a; translate_node b; translate_node c]
   | Source.Node.Loop body -> Target.form ((symbol "loop") :: (List.map translate_node body))
 
-let translate_module (module_ : Source.Module.t) =
+let translate_module (module_ : Module.t) =
   Target.Program.make (List.map translate_node module_.code)
 
 let translate_program (program : Program.t) =
