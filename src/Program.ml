@@ -3,8 +3,6 @@
 open DRY.Core
 open Format
 
-module Node = Semantic.Node
-
 type t = { code: Node.t list; }
 
 let make args = { code = args; }

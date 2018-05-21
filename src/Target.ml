@@ -3,7 +3,7 @@
 open DRY.Core
 
 module type Language = sig
-  val compile_node : Format.formatter -> Semantic.Node.t -> unit
+  val compile_node : Format.formatter -> Node.t -> unit
   val compile_module : Format.formatter -> Module.t -> unit
   val compile_program : Format.formatter -> Program.t -> unit
 end

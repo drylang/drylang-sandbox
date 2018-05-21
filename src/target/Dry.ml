@@ -16,7 +16,7 @@ let translate_program (program : Program.t) =
   Program.make (List.map translate_node program.code)
 
 let compile_node ppf node =
-  translate_node node |> Target.Node.print ppf
+  translate_node node |> Node.print ppf
 
 let compile_module ppf module_ =
   translate_module module_ |> Module.print ppf

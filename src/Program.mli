@@ -2,8 +2,6 @@
 
 (** Program representation. *)
 
-module Node = Semantic.Node
-
 type t = { code: Node.t list; }
 
 val make : Node.t list -> t

@@ -2,8 +2,6 @@
 
 open DRY.Core
 
-module Node = Semantic.Node
-
 type t =
   | Any
   | Bit

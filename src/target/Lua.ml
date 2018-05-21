@@ -39,34 +39,34 @@ let datum = function
   | _ -> not_implemented ()
 
 let rec translate_expr = function
-  | Source.Node.Const x -> datum x
-  | Source.Node.Id x -> Target.var (Symbol.to_string x)
-  | Source.Node.Name (_, []) -> assert false
-  | Source.Node.Name (pkg, name) -> Target.var (String.concat "." ("dry" :: (List.map Symbol.to_string name)))
-  | Source.Node.Import names -> not_implemented ()
-  | Source.Node.Export names -> not_implemented ()
-  | Source.Node.Apply (op, args) ->
+  | Node.Const x -> datum x
+  | Node.Id x -> Target.var (Symbol.to_string x)
+  | Node.Name (_, []) -> assert false
+  | Node.Name (pkg, name) -> Target.var (String.concat "." ("dry" :: (List.map Symbol.to_string name)))
+  | Node.Import names -> not_implemented ()
+  | Node.Export names -> not_implemented ()
+  | Node.Apply (op, args) ->
     begin match op with
-    | Source.Node.Id fname ->
+    | Node.Id fname ->
       Target.Expression.FunctionCall (fname, (List.map translate_expr args))
-    | Source.Node.Name (pkg, name) ->
+    | Node.Name (pkg, name) ->
       let fname = Symbol.of_string (String.concat "." (List.map Symbol.to_string (pkg :: name))) in
       Target.Expression.FunctionCall (fname, (List.map translate_expr args))
     | _ -> failwith "invalid function call" (* TODO *)
     end
-  | Source.Node.MathNeg a -> Target.Expression.UnaryOperator (Neg, translate_expr a)
-  | Source.Node.MathAdd (a, b) -> Target.Expression.BinaryOperator (Add, translate_expr a, translate_expr b)
-  | Source.Node.MathSub (a, b) -> Target.Expression.BinaryOperator (Sub, translate_expr a, translate_expr b)
-  | Source.Node.MathMul (a, b) -> Target.Expression.BinaryOperator (Mul, translate_expr a, translate_expr b)
-  | Source.Node.MathDiv (a, b) -> Target.Expression.BinaryOperator (Div, translate_expr a, translate_expr b)
-  | Source.Node.LogicNot a -> Target.Expression.UnaryOperator (Not, translate_expr a)
-  | Source.Node.LogicAnd (a, b) -> Target.Expression.BinaryOperator (And, translate_expr a, translate_expr b)
-  | Source.Node.LogicOr (a, b) -> Target.Expression.BinaryOperator (Or, translate_expr a, translate_expr b)
-  | Source.Node.If (a, b, c) -> Target.Expression.If ((translate_expr a), (translate_expr b), (translate_expr c))
-  | Source.Node.Loop body -> assert false
+  | Node.MathNeg a -> Target.Expression.UnaryOperator (Neg, translate_expr a)
+  | Node.MathAdd (a, b) -> Target.Expression.BinaryOperator (Add, translate_expr a, translate_expr b)
+  | Node.MathSub (a, b) -> Target.Expression.BinaryOperator (Sub, translate_expr a, translate_expr b)
+  | Node.MathMul (a, b) -> Target.Expression.BinaryOperator (Mul, translate_expr a, translate_expr b)
+  | Node.MathDiv (a, b) -> Target.Expression.BinaryOperator (Div, translate_expr a, translate_expr b)
+  | Node.LogicNot a -> Target.Expression.UnaryOperator (Not, translate_expr a)
+  | Node.LogicAnd (a, b) -> Target.Expression.BinaryOperator (And, translate_expr a, translate_expr b)
+  | Node.LogicOr (a, b) -> Target.Expression.BinaryOperator (Or, translate_expr a, translate_expr b)
+  | Node.If (a, b, c) -> Target.Expression.If ((translate_expr a), (translate_expr b), (translate_expr c))
+  | Node.Loop body -> assert false
 
 and translate_node = function
-  | Source.Node.Loop body -> Target.Statement.While (Target.of_bool true, List.map translate_node body)
+  | Node.Loop body -> Target.Statement.While (Target.of_bool true, List.map translate_node body)
   | node -> Target.Statement.LocalVarBind (Target.Name.of_string "_", translate_expr node)
 
 let translate_module (module_ : Module.t) =

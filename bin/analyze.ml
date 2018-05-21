@@ -14,7 +14,7 @@ let main (input : SourceFile.t) (output : Options.OutputOptions.t) options =
       match Reader.read_program_from_lexbuf lexbuf with
       | None -> exit 0
       | Some program -> begin
-          Format.pp_print_list ~pp_sep:Format.pp_print_space Semantic.Node.print output_ppf program.code;
+          Format.pp_print_list ~pp_sep:Format.pp_print_space Node.print output_ppf program.code;
           Format.pp_print_newline output_ppf ()
         end
     with

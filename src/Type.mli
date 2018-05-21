@@ -27,6 +27,6 @@ type t =
   | Unit
   | Word
 
-val of_node : Semantic.Node.t -> t
+val of_node : Node.t -> t
 
 val to_string : t -> string

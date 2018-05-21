@@ -1,7 +1,7 @@
 (* This is free and unencumbered software released into the public domain. *)
 
 open DRY.Core
-open Semantic.Node
+open Node
 
 module Datum = DRY.Core.Datum
 module Int8  = DRY.Core.Int8

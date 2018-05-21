@@ -118,25 +118,26 @@ let () = assert (Name.to_string (Name.of_string "text/ascii/string") = "dry:text
 
 (* Drylang.Semantic *)
 
+module Node     = Drylang.Node
 module Semantic = Drylang.Semantic
 
 let dry input =
   match Drylang.Parser.parse_datum input with
   | None -> assert false
-  | Some syntax -> Drylang.Semantic.analyze_node syntax
+  | Some syntax -> Semantic.analyze_node syntax
 
-let () = assert (Semantic.analyze_node forty_two = Semantic.Node.Const (Datum.of_int 42))
+let () = assert (Semantic.analyze_node forty_two = Node.Const (Datum.of_int 42))
 
-let () = assert (dry "true" = Semantic.Node.Const (Datum.of_bool true))
+let () = assert (dry "true" = Node.Const (Datum.of_bool true))
 
-let () = assert (dry "false" = Semantic.Node.Const (Datum.of_bool false))
+let () = assert (dry "false" = Node.Const (Datum.of_bool false))
 
-let () = assert (dry "1.23" = Semantic.Node.Const (Datum.of_float 1.23))
+let () = assert (dry "1.23" = Node.Const (Datum.of_float 1.23))
 
-let () = assert (dry "42" = Semantic.Node.Const (Datum.of_int 42))
+let () = assert (dry "42" = Node.Const (Datum.of_int 42))
 
 (*
-let () = assert (dry "(inc 42)" = (Semantic.Node.Apply (Semantic.Node.Const (Datum.Symbol "inc"), [Semantic.Node.Const (Datum.of_int 42)])))
+let () = assert (dry "(inc 42)" = (Node.Apply (Node.Const (Datum.Symbol "inc"), [Node.Const (Datum.of_int 42)])))
 *)
 
 (* Drylang.Target *)

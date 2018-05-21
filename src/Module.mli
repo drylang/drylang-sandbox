@@ -3,7 +3,6 @@
 (** Module representation. *)
 
 module Comment = DRY.Code.DRY.Comment
-module Node    = Semantic.Node
 module Symbol  = DRY.Core.Symbol
 
 type t =
