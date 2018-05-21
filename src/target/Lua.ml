@@ -23,6 +23,7 @@ let number = function
   | _ -> not_implemented ()
 
 let scalar = function
+  | Scalar.Bit _ -> not_implemented ()
   | Scalar.Bool b -> Target.call "dry.bool" [Target.boolean b]
   | Scalar.Char _ -> not_implemented ()
   | Scalar.Number n -> number n

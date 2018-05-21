@@ -24,6 +24,7 @@ let number = function
   | _ -> not_implemented ()
 
 let scalar = function
+  | Scalar.Bit _ -> not_implemented ()
   | Scalar.Bool b -> Target.boolean b
   | Scalar.Char c -> Target.char c
   | Scalar.Number n -> number n

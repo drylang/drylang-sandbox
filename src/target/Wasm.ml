@@ -24,6 +24,7 @@ let number = function
   | _ -> not_implemented ()
 
 let scalar = function
+  | Scalar.Bit b -> Target.i32 (Int32.of_int (Bit.to_int b))
   | Scalar.Bool b -> Target.i32 (if b then 1l else 0l)
   | Scalar.Char c -> Target.i32 (Char.as_int32 c)
   | Scalar.Number n -> number n

@@ -19,6 +19,7 @@ let number = function
   | _ -> not_implemented ()
 
 let scalar = function
+  | Scalar.Bit _ -> not_implemented ()
   | Scalar.Bool _ -> not_implemented ()
   | Scalar.Char _ -> not_implemented ()
   | Scalar.Number n -> number n

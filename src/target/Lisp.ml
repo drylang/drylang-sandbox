@@ -18,6 +18,7 @@ let word = function
 let number = Target.number
 
 let scalar = function
+  | Scalar.Bit _ -> not_implemented ()
   | Scalar.Bool b -> Target.Object.of_bool b
   | Scalar.Char c -> Target.character c
   | Scalar.Number n -> number n
