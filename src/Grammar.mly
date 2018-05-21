@@ -1,7 +1,9 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-%token <float> FLOAT
-%token <int> INTEGER
+%token <string> COMPLEX
+%token <string> FLOAT
+%token <string> INTEGER
+%token <string> RATIONAL
 %token <string> STRING
 %token <string> SYMBOL
 %token EOF LPAREN RPAREN
@@ -34,16 +36,18 @@ exprs:
   | expr exprs          { $1 :: $2 }
 
 atom:
-  | number              { Node.Literal $1 }
-  | string              { Node.Literal $1 }
+  | number              { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Number $1))) }
+  | string              { Node.Literal (Datum.String $1) }
   | symbol              { Node.Id $1 }
 
 number:
-  | FLOAT               { Datum.of_float $1 }
-  | INTEGER             { Datum.of_int $1 }
+  | COMPLEX             { match Complex.parse $1 with Ok c -> Number.Complex c | _ -> assert false }
+  | FLOAT               { Number.of_float (float_of_string $1) }
+  | INTEGER             { Number.of_int (int_of_string $1) }
+  | RATIONAL            { match Rational.parse $1 with Ok q -> Number.Rational q | _ -> assert false }
 
 string:
-  | STRING              { Datum.Symbol (Symbol.of_string $1) } (* FIXME *)
+  | STRING              { $1 }
 
 symbol:
   | SYMBOL              { Symbol.of_string $1 }

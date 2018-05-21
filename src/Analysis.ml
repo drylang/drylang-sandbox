@@ -10,6 +10,7 @@ let not_implemented () = failwith "not implemented yet"
 
 let analyze_identifier symbol =
   match Symbol.to_string symbol with
+  | "none" -> not_implemented () (* TODO *)
   | "true" -> Node.Literal (Datum.of_bool true)
   | "false" -> Node.Literal (Datum.of_bool false)
   | "/" -> Node.Id symbol

@@ -4,8 +4,10 @@
 
 type t =
   | EOF
-  | FLOAT of float
-  | INTEGER of int
+  | COMPLEX of string
+  | FLOAT of string
+  | INTEGER of string
+  | RATIONAL of string
   | STRING of string
   | SYMBOL of string
   | LPAREN

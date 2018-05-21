@@ -27,6 +27,9 @@ let unexpected_char lexbuf =
 let digit      = ['0'-'9']
 let letter     = ['A'-'Z' 'a'-'z']
 
+let complex    = '-'? digit+ ['-' '+'] digit+ 'i'
+
+let rational   = '-'? digit+ '/' digit+
 let integer    = '-'? digit+
 
 let fraction   = '.' digit*
@@ -52,8 +55,10 @@ rule lex = parse
   | ')'             { Token.RPAREN }
   | "\n\"\"\""      { Lexing.new_line lexbuf; lex_doc_begin (Buffer.create 16) lexbuf }
   | '"'             { lex_string (Buffer.create 16) lexbuf }
-  | integer as s    { Token.INTEGER (int_of_string s) }
-  | float as s      { Token.FLOAT (float_of_string s) }
+  | complex as s    { Token.COMPLEX s }
+  | rational as s   { Token.RATIONAL s }
+  | integer as s    { Token.INTEGER s }
+  | float as s      { Token.FLOAT s }
   | identifier as s { Token.SYMBOL s }
   | _               { unexpected_char lexbuf }
   | eof             { Token.EOF }
