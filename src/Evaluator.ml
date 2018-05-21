@@ -12,7 +12,7 @@ let not_implemented () = failwith "not implemented yet"
 
 let rec eval_expression expr =
   match expr with
-  | Const datum -> datum
+  | Literal datum -> datum
 
   | LogicNot a ->
     begin match eval_expression a with

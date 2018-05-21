@@ -8,7 +8,7 @@ module Symbol  = DRY.Core.Symbol
 module Comment = DRY.Code.DRY.Comment
 
 type t =
-  | Const of Datum.t
+  | Literal of Datum.t
   | Id of Symbol.t
   | Name of Name.t
   | Import of Name.t list
@@ -26,7 +26,7 @@ type t =
   | Loop of t list
 
 let rec print ppf = function
-  | Const d ->
+  | Literal d ->
     pp_print_char ppf '(';
     pp_print_char ppf '#';
     pp_print_string ppf "const";

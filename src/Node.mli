@@ -7,7 +7,7 @@ module Symbol  = DRY.Core.Symbol
 module Comment = DRY.Code.DRY.Comment
 
 type t =
-  | Const of Datum.t
+  | Literal of Datum.t
   | Id of Symbol.t
   | Name of Name.t
   | Import of Name.t list

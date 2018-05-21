@@ -35,7 +35,7 @@ let datum = function
   | _ -> not_implemented ()
 
 let rec translate_node = function
-  | Node.Const x -> datum x
+  | Node.Literal x -> datum x
   | _ -> not_implemented ()
 
 let translate_module (module_ : Module.t) =

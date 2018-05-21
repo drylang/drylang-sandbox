@@ -39,7 +39,7 @@ let datum = function
   | _ -> not_implemented ()
 
 let rec translate_expr = function
-  | Node.Const x -> datum x
+  | Node.Literal x -> datum x
   | Node.Id x -> Target.var (Symbol.to_string x)
   | Node.Name (_, []) -> assert false
   | Node.Name (pkg, name) -> Target.var (String.concat "." ("dry" :: (List.map Symbol.to_string name)))

@@ -56,7 +56,7 @@ let same_type a_type b_type =
   a_type
 
 let rec of_node = function
-  | Node.Const datum -> of_datum datum
+  | Node.Literal datum -> of_datum datum
   | Node.Id _ -> Any (* TODO *)
   | Node.Name _ -> Any (* TODO *)
   | Node.Import _ -> None

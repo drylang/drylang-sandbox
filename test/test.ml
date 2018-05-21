@@ -126,18 +126,18 @@ let dry input =
   | None -> assert false
   | Some syntax -> Semantic.analyze_node syntax
 
-let () = assert (Semantic.analyze_node forty_two = Node.Const (Datum.of_int 42))
+let () = assert (Semantic.analyze_node forty_two = Node.Literal (Datum.of_int 42))
 
-let () = assert (dry "true" = Node.Const (Datum.of_bool true))
+let () = assert (dry "true" = Node.Literal (Datum.of_bool true))
 
-let () = assert (dry "false" = Node.Const (Datum.of_bool false))
+let () = assert (dry "false" = Node.Literal (Datum.of_bool false))
 
-let () = assert (dry "1.23" = Node.Const (Datum.of_float 1.23))
+let () = assert (dry "1.23" = Node.Literal (Datum.of_float 1.23))
 
-let () = assert (dry "42" = Node.Const (Datum.of_int 42))
+let () = assert (dry "42" = Node.Literal (Datum.of_int 42))
 
 (*
-let () = assert (dry "(inc 42)" = (Node.Apply (Node.Const (Datum.Symbol "inc"), [Node.Const (Datum.of_int 42)])))
+let () = assert (dry "(inc 42)" = (Node.Apply (Node.Literal (Datum.Symbol "inc"), [Node.Literal (Datum.of_int 42)])))
 *)
 
 (* Drylang.Target *)

@@ -10,8 +10,8 @@ let not_implemented () = failwith "not implemented yet"
 
 let analyze_identifier symbol =
   match Symbol.to_string symbol with
-  | "true" -> Node.Const (Datum.of_bool true)
-  | "false" -> Node.Const (Datum.of_bool false)
+  | "true" -> Node.Literal (Datum.of_bool true)
+  | "false" -> Node.Literal (Datum.of_bool false)
   | "/" -> Node.Id symbol
   | s ->
     begin match String.contains s '/' with
@@ -49,7 +49,7 @@ let rec analyze_node = function
     analyze_identifier symbol
 
   | Syntax.Node.Atom datum ->
-    Node.Const datum
+    Node.Literal datum
 
   | Syntax.Node.List (hd :: tl) ->
     analyze_operation (analyze_node hd) (List.map analyze_node tl)
