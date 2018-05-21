@@ -24,6 +24,11 @@ type t =
   | If of t * t * t
   | Loop of t list
 
+val of_bool : bool -> t
+val of_char : char -> t
+val of_float : float -> t
+val of_int : int -> t
+
 val to_string : t -> string
 
 val print : Format.formatter -> t -> unit

@@ -2,7 +2,7 @@
 
 open DRY.Core
 
-module Source = Semantic
+module Source = Node
 module Target = DRY.Code.Lua
 
 let not_implemented () = failwith "not implemented yet"

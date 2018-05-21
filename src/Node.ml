@@ -25,11 +25,16 @@ type t =
   | If of t * t * t
   | Loop of t list
 
+let of_bool b  = Literal (Datum.of_bool b)
+let of_char c  = Literal (Datum.of_char c)
+let of_float r = Literal (Datum.of_float r)
+let of_int z   = Literal (Datum.of_int z)
+
 let rec print ppf = function
   | Literal d ->
     pp_print_char ppf '(';
     pp_print_char ppf '#';
-    pp_print_string ppf "const";
+    pp_print_string ppf "lit";
     pp_print_char ppf ' ';
     pp_print_string ppf (Datum.to_string d);
     pp_print_char ppf ')'

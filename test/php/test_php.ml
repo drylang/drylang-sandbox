@@ -15,7 +15,7 @@ let compile code =
 let dry input =
   match Drylang.Parser.parse_datum input with
   | None -> assert false
-  | Some syntax -> Drylang.Semantic.analyze_node syntax
+  | Some syntax -> Drylang.Analysis.analyze_node syntax
 
 let () = assert (compile @@ dry "true" = "true")
 

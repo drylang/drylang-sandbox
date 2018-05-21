@@ -2,7 +2,7 @@
 
 open DRY.Core
 
-module Source = Semantic
+module Source = Node
 module Target = Source
 
 let translate_node node = node

@@ -8,13 +8,12 @@
 
 %{
 open DRY.Core
-open Syntax.Expression
 
 let syntactic_error = Syntax.syntactic_error
 %}
 
-%start <Syntax.Node.t list> parse_all
-%start <Syntax.Node.t> parse_one
+%start <Node.t list> parse_all
+%start <Node.t> parse_one
 
 %%
 
@@ -27,7 +26,7 @@ parse_one:
   | expr EOF            { $1 }
 
 expr:
-  | LPAREN exprs RPAREN { List $2 }
+  | LPAREN exprs RPAREN { Node.Apply (List.hd $2, List.tl $2) }
   | atom                { $1 }
 
 exprs:
@@ -35,9 +34,9 @@ exprs:
   | expr exprs          { $1 :: $2 }
 
 atom:
-  | string              { Atom $1 }
-  | symbol              { Atom $1 }
-  | number              { Atom $1 }
+  | number              { Node.Literal $1 }
+  | string              { Node.Literal $1 }
+  | symbol              { Node.Id $1 }
 
 number:
   | FLOAT               { Datum.of_float $1 }
@@ -47,4 +46,4 @@ string:
   | STRING              { Datum.Symbol (Symbol.of_string $1) } (* FIXME *)
 
 symbol:
-  | SYMBOL              { Datum.Symbol (Symbol.of_string $1) }
+  | SYMBOL              { Symbol.of_string $1 }

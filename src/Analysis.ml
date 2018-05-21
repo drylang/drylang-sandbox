@@ -45,14 +45,7 @@ let analyze_operation operator operands =
   | _ -> Syntax.semantic_error "invalid operation"
 
 let rec analyze_node = function
-  | Syntax.Node.Atom (Datum.Symbol symbol) ->
-    analyze_identifier symbol
-
-  | Syntax.Node.Atom datum ->
-    Node.Literal datum
-
-  | Syntax.Node.List (hd :: tl) ->
-    analyze_operation (analyze_node hd) (List.map analyze_node tl)
-
-  | Syntax.Node.List [] ->
-    Syntax.semantic_error "invalid expression"
+  | Node.Id symbol -> analyze_identifier symbol
+  | Node.Apply (operator, operands) ->
+    analyze_operation (analyze_node operator) (List.map analyze_node operands)
+  | node -> node
