@@ -34,7 +34,9 @@ let integer    = '-'? digit+
 
 let fraction   = '.' digit*
 let exponent   = ['e' 'E'] ['-' '+']? digit+
-let float      = digit* fraction? exponent?
+let float      = '-'? digit* fraction? exponent?
+
+let percentage = '-'? digit+ fraction? '%'
 
 let special_initial     = '!' | '$' | '%' | '&' | '*' | '/' | ':' | '<' | '=' | '>' | '?' | '~' | '_' | '^'
 let special_subsequent  = '.' | '+' | '-'
@@ -55,6 +57,7 @@ rule lex = parse
   | ')'             { Token.RPAREN }
   | "\n\"\"\""      { Lexing.new_line lexbuf; lex_doc_begin (Buffer.create 16) lexbuf }
   | '"'             { lex_string (Buffer.create 16) lexbuf }
+  | percentage as s { Token.PERCENT s }
   | complex as s    { Token.COMPLEX s }
   | rational as s   { Token.RATIONAL s }
   | integer as s    { Token.INTEGER s }

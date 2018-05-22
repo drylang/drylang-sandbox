@@ -3,6 +3,7 @@
 %token <string> COMPLEX
 %token <string> FLOAT
 %token <string> INTEGER
+%token <string> PERCENT
 %token <string> RATIONAL
 %token <string> STRING
 %token <string> SYMBOL
@@ -44,6 +45,7 @@ number:
   | COMPLEX             { match Complex.parse $1 with Ok c -> Number.Complex c | _ -> assert false }
   | FLOAT               { Number.of_float (float_of_string $1) }
   | INTEGER             { Number.of_int (int_of_string $1) }
+  | PERCENT             { Number.of_float (Scanf.sscanf $1 "%f" (fun r -> r /. 100.0)) }
   | RATIONAL            { match Rational.parse $1 with Ok q -> Number.Rational q | _ -> assert false }
 
 string:

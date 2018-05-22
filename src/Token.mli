@@ -7,6 +7,7 @@ type t =
   | COMPLEX of string
   | FLOAT of string
   | INTEGER of string
+  | PERCENT of string
   | RATIONAL of string
   | STRING of string
   | SYMBOL of string
