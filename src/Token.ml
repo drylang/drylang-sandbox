@@ -11,6 +11,9 @@ type t =
   | RATIONAL of string
   | STRING of string
   | SYMBOL of string
+  | WORD_BIN of string
+  | WORD_OCT of string
+  | WORD_HEX of string
   | LPAREN
   | RPAREN
 

@@ -24,77 +24,84 @@ let unexpected_char lexbuf =
   lexical_error (Printf.sprintf "unexpected character at %s" (format_lexbuf_pos lexbuf))
 }
 
-let digit      = ['0'-'9']
-let letter     = ['A'-'Z' 'a'-'z']
+let digit       = ['0'-'9']
+let letter      = ['A'-'Z' 'a'-'z']
 
-let complex    = '-'? digit+ ['-' '+'] digit+ 'i'
+let complex     = '-'? digit+ ['-' '+'] digit+ 'i'
 
-let rational   = '-'? digit+ '/' digit+
-let integer    = '-'? digit+
+let rational    = '-'? digit+ '/' digit+
+let integer     = '-'? digit+
 
-let fraction   = '.' digit*
-let exponent   = ['e' 'E'] ['-' '+']? digit+
-let float      = '-'? digit* fraction? exponent?
+let fraction    = '.' digit*
+let exponent    = ['e' 'E'] ['-' '+']? digit+
+let float       = '-'? digit* fraction? exponent?
 
-let percentage = '-'? digit+ fraction? '%'
+let percentage  = '-'? digit+ fraction? '%'
+
+let binary      = '0' 'b' ['0' '1']+
+let octal       = '0' 'o' ['0'-'7']+
+let hexadecimal = '0' 'x' ['0'-'9' 'A'-'F' 'a'-'f']+
 
 let special_initial     = '!' | '$' | '%' | '&' | '*' | '/' | ':' | '<' | '=' | '>' | '?' | '~' | '_' | '^'
 let special_subsequent  = '.' | '+' | '-'
 let peculiar_identifier = '+' | '-'
 
-let initial    = letter | special_initial
-let subsequent = initial | digit | special_subsequent
-let identifier = initial subsequent* | peculiar_identifier
+let initial     = letter | special_initial
+let subsequent  = initial | digit | special_subsequent
+let identifier  = initial subsequent* | peculiar_identifier
 
-let whitespace = [' ' '\t']+
-let newline    = '\n'
+let whitespace  = [' ' '\t']+
+let newline     = '\n'
 
 rule lex = parse
-  | whitespace      { lex lexbuf }
-  | newline         { Lexing.new_line lexbuf; lex lexbuf }
-  | ';'             { lex_comment lexbuf; lex lexbuf }
-  | '('             { Token.LPAREN }
-  | ')'             { Token.RPAREN }
-  | "\n\"\"\""      { Lexing.new_line lexbuf; lex_doc_begin (Buffer.create 16) lexbuf }
-  | '"'             { lex_string (Buffer.create 16) lexbuf }
-  | percentage as s { Token.PERCENT s }
-  | complex as s    { Token.COMPLEX s }
-  | rational as s   { Token.RATIONAL s }
-  | integer as s    { Token.INTEGER s }
-  | float as s      { Token.FLOAT s }
-  | identifier as s { Token.SYMBOL s }
-  | _               { unexpected_char lexbuf }
-  | eof             { Token.EOF }
+  | whitespace       { lex lexbuf }
+  | newline          { Lexing.new_line lexbuf; lex lexbuf }
+  | ';'              { lex_comment lexbuf; lex lexbuf }
+  | '('              { Token.LPAREN }
+  | ')'              { Token.RPAREN }
+  | "\n\"\"\""       { Lexing.new_line lexbuf; lex_doc_begin (Buffer.create 16) lexbuf }
+  | '"'              { lex_string (Buffer.create 16) lexbuf }
+  | binary as s      { Token.WORD_BIN (String.sub s 2 ((String.length s) - 2)) }
+  | octal as s       { Token.WORD_OCT (String.sub s 2 ((String.length s) - 2)) }
+  | hexadecimal as s { Token.WORD_HEX (String.sub s 2 ((String.length s) - 2)) }
+  | percentage as s  { Token.PERCENT (String.sub s 0 ((String.length s) - 1)) }
+  | complex as s     { Token.COMPLEX s }
+  | rational as s    { Token.RATIONAL s }
+  | integer as s     { Token.INTEGER s }
+  | float as s       { Token.FLOAT s }
+  | identifier as s  { Token.SYMBOL s }
+  | _                { unexpected_char lexbuf }
+  | eof              { Token.EOF }
 
 and lex_comment = parse
-  | '\n'            { Lexing.new_line lexbuf }
-  | _               { lex_comment lexbuf }
-  | eof             { () }
+  | '\n'             { Lexing.new_line lexbuf }
+  | _                { lex_comment lexbuf }
+  | eof              { () }
 
 and lex_string buf = parse
-  | newline         { unexpected_lf lexbuf }
-  | '"'             { Token.STRING (Buffer.contents buf) }
-  | [^ '"']         { Buffer.add_string buf (Lexing.lexeme lexbuf); lex_string buf lexbuf }
-  | eof             { unexpected_eof lexbuf }
+  | newline          { unexpected_lf lexbuf }
+  | '"'              { Token.STRING (Buffer.contents buf) }
+  | [^ '"']          { Buffer.add_string buf (Lexing.lexeme lexbuf); lex_string buf lexbuf }
+  | eof              { unexpected_eof lexbuf }
 
 and lex_doc_begin buf = parse
-  | '"'*            { lex_doc_begin buf lexbuf }
-  | "\n\"\"\""      { Lexing.new_line lexbuf; lex_doc_end buf lexbuf } (* empty docstring *)
-  | newline         { Lexing.new_line lexbuf; lex_doc_string buf lexbuf }
-  | _               { unexpected_char lexbuf }
-  | eof             { unexpected_eof lexbuf }
+  | '"'*             { lex_doc_begin buf lexbuf }
+  | "\n\"\"\""       { Lexing.new_line lexbuf; lex_doc_end buf lexbuf } (* empty docstring *)
+  | newline          { Lexing.new_line lexbuf; lex_doc_string buf lexbuf }
+  | _                { unexpected_char lexbuf }
+  | eof              { unexpected_eof lexbuf }
 
 and lex_doc_string buf = parse
-  | "\n\"\"\""      { Lexing.new_line lexbuf; lex_doc_end buf lexbuf }
-  | newline         { Buffer.add_string buf (Lexing.lexeme lexbuf); Lexing.new_line lexbuf; lex_doc_string buf lexbuf }
-  | _               { Buffer.add_string buf (Lexing.lexeme lexbuf); lex_doc_string buf lexbuf }
-  | eof             { unexpected_eof lexbuf }
+  | "\n\"\"\""       { Lexing.new_line lexbuf; lex_doc_end buf lexbuf }
+  | newline          { Buffer.add_string buf (Lexing.lexeme lexbuf); Lexing.new_line lexbuf; lex_doc_string buf lexbuf }
+  | _                { Buffer.add_string buf (Lexing.lexeme lexbuf); lex_doc_string buf lexbuf }
+  | eof              { unexpected_eof lexbuf }
 
 and lex_doc_end buf = parse
-  | '"'*            { lex_doc_end buf lexbuf }
-  | newline         { Lexing.new_line lexbuf; Token.STRING (Buffer.contents buf) }
-  | _               { unexpected_char lexbuf }
-  | eof             { unexpected_eof lexbuf }
+  | '"'*             { lex_doc_end buf lexbuf }
+  | newline          { Lexing.new_line lexbuf; Token.STRING (Buffer.contents buf) }
+  | _                { unexpected_char lexbuf }
+  | eof              { unexpected_eof lexbuf }
 
 {
 let lex_from_string input =

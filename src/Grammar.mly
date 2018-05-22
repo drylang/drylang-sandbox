@@ -1,12 +1,8 @@
 (* This is free and unencumbered software released into the public domain. *)
 
-%token <string> COMPLEX
-%token <string> FLOAT
-%token <string> INTEGER
-%token <string> PERCENT
-%token <string> RATIONAL
-%token <string> STRING
-%token <string> SYMBOL
+%token <string> COMPLEX FLOAT INTEGER PERCENT RATIONAL
+%token <string> STRING SYMBOL
+%token <string> WORD_BIN WORD_OCT WORD_HEX
 %token EOF LPAREN RPAREN
 
 %{
@@ -40,6 +36,7 @@ atom:
   | number              { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Number $1))) }
   | string              { Node.Literal (Datum.String $1) }
   | symbol              { Node.Id $1 }
+  | word                { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Word $1))) }
 
 number:
   | COMPLEX             { match Complex.parse $1 with Ok c -> Number.Complex c | _ -> assert false }
@@ -53,3 +50,8 @@ string:
 
 symbol:
   | SYMBOL              { Symbol.of_string $1 }
+
+word:
+  | WORD_BIN            { match Word.parse_bin $1 with Ok w -> w | _ -> assert false }
+  | WORD_OCT            { match Word.parse_oct $1 with Ok w -> w | _ -> assert false }
+  | WORD_HEX            { match Word.parse_hex $1 with Ok w -> w | _ -> assert false }
