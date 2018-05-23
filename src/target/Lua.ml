@@ -44,7 +44,7 @@ let datum = function
   | Datum.String s -> Target.string s
   | Datum.Symbol s -> Target.call "dry.symbol" [Target.string (Symbol.to_string s)]
   | Datum.Tensor x -> tensor x
-  | Datum.Unit _ -> not_implemented () (* TODO *)
+  | Datum.Unit _ -> not_implemented () (* TODO: implement *)
 
 let rec translate_expr = function
   | Node.Literal x -> datum x

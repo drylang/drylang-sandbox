@@ -22,11 +22,15 @@ let main root (input : SourceFile.t) (output : Options.TargetOptions.t) (options
         | None -> assert false
         | Some (module L : Target.Language) ->
           if not options.debug then () else begin
+            Format.pp_open_hbox output_ppf ();
             Format.pp_print_char output_ppf ';';
             Node.print output_ppf expression;
+            Format.pp_close_box output_ppf ();
             Format.pp_print_newline output_ppf ()
           end;
+          Format.pp_open_hbox output_ppf ();
           L.compile_node output_ppf expression;
+          Format.pp_close_box output_ppf ();
           Format.pp_print_newline output_ppf ()
         end
     with
