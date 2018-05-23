@@ -2,7 +2,7 @@
 
 %token <string> CHAR
 %token <string> COMPLEX FLOAT INTEGER PERCENT RATIONAL
-%token <string> STRING SYMBOL
+%token <string> STRING SYMBOL URI
 %token <string> WORD_BIN WORD_OCT WORD_HEX
 %token EOF LPAREN RPAREN QUOTE BACKQUOTE
 
@@ -41,8 +41,9 @@ atom:
   | char                { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Char $1))) }
   | number              { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Number $1))) }
   | string              { Node.Literal (Datum.String $1) }
-  | word                { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Word $1))) }
   | symbol              { Node.Id $1 }
+  | uri                 { Node.Literal (Datum.String $1) } (* FIXME *)
+  | word                { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Word $1))) }
 
 char:
   | CHAR                { Scanf.sscanf $1 "%x" Uchar.of_int }
@@ -59,6 +60,9 @@ string:
 
 symbol:
   | SYMBOL              { Symbol.of_string $1 }
+
+uri:
+  | URI                 { $1 }
 
 word:
   | WORD_BIN            { match Word.parse_bin $1 with Ok w -> w | _ -> assert false }

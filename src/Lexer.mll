@@ -48,6 +48,8 @@ let uchar_short = '\\' 'u' hexdigit hexdigit hexdigit hexdigit
 let uchar_long  = '\\' 'U' hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit
 let char        = xchar | uchar_short | uchar_long
 
+let uri         = '<' [^'>']* '>'
+
 let special_initial     = '!' | '$' | '%' | '&' | '*' | '/' | ':' | '<' | '=' | '>' | '?' | '~' | '_' | '^'
 let special_subsequent  = '.' | '+' | '-'
 let peculiar_identifier = '+' | '-'
@@ -78,6 +80,7 @@ rule lex = parse
   | rational as s    { Token.RATIONAL s }
   | integer as s     { Token.INTEGER s }
   | float as s       { Token.FLOAT s }
+  | uri as s         { Token.URI s }
   | identifier as s  { Token.SYMBOL s }
   | _                { unexpected_char lexbuf }
   | eof              { Token.EOF }
