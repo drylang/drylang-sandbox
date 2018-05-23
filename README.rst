@@ -94,7 +94,7 @@ Scalar Literals
 Literal                                         Type
 =============================================== ================================
 ``true``, ``false``                             ``core/bool``
-``foobar``                                      ``core/symbol``
+``'foobar``                                     ``core/symbol``
 ``1.23``                                        ``core/float``
 ``123``                                         ``core/integer``
 ``1/3``, ``-3/4``                               ``core/rational``

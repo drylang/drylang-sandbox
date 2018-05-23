@@ -4,7 +4,7 @@
 %token <string> COMPLEX FLOAT INTEGER PERCENT RATIONAL
 %token <string> STRING SYMBOL
 %token <string> WORD_BIN WORD_OCT WORD_HEX
-%token EOF LPAREN RPAREN
+%token EOF LPAREN RPAREN QUOTE BACKQUOTE
 
 %{
 open DRY.Core
@@ -27,18 +27,22 @@ parse_one:
 
 expr:
   | LPAREN exprs RPAREN { Node.Apply (List.hd $2, List.tl $2) }
+  | QUOTE quoted_atom   { $2 }
   | atom                { $1 }
 
 exprs:
   |                     { [] }
   | expr exprs          { $1 :: $2 }
 
+quoted_atom:
+  | symbol              { Node.Literal (Datum.Symbol $1) }
+
 atom:
   | char                { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Char $1))) }
   | number              { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Number $1))) }
   | string              { Node.Literal (Datum.String $1) }
-  | symbol              { Node.Id $1 }
   | word                { Node.Literal (Datum.Tensor (Tensor.Scalar (Scalar.Word $1))) }
+  | symbol              { Node.Id $1 }
 
 char:
   | CHAR                { Scanf.sscanf $1 "%x" Uchar.of_int }

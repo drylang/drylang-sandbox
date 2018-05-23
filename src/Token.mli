@@ -17,6 +17,8 @@ type t =
   | WORD_HEX of string
   | LPAREN
   | RPAREN
+  | QUOTE
+  | BACKQUOTE
 
 type token = t
 

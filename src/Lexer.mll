@@ -65,6 +65,8 @@ rule lex = parse
   | ';'              { lex_comment lexbuf; lex lexbuf }
   | '('              { Token.LPAREN }
   | ')'              { Token.RPAREN }
+  | '\''             { Token.QUOTE }
+  | '`'              { Token.BACKQUOTE }
   | "\n\"\"\""       { Lexing.new_line lexbuf; lex_doc_begin (Buffer.create 16) lexbuf }
   | '"'              { lex_string (Buffer.create 16) lexbuf }
   | char as s        { Token.CHAR (String.sub s 2 ((String.length s) - 2)) }
