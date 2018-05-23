@@ -8,36 +8,43 @@ module Target = DRY.Code.Lua
 let not_implemented () = failwith "not implemented yet"
 
 let word = function
-  | Word.Word8 _  -> not_implemented ()
-  | Word.Word16 _ -> not_implemented ()
-  | Word.Word32 _ -> not_implemented ()
-  | Word.Word64 _ -> not_implemented ()
+  | Word.Word8 w  -> Target.call "dry.word8"  [Target.integer (Int.of_int64 (Word8.as_int64 w))]
+  | Word.Word16 w -> Target.call "dry.word16" [Target.integer (Int.of_int64 (Word16.as_int64 w))]
+  | Word.Word32 w -> Target.call "dry.word32" [Target.integer (Int.of_int64 (Word32.as_int64 w))]
+  | Word.Word64 w -> Target.call "dry.word64" [Target.integer (Int.of_int64 (Word64.as_int64 w))] (* FIXME: overflow? *)
 
-let number = function
-  | Number.Float r -> Target.call "dry.float" [Target.float r]
-  | Number.Int ((Int8 _) as z)  -> Target.call "dry.int8"   [Target.integer z]
-  | Number.Int ((Int16 _) as z) -> Target.call "dry.int16"  [Target.integer z]
-  | Number.Int ((Int32 _) as z) -> Target.call "dry.int32"  [Target.integer z]
-  | Number.Int ((Int64 _) as z) -> Target.call "dry.int64"  [Target.integer z]
+let rec number = function
+  | Number.Complex c            -> Target.call "dry.complex" [number (Number.Real c.real); number (Number.Real c.imaginary)]
+  | Number.Float r              -> Target.call "dry.float" [Target.float r]
+  | Number.Int ((Int8 _) as z)  -> Target.call "dry.int8" [Target.integer z]
+  | Number.Int ((Int16 _) as z) -> Target.call "dry.int16" [Target.integer z]
+  | Number.Int ((Int32 _) as z) -> Target.call "dry.int32" [Target.integer z]
+  | Number.Int ((Int64 _) as z) -> Target.call "dry.int64" [Target.integer z]
   | Number.Int ((Int128 z))     -> Target.call "dry.int128" [Target.string (Int128.to_string z)]
-  | _ -> not_implemented ()
+  | Number.Integer z            -> Target.call "dry.integer" [Target.string (Integer.to_string z)] (* TODO: optimize *)
+  | Number.Natural n            -> Target.call "dry.natural" [Target.string (Natural.to_string n)] (* TODO: optimize *)
+  | Number.Rational q           -> Target.call "dry.rational" [number (Number.Integer q.numerator); number (Number.Integer q.denominator)]
+  | Number.Real r               -> Target.call "dry.real" [Target.of_float (Real.to_float r)] (* FIXME: exactness *)
 
 let scalar = function
-  | Scalar.Bit _ -> not_implemented ()
+  | Scalar.Bit b  -> Target.call "dry.bit" [Target.of_int (Bit.to_int b)]
   | Scalar.Bool b -> Target.call "dry.bool" [Target.boolean b]
-  | Scalar.Char _ -> not_implemented ()
+  | Scalar.Char c -> Target.call "dry.char" [Target.of_int (Char.to_int c)]
   | Scalar.Number n -> number n
   | Scalar.Word w -> word w
 
 let tensor = function
   | Tensor.Scalar x -> scalar x
-  | Tensor.Vector _ -> not_implemented ()
-  | Tensor.Matrix _ -> not_implemented ()
+  | Tensor.Vector _ -> not_implemented () (* TODO: implement *)
+  | Tensor.Matrix _ -> not_implemented () (* TODO: implement *)
 
 let datum = function
-  | Datum.Symbol _ -> not_implemented ()
+  | Datum.Interval _ -> not_implemented () (* TODO: implement *)
+  | Datum.Quantity _ -> not_implemented () (* TODO: implement *)
+  | Datum.String s -> Target.string s
+  | Datum.Symbol s -> Target.call "dry.symbol" [Target.string (Symbol.to_string s)]
   | Datum.Tensor x -> tensor x
-  | _ -> not_implemented ()
+  | Datum.Unit _ -> not_implemented () (* TODO *)
 
 let rec translate_expr = function
   | Node.Literal x -> datum x
@@ -53,7 +60,7 @@ let rec translate_expr = function
     | Node.Name (pkg, name) ->
       let fname = Symbol.of_string (String.concat "." (List.map Symbol.to_string (pkg :: name))) in
       Target.Expression.FunctionCall (fname, (List.map translate_expr args))
-    | _ -> failwith "invalid function call" (* TODO *)
+    | _ -> failwith "invalid function call" (* TODO: improve error *)
     end
   | Node.MathNeg a -> Target.Expression.UnaryOperator (Neg, translate_expr a)
   | Node.MathAdd (a, b) -> Target.Expression.BinaryOperator (Add, translate_expr a, translate_expr b)

@@ -86,7 +86,7 @@ rule lex = parse
   | rational as s    { Token.RATIONAL s }
   | integer as s     { Token.INTEGER s }
   | float as s       { Token.FLOAT s }
-  | uri as s         { Token.URI s }
+  | uri as s         { Token.URI (String.sub s 1 ((String.length s) - 2)) }
   | uuid as s        { Token.UUID s }
   | identifier as s  { Token.SYMBOL s }
   | _                { unexpected_char lexbuf }
