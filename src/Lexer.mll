@@ -25,8 +25,13 @@ let unexpected_char lexbuf =
 }
 
 let digit       = ['0'-'9']
-let hexdigit    = ['0'-'9' 'A'-'F' 'a'-'f']
 let letter      = ['A'-'Z' 'a'-'z']
+
+let hexdigit    = ['0'-'9' 'A'-'F' 'a'-'f']
+let hexdigit2   = hexdigit hexdigit
+let hexdigit4   = hexdigit hexdigit hexdigit hexdigit
+let hexdigit8   = hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit
+let hexdigit12  = hexdigit8 hexdigit4
 
 let complex     = '-'? digit+ ['-' '+'] digit+ 'i'
 
@@ -43,12 +48,13 @@ let binary      = '0' 'b' ['0' '1']+
 let octal       = '0' 'o' ['0'-'7']+
 let hexadecimal = '0' 'x' hexdigit+
 
-let xchar       = '\\' 'x' hexdigit hexdigit
-let uchar_short = '\\' 'u' hexdigit hexdigit hexdigit hexdigit
-let uchar_long  = '\\' 'U' hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit
+let xchar       = '\\' 'x' hexdigit2
+let uchar_short = '\\' 'u' hexdigit4
+let uchar_long  = '\\' 'U' hexdigit8
 let char        = xchar | uchar_short | uchar_long
 
 let uri         = '<' [^'>']* '>'
+let uuid        = hexdigit8 '-' hexdigit4 '-' hexdigit4 '-' hexdigit4 '-' hexdigit12
 
 let special_initial     = '!' | '$' | '%' | '&' | '*' | '/' | ':' | '<' | '=' | '>' | '?' | '~' | '_' | '^'
 let special_subsequent  = '.' | '+' | '-'
@@ -81,6 +87,7 @@ rule lex = parse
   | integer as s     { Token.INTEGER s }
   | float as s       { Token.FLOAT s }
   | uri as s         { Token.URI s }
+  | uuid as s        { Token.UUID s }
   | identifier as s  { Token.SYMBOL s }
   | _                { unexpected_char lexbuf }
   | eof              { Token.EOF }

@@ -13,6 +13,7 @@ type t =
   | STRING of string
   | SYMBOL of string
   | URI of string
+  | UUID of string
   | WORD_BIN of string
   | WORD_OCT of string
   | WORD_HEX of string
