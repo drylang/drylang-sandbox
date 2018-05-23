@@ -99,9 +99,13 @@ Literal                                         Type
 ``123``                                         ``core/integer``
 ``1/3``, ``-3/4``                               ``core/rational``
 ``1+2i``                                        ``core/complex``
+``99%``                                         ``core/float``
+``0b01011101``                                  ``core/word``
+``0o775``                                       ``core/word``
 ``0xDEADBEEF``                                  ``core/word``
-``\u+``                                         ``core/char``
-``\U+``                                         ``core/char``
+``\x41``                                        ``core/char``
+``\u0041``                                      ``core/char``
+``\U0001D306``                                  ``core/char``
 ``"hello"``                                     ``text/utf8/string``
 ``@2020-12-31T23:59:59``                        ``time/instant``
 ``<urn:ietf:rfc:2648>``                         ``std/ietf/urn``

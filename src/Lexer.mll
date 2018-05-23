@@ -25,6 +25,7 @@ let unexpected_char lexbuf =
 }
 
 let digit       = ['0'-'9']
+let hexdigit    = ['0'-'9' 'A'-'F' 'a'-'f']
 let letter      = ['A'-'Z' 'a'-'z']
 
 let complex     = '-'? digit+ ['-' '+'] digit+ 'i'
@@ -40,7 +41,12 @@ let percentage  = '-'? digit+ fraction? '%'
 
 let binary      = '0' 'b' ['0' '1']+
 let octal       = '0' 'o' ['0'-'7']+
-let hexadecimal = '0' 'x' ['0'-'9' 'A'-'F' 'a'-'f']+
+let hexadecimal = '0' 'x' hexdigit+
+
+let xchar       = '\\' 'x' hexdigit hexdigit
+let uchar_short = '\\' 'u' hexdigit hexdigit hexdigit hexdigit
+let uchar_long  = '\\' 'U' hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit hexdigit
+let char        = xchar | uchar_short | uchar_long
 
 let special_initial     = '!' | '$' | '%' | '&' | '*' | '/' | ':' | '<' | '=' | '>' | '?' | '~' | '_' | '^'
 let special_subsequent  = '.' | '+' | '-'
@@ -61,6 +67,7 @@ rule lex = parse
   | ')'              { Token.RPAREN }
   | "\n\"\"\""       { Lexing.new_line lexbuf; lex_doc_begin (Buffer.create 16) lexbuf }
   | '"'              { lex_string (Buffer.create 16) lexbuf }
+  | char as s        { Token.CHAR (String.sub s 2 ((String.length s) - 2)) }
   | binary as s      { Token.WORD_BIN (String.sub s 2 ((String.length s) - 2)) }
   | octal as s       { Token.WORD_OCT (String.sub s 2 ((String.length s) - 2)) }
   | hexadecimal as s { Token.WORD_HEX (String.sub s 2 ((String.length s) - 2)) }

@@ -4,6 +4,7 @@ open DRY.Core
 
 type t =
   | EOF
+  | CHAR of string
   | COMPLEX of string
   | FLOAT of string
   | INTEGER of string
