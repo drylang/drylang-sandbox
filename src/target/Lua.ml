@@ -46,19 +46,22 @@ let datum = function
   | Datum.Tensor x -> tensor x
   | Datum.Unit _ -> not_implemented () (* TODO: implement *)
 
+let translate_name (pkg, name) =
+  String.concat "." (pkg :: name)
+
 let rec translate_expr = function
   | Node.Literal x -> datum x
   | Node.Id x -> Target.var (Symbol.to_string x)
   | Node.Name (_, []) -> assert false
-  | Node.Name (pkg, name) -> Target.var (String.concat "." ("dry" :: (List.map Symbol.to_string name)))
-  | Node.Import names -> not_implemented ()
-  | Node.Export names -> not_implemented ()
+  | Node.Name name -> Target.var (translate_name name)
+  | Node.Import names -> assert false
+  | Node.Export names -> assert false
   | Node.Apply (op, args) ->
     begin match op with
     | Node.Id fname ->
       Target.Expression.FunctionCall (fname, (List.map translate_expr args))
-    | Node.Name (pkg, name) ->
-      let fname = Symbol.of_string (String.concat "." (List.map Symbol.to_string (pkg :: name))) in
+    | Node.Name fname ->
+      let fname = Symbol.of_string (translate_name fname) in
       Target.Expression.FunctionCall (fname, (List.map translate_expr args))
     | _ -> failwith "invalid function call" (* TODO: improve error *)
     end
@@ -74,20 +77,29 @@ let rec translate_expr = function
   | Node.Loop body -> assert false
 
 and translate_node = function
-  | Node.Loop body -> Target.Statement.While (Target.of_bool true, List.map translate_node body)
-  | node -> Target.Statement.LocalVarBind (Target.Name.of_string "_", translate_expr node)
+  | Node.Import names ->
+    let require_name name =
+      let (pkg, basename, dirname) = Name.package name, Name.basename name, Name.dirname name in
+      Target.Statement.LocalVarBind
+        (Target.Name.of_string basename,
+         Target.call "require" [Target.of_string (pkg ^ "/" ^ dirname)])
+    in
+    names |> List.map require_name
+  | Node.Export names -> not_implemented () (* TODO: implement *)
+  | Node.Loop body -> [Target.Statement.While (Target.of_bool true, List.concat (List.map translate_node body))]
+  | node -> [Target.Statement.LocalVarBind (Target.Name.of_string "_", translate_expr node)]
 
 let translate_module (module_ : Module.t) =
-  not_implemented ()
+  not_implemented () (* TODO: implement *)
 
 let translate_program (program : Program.t) =
-  not_implemented ()
+  not_implemented () (* TODO: implement *)
 
 let compile_node ppf node =
-  Target.Block.make [translate_node node] |> Target.Block.print ppf
+  Target.Block.make (translate_node node) |> Target.Block.print ppf
 
 let compile_module ppf module_ =
-  not_implemented ()
+  not_implemented () (* TODO: implement *)
 
 let compile_program ppf program =
-  not_implemented ()
+  not_implemented () (* TODO: implement *)

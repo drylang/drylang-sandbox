@@ -62,7 +62,7 @@ let rec print ppf = function
   | Export names ->
     pp_print_char ppf '(';
     pp_print_char ppf '#';
-    pp_print_string ppf "import";
+    pp_print_string ppf "export";
     pp_print_char ppf ' ';
     pp_print_list~pp_sep:pp_print_space pp_print_string ppf (List.map Name.to_string names);
     pp_print_char ppf ')'

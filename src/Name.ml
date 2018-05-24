@@ -3,9 +3,7 @@
 open DRY.Core
 open DRY.Text
 
-module Symbol = DRY.Core.Symbol
-
-type t = Symbol.t * Symbol.t list
+type t = string * string list
 
 let is_valid str =
   not (UTF8.String.starts_with_char str '/') &&
@@ -14,13 +12,24 @@ let is_valid str =
 
 let make ?(package = "dry") str =
   match is_valid str with
-  | true ->
-    let strs = (String.split_on_char '/' str) in
-    Symbol.of_string package, List.map Symbol.of_string strs
+  | true -> package, (String.split_on_char '/' str)
   | false -> Syntax.semantic_error "invalid name"
 
 let of_string str =
   make str (* TODO: parse package name *)
 
 let to_string (pkg, name) =
-  (Symbol.to_string pkg) ^ ":" ^ (String.concat "/" (List.map Symbol.to_string name))
+  pkg ^ ":" ^ (String.concat "/" name)
+
+let package (pkg, name) = pkg
+
+let dirname ?(sep = "/") (pkg, name) =
+  List.rev name |> List.tl |> List.rev |> String.concat sep
+
+let basename (pkg, name) =
+  let rec last = function
+    | [] -> assert false
+    | [s] -> s
+    | _ :: tl -> last tl
+  in
+  last name

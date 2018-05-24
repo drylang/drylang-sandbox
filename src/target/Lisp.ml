@@ -37,12 +37,15 @@ let datum = function
   | Datum.Tensor x -> tensor x
   | Datum.Unit _ -> not_implemented () (* TODO: implement *)
 
+let translate_name (pkg, name) =
+  Target.keyword (String.concat "/" ("dry" :: name))
+
 let rec translate_node = function
   | Node.Literal x -> datum x
-  | Node.Id x -> Target.symbol x
-  | Node.Name _ -> not_implemented () (* TODO: implement *)
-  | Node.Import names -> not_implemented () (* TODO: implement *)
-  | Node.Export names -> not_implemented () (* TODO: implement *)
+  | Node.Id id -> Target.symbol id
+  | Node.Name name -> translate_name name
+  | Node.Import names -> Target.form ((Target.keyword "import-from") :: (List.map translate_name names))
+  | Node.Export names -> Target.form ((Target.keyword "export") :: (List.map translate_name names))
   | Node.Apply (op, args) -> Target.form ((translate_node op) :: (List.map translate_node args))
   | Node.MathNeg a -> Target.form [symbol "-"; translate_node a]
   | Node.MathAdd (a, b) -> Target.form [symbol "+"; translate_node a; translate_node b]
@@ -65,6 +68,7 @@ let compile_node ppf node =
   translate_node node |> Target.Expression.print ppf
 
 let compile_module ppf module_ =
+  (* TODO: defpackage *)
   translate_module module_ |> Target.Program.print ppf
 
 let compile_program ppf program =

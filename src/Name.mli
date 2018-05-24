@@ -2,12 +2,14 @@
 
 (** Names. *)
 
-module Symbol = DRY.Core.Symbol
-
-type t = Symbol.t * Symbol.t list
+type t = string * string list
 
 val make : ?package:string -> string -> t
 
 val of_string : string -> t
 
 val to_string : t -> string
+
+val package : t -> string
+val dirname : ?sep:string -> t -> string
+val basename : t -> string
