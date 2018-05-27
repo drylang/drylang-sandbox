@@ -93,19 +93,19 @@ Scalar Literals
 =============================================== ================================
 Literal                                         Type
 =============================================== ================================
-``true``, ``false``                             ``core/bool``
-``'foobar``                                     ``core/symbol``
-``1.23``                                        ``core/float``
-``123``                                         ``core/integer``
-``1/3``, ``-3/4``                               ``core/rational``
-``1+2i``                                        ``core/complex``
-``99%``                                         ``core/float``
-``0b01011101``                                  ``core/word``
-``0o775``                                       ``core/word``
-``0xDEADBEEF``                                  ``core/word``
-``\x41``                                        ``core/char``
-``\u0041``                                      ``core/char``
-``\U0001D306``                                  ``core/char``
+``true``, ``false``                             ``base/bool``
+``'foobar``                                     ``base/symbol``
+``1.23``                                        ``base/float``
+``123``                                         ``base/integer``
+``1/3``, ``-3/4``                               ``base/rational``
+``1+2i``                                        ``base/complex``
+``99%``                                         ``base/float``
+``0b01011101``                                  ``base/word``
+``0o775``                                       ``base/word``
+``0xDEADBEEF``                                  ``base/word``
+``\x41``                                        ``base/char``
+``\u0041``                                      ``base/char``
+``\U0001D306``                                  ``base/char``
 ``"hello"``                                     ``text/utf8/string``
 ``@2020-12-31T23:59:59``                        ``time/instant``
 ``<urn:ietf:rfc:2648>``                         ``std/ietf/urn``
