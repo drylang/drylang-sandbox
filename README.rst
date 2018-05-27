@@ -17,9 +17,11 @@ DRY
 Caveats
 =======
 
-**Here be dragons**.
+*This is a semi-public, pre-alpha, work-in-progress project.*
 
-**Caveat utilitor**: assume nothing works, and you may be pleasantly
+**Here be dragons.**
+
+**Caveat utilitor:** assume nothing works, and you may be pleasantly
 surprised; and when it breaks, you get to keep both pieces.
 
 Prerequisites
